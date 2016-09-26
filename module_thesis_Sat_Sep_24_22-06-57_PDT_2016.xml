@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_thesis" default="compile.module.thesis">
+  <dirname property="module.thesis.basedir" file="${ant.file.module_thesis}"/>
+  
+  <property name="module.jdk.home.thesis" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.thesis" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.thesis" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.thesis" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="thesis.output.dir" value="${module.thesis.basedir}/out/production/Thesis"/>
+  <property name="thesis.testoutput.dir" value="${module.thesis.basedir}/out/test/Thesis"/>
+  
+  <path id="thesis.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="thesis.module.production.classpath">
+    <path refid="${module.jdk.classpath.thesis}"/>
+    <path refid="library.thesis.classpath"/>
+    <pathelement location="${basedir}/guava-19.0.jar"/>
+  </path>
+  
+  <path id="thesis.runtime.production.module.classpath">
+    <pathelement location="${thesis.output.dir}"/>
+    <path refid="library.thesis.classpath"/>
+    <pathelement location="${basedir}/guava-19.0.jar"/>
+  </path>
+  
+  <path id="thesis.module.classpath">
+    <path refid="${module.jdk.classpath.thesis}"/>
+    <pathelement location="${thesis.output.dir}"/>
+    <path refid="library.thesis.classpath"/>
+    <pathelement location="${basedir}/guava-19.0.jar"/>
+  </path>
+  
+  <path id="thesis.runtime.module.classpath">
+    <pathelement location="${thesis.testoutput.dir}"/>
+    <pathelement location="${thesis.output.dir}"/>
+    <path refid="library.thesis.classpath"/>
+    <pathelement location="${basedir}/guava-19.0.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.thesis">
+    <patternset refid="ignored.files"/>
+    <exclude name="out/**"/>
+    <exclude name="out/production/**"/>
+    <exclude name="out/production/Thesis/**"/>
+    <exclude name="out/production/Thesis/ast/**"/>
+    <exclude name="out/production/Thesis/.idea/**"/>
+    <exclude name="out/production/Thesis/.idea/copyright/**"/>
+    <exclude name="out/production/Thesis/.idea/libraries/**"/>
+    <exclude name="out/production/Thesis/parser/**"/>
+    <exclude name="out/production/Thesis/visitor/**"/>
+    <exclude name="out/production/Thesis/generated/**"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.thesis">
+    <patternset refid="excluded.from.module.thesis"/>
+  </patternset>
+  
+  <path id="thesis.module.sourcepath">
+    <dirset dir="${module.thesis.basedir}/../../ooee">
+      <include name="Thesis"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.thesis" depends="compile.module.thesis.production,compile.module.thesis.tests" description="Compile module Thesis"/>
+  
+  <target name="compile.module.thesis.production" depends="register.custom.compilers" description="Compile module Thesis; production classes">
+    <mkdir dir="${thesis.output.dir}"/>
+    <javac2 destdir="${thesis.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.thesis}/javac">
+      <compilerarg line="${compiler.args.thesis}"/>
+      <bootclasspath refid="thesis.module.bootclasspath"/>
+      <classpath refid="thesis.module.production.classpath"/>
+      <src refid="thesis.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.thesis"/>
+    </javac2>
+    
+    <copy todir="${thesis.output.dir}">
+      <fileset dir="${module.thesis.basedir}">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.thesis.tests" depends="register.custom.compilers,compile.module.thesis.production" description="compile module Thesis; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.thesis" description="cleanup module">
+    <delete dir="${thesis.output.dir}"/>
+    <delete dir="${thesis.testoutput.dir}"/>
+  </target>
+</project>
