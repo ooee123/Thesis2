@@ -1,5 +1,5 @@
 all:
-	javac -cp .:\* ast/*.java ast/type/*.java parser/*.java visitor/*.java
+	javac -cp .:\* -d build/ ast/*.java ast/type/*.java parser/*.java visitor/*.java
 
 clean:
 	rm *.class

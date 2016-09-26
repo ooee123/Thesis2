@@ -99,6 +99,7 @@ public class TreeToASTVisitor {
                 Statement statement = visit(blockItemContext.statement());
             }
         }
+        return null;
     }
 
     private Declaration visit(CParser.DeclarationContext ctx) {
@@ -125,7 +126,7 @@ public class TreeToASTVisitor {
     }
 
     private LabeledStatement visit(CParser.LabeledStatementContext ctx) {
-
+        return null;
     }
 
     private ExpressionStatement visit(CParser.ExpressionStatementContext ctx) {
@@ -138,15 +139,18 @@ public class TreeToASTVisitor {
     }
 
     private SelectionStatement visit(CParser.SelectionStatementContext ctx) {
-        ctx.
+        System.out.println(ctx.getRuleIndex());
+        return null;
     }
 
     private IterationStatement visit(CParser.IterationStatementContext ctx) {
-
+        System.out.println(ctx.getRuleIndex());
+        return null;
     }
 
     private JumpStatement visit(CParser.JumpStatementContext ctx) {
-
+        System.out.println(ctx.getRuleIndex());
+        return null;
     }
 
     private Expression visit(CParser.ExpressionContext ctx) {
@@ -155,6 +159,7 @@ public class TreeToASTVisitor {
             visit(assignmentExpressionContext);
             ctx = ctx.expression();
         }
+        return null;
     }
 
     private AssignmentExpression visit(CParser.AssignmentExpressionContext ctx) {
@@ -165,65 +170,73 @@ public class TreeToASTVisitor {
             ctx.assignmentOperator();
             ctx.assignmentExpression();
         }
+        return null;
     }
 
     private ConditionalExpression visit(CParser.ConditionalExpressionContext ctx) {
-
+        LogicalOrExpression logicalOrExpression = visit(ctx.logicalOrExpression());
+        if (ctx.expression() == null) {
+            return logicalOrExpression;
+        } else {
+            Expression thenExpression = visit(ctx.expression());
+            ConditionalExpression elseExpression = visit(ctx.conditionalExpression());
+            return new ConditionalExpressionImpl(logicalOrExpression, thenExpression, elseExpression);
+        }
     }
 
     private LogicalOrExpression visit(CParser.LogicalOrExpressionContext ctx) {
-
+        return null;
     }
 
     private LogicalAndExpression visit(CParser.LogicalAndExpressionContext ctx) {
-
+        return null;
     }
 
     private InclusiveBitwiseOrExpression visit(CParser.InclusiveOrExpressionContext ctx) {
-
+        return null;
     }
 
     private ExclusiveBitwiseOrExpression visit(CParser.ExclusiveOrExpressionContext ctx) {
-
+        return null;
     }
 
     private BitwiseAndExpression visit(CParser.AndExpressionContext ctx) {
-
+        return null;
     }
 
     private EqualityExpression visit(CParser.EqualityExpressionContext ctx) {
-
+        return null;
     }
 
     private RelationalExpression visit(CParser.RelationalExpressionContext ctx) {
-
+        return null;
     }
 
     private BitwiseShiftExpression visit(CParser.ShiftExpressionContext ctx) {
-
+        return null;
     }
 
     private AdditiveExpression visit(CParser.AdditiveExpressionContext ctx) {
-
+        return null;
     }
 
     private MultiplicativeExpression visit(CParser.MultiplicativeExpressionContext ctx) {
-
+        return null;
     }
 
     private CastExpression visit(CParser.CastExpressionContext ctx) {
-
+        return null;
     }
 
     private UnaryExpression visit(CParser.UnaryExpressionContext ctx) {
-
+        return null;
     }
 
     private PostfixExpression visit(CParser.PostfixExpressionContext ctx) {
-
+        return null;
     }
 
     private PrimaryExpression visit(CParser.PrimaryExpressionContext ctx) {
-
+        return null;
     }
 }
