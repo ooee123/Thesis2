@@ -8,10 +8,26 @@ import lombok.Value;
 @Value
 public class PostfixExpressionStructAccessImpl implements PostfixExpression {
     public enum AccessOperator {
-        DOT,
-        ARROW;
+        DOT("."),
+        ARROW("->");
+
+        public final String token;
+
+        AccessOperator(String token) {
+            this.token = token;
+        }
+
+        public static AccessOperator toAccessOperator(String token) {
+            for (AccessOperator accessOperator: AccessOperator.values()) {
+                if (accessOperator.token.equals(token)) {
+                    return accessOperator;
+                }
+            }
+            return null;
+        }
     }
 
     private PostfixExpression postfixExpression;
+    private AccessOperator accessOperator;
     private String identifier;
 }

@@ -10,4 +10,8 @@ import lombok.Value;
 @Data
 public class TypedefType implements Type {
     private String typeName;
+
+    public TypedefType(String typeName) {
+        this.typeName = typeName;
+    }
 }
