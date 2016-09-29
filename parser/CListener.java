@@ -788,6 +788,76 @@ public interface CListener extends ParseTreeListener {
 	 */
 	void exitIterationStatement(CParser.IterationStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CParser#whileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileStatement(CParser.WhileStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#whileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileStatement(CParser.WhileStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CParser#doWhileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterDoWhileStatement(CParser.DoWhileStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#doWhileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitDoWhileStatement(CParser.DoWhileStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CParser#forLoopStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterForLoopStatement(CParser.ForLoopStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#forLoopStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitForLoopStatement(CParser.ForLoopStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CParser#declareForLoopStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclareForLoopStatement(CParser.DeclareForLoopStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#declareForLoopStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclareForLoopStatement(CParser.DeclareForLoopStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CParser#initExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterInitExpression(CParser.InitExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#initExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitInitExpression(CParser.InitExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CParser#condExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterCondExpression(CParser.CondExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#condExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitCondExpression(CParser.CondExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CParser#iterExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterIterExpression(CParser.IterExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#iterExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitIterExpression(CParser.IterExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CParser#jumpStatement}.
 	 * @param ctx the parse tree
 	 */

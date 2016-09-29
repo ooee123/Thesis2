@@ -69,8 +69,7 @@ postfixExpression
     ;
 
 argumentExpressionList
-    :   assignmentExpression
-    |   argumentExpressionList ',' assignmentExpression
+    :   assignmentExpression (',' assignmentExpression)*
     ;
 
 unaryExpression
@@ -128,28 +127,23 @@ equalityExpression
     ;
 
 andExpression
-    :   equalityExpression
-    |   andExpression '&' equalityExpression
+    :   equalityExpression ('&' equalityExpression)*
     ;
 
 exclusiveOrExpression
-    :   andExpression
-    |   exclusiveOrExpression '^' andExpression
+    :   andExpression ('^' andExpression)*
     ;
 
 inclusiveOrExpression
-    :   exclusiveOrExpression
-    |   inclusiveOrExpression '|' exclusiveOrExpression
+    :   exclusiveOrExpression ('|' exclusiveOrExpression)*
     ;
 
 logicalAndExpression
-    :   inclusiveOrExpression
-    |   logicalAndExpression '&&' inclusiveOrExpression
+    :   inclusiveOrExpression ('&&' inclusiveOrExpression)*
     ;
 
 logicalOrExpression
-    :   logicalAndExpression
-    |   logicalOrExpression '||' logicalAndExpression
+    :   logicalAndExpression ('||' logicalAndExpression)*
     ;
 
 conditionalExpression
@@ -180,24 +174,22 @@ declaration
     ;
 
 declarationSpecifiers
-    :   declarationSpecifier+
+    :   declarationSpecifier* typeSpecifier
     ;
 
 declarationSpecifiers2
-    :   declarationSpecifier+
+    :   declarationSpecifier* typeSpecifier
     ;
 
 declarationSpecifier
     :   storageClassSpecifier
-    |   typeSpecifier
     |   typeQualifier
     |   functionSpecifier
     |   alignmentSpecifier
     ;
 
 initDeclaratorList
-    :   initDeclarator
-    |   initDeclaratorList ',' initDeclarator
+    :   initDeclarator (',' initDeclarator)*
     ;
 
 initDeclarator
@@ -323,7 +315,6 @@ declarator
 
 directDeclarator
     :   Identifier
-    |   '(' declarator ')'
     |   directDeclarator '[' typeQualifierList? assignmentExpression? ']'
     |   directDeclarator '[' 'static' typeQualifierList? assignmentExpression ']'
     |   directDeclarator '[' typeQualifierList 'static' assignmentExpression ']'
@@ -486,10 +477,38 @@ selectionStatement
     ;
 
 iterationStatement
+    :   whileStatement
+    |   doWhileStatement
+    |   forLoopStatement
+    |   declareForLoopStatement
+    ;
+
+whileStatement
     :   'while' '(' expression ')' statement
-    |   'do' statement 'while' '(' expression ')' ';'
-    |   'for' '(' expression? ';' expression? ';' expression? ')' statement
-    |   'for' '(' declaration expression? ';' expression? ')' statement
+    ;
+
+doWhileStatement
+    :   'do' statement 'while' '(' expression ')' ';'
+    ;
+
+forLoopStatement
+    :   'for' '(' initExpression? ';' condExpression? ';' iterExpression? ')' statement
+    ;
+
+declareForLoopStatement
+    :   'for' '(' declaration condExpression? ';' iterExpression? ')' statement
+    ;
+
+initExpression
+    :   expression
+    ;
+
+condExpression
+    :   expression
+    ;
+
+iterExpression
+    :   expression
     ;
 
 jumpStatement

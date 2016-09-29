@@ -4,6 +4,7 @@ import ast.*;
 import ast.Function;
 import ast.type.*;
 import jdk.nashorn.internal.ir.Block;
+import org.antlr.v4.codegen.model.Sync;
 import org.antlr.v4.codegen.model.decl.Decl;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.*;
@@ -114,13 +115,8 @@ public class TreeToASTVisitor {
     private Declaration visit(CParser.DeclarationContext ctx) {
         Type type = visit(ctx.declarationSpecifiers());
         CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
-        System.err.println(initDeclaratorListContext.getText());
-        List<Declaration.DeclaredVariable> declaredVariables = new ArrayList<>();
-        while (initDeclaratorListContext != null) {
-            Declaration.DeclaredVariable declaredVariable = visit(initDeclaratorListContext.initDeclarator(), type);
-            declaredVariables.add(declaredVariable);
-            initDeclaratorListContext = initDeclaratorListContext.initDeclaratorList();
-        }
+        List<CParser.InitDeclaratorContext> initDeclaratorContexts = initDeclaratorListContext.initDeclarator();
+        List<Declaration.DeclaredVariable> declaredVariables = initDeclaratorContexts.stream().map(init -> visit(init, type)).collect(Collectors.toList());
         return new Declaration(declaredVariables);
     }
 
@@ -172,6 +168,8 @@ public class TreeToASTVisitor {
     }
 
     private LabeledStatement visit(CParser.LabeledStatementContext ctx) {
+        System.err.println("Labeled Statement encountered");
+        System.exit(0);
         return null;
     }
 
@@ -185,13 +183,54 @@ public class TreeToASTVisitor {
     }
 
     private SelectionStatement visit(CParser.SelectionStatementContext ctx) {
-        System.out.println(ctx.getRuleIndex());
+        System.err.println("Selected Statement Encountered");
+        System.exit(0);
         return null;
     }
 
     private IterationStatement visit(CParser.IterationStatementContext ctx) {
-        System.out.println(ctx.getRuleIndex());
-        return null;
+        if (ctx.forLoopStatement() != null) {
+            return visit(ctx.forLoopStatement());
+        } else if (ctx.doWhileStatement() != null) {
+            return visit(ctx.doWhileStatement());
+        } else if (ctx.whileStatement() != null) {
+            return visit(ctx.whileStatement());
+        } else {
+            return visit(ctx.declareForLoopStatement());
+        }
+    }
+
+    private IterationStatementFor visit(CParser.ForLoopStatementContext ctx) {
+        Expression initExpression = null, condExpression = null, iterExpression = null;
+        if (ctx.initExpression() != null) {
+            initExpression = visit(ctx.initExpression().expression());
+        }
+        if (ctx.condExpression() != null) {
+            condExpression = visit(ctx.condExpression().expression());
+        }
+        if (ctx.iterExpression() != null) {
+            iterExpression = visit(ctx.initExpression().expression());
+        }
+        return new IterationStatementFor(initExpression, condExpression, iterExpression);
+    }
+
+    private IterationStatementDoWhile visit(CParser.DoWhileStatementContext ctx) {
+        Statement statement = visit(ctx.statement());
+        Expression expression = visit(ctx.expression());
+        return new IterationStatementDoWhile(statement, expression);
+    }
+
+    private IterationStatementWhile visit(CParser.WhileStatementContext ctx) {
+        Expression expression = visit(ctx.expression());
+        Statement statement = visit(ctx.statement());
+        return new IterationStatementWhile(expression, statement);
+    }
+
+    private IterationStatementDeclareFor visit(CParser.DeclareForLoopStatementContext ctx) {
+        Declaration declaration = visit(ctx.declaration());
+        Expression expression = visit(ctx.condExpression().expression());
+        Expression iteration = visit(ctx.iterExpression().expression());
+        return new IterationStatementDeclareFor(declaration, expression, iteration);
     }
 
     private JumpStatement visit(CParser.JumpStatementContext ctx) {
@@ -248,58 +287,34 @@ public class TreeToASTVisitor {
     }
 
     private LogicalOrExpression visit(CParser.LogicalOrExpressionContext ctx) {
-        LogicalAndExpression logicalAndExpression = visit(ctx.logicalAndExpression());
-        if (ctx.logicalOrExpression() != null) {
-            Collection<LogicalAndExpression> logicalAndExpressions = new ArrayList<>();
-            logicalAndExpressions.add(logicalAndExpression);
-            while (ctx.logicalOrExpression() != null) {
-                ctx = ctx.logicalOrExpression();
-                logicalAndExpression = visit(ctx.logicalAndExpression());
-                logicalAndExpressions.add(logicalAndExpression);
-
-            }
-            return new LogicalOrExpressionImpl(logicalAndExpressions);
+        List<LogicalAndExpression> logicalAndExpressions = ctx.logicalAndExpression().stream().map(exp -> visit(exp)).collect(Collectors.toList());
+        if (logicalAndExpressions.size() == 1) {
+            return logicalAndExpressions.get(0);
         } else {
-            return logicalAndExpression;
+            return new LogicalOrExpressionImpl(logicalAndExpressions);
         }
     }
 
     private LogicalAndExpression visit(CParser.LogicalAndExpressionContext ctx) {
-        InclusiveBitwiseOrExpression inclusiveBitwiseOrExpression = visit(ctx.inclusiveOrExpression());
-        if (ctx.logicalAndExpression() != null) {
-            Collection<InclusiveBitwiseOrExpression> inclusiveBitwiseOrExpressions = new ArrayList<>();
-            inclusiveBitwiseOrExpressions.add(inclusiveBitwiseOrExpression);
-            while (ctx.logicalAndExpression() != null) {
-                ctx = ctx.logicalAndExpression();
-                inclusiveBitwiseOrExpression = visit(ctx.inclusiveOrExpression());
-                inclusiveBitwiseOrExpressions.add(inclusiveBitwiseOrExpression);
-            }
+        List<InclusiveBitwiseOrExpression> inclusiveBitwiseOrExpressions = ctx.inclusiveOrExpression().stream().map(exp -> visit(exp)).collect(Collectors.toList());
+        if (inclusiveBitwiseOrExpressions.size() > 1) {
             return new LogicalAndExpressionImpl(inclusiveBitwiseOrExpressions);
         } else {
-            return inclusiveBitwiseOrExpression;
+            return inclusiveBitwiseOrExpressions.get(0);
         }
     }
 
     private InclusiveBitwiseOrExpression visit(CParser.InclusiveOrExpressionContext ctx) {
-        ExclusiveBitwiseOrExpression exclusiveBitwiseOrExpression = visit(ctx.exclusiveOrExpression());
-        if (ctx.inclusiveOrExpression() != null) {
-            Collection<ExclusiveBitwiseOrExpression> exclusiveBitwiseOrExpressions = new ArrayList<>();
-            exclusiveBitwiseOrExpressions.add(exclusiveBitwiseOrExpression);
-            while (ctx.inclusiveOrExpression() != null) {
-                ctx = ctx.inclusiveOrExpression();
-                exclusiveBitwiseOrExpressions.add(visit(ctx.exclusiveOrExpression()));
-            }
+        List<ExclusiveBitwiseOrExpression> exclusiveBitwiseOrExpressions = ctx.exclusiveOrExpression().stream().map(exp -> visit(exp)).collect(Collectors.toList());
+        if (exclusiveBitwiseOrExpressions.size() > 1) {
             return new InclusiveBitwiseOrExpressionImpl(exclusiveBitwiseOrExpressions);
+        } else {
+            return exclusiveBitwiseOrExpressions.get(0);
         }
-        return exclusiveBitwiseOrExpression;
     }
 
     private ExclusiveBitwiseOrExpression visit(CParser.ExclusiveOrExpressionContext ctx) {
-        List<BitwiseAndExpression> bitwiseAndExpressions = new ArrayList<>();
-        while (ctx != null) {
-            bitwiseAndExpressions.add(visit(ctx.andExpression()));
-            ctx = ctx.exclusiveOrExpression();
-        }
+        List<BitwiseAndExpression> bitwiseAndExpressions = ctx.andExpression().stream().map(exp -> visit(exp)).collect(Collectors.toList());
         if (bitwiseAndExpressions.size() == 1) {
             return bitwiseAndExpressions.get(0);
         } else {
@@ -308,11 +323,7 @@ public class TreeToASTVisitor {
     }
 
     private BitwiseAndExpression visit(CParser.AndExpressionContext ctx) {
-        List<EqualityExpression> equalityExpressions = new ArrayList<>();
-        while (ctx != null) {
-            equalityExpressions.add(visit(ctx.equalityExpression()));
-            ctx = ctx.andExpression();
-        }
+        List<EqualityExpression> equalityExpressions = ctx.equalityExpression().stream().map(exp -> visit(exp)).collect(Collectors.toList());
         if (equalityExpressions.size() == 1) {
             return equalityExpressions.get(0);
         } else {
@@ -454,11 +465,8 @@ public class TreeToASTVisitor {
 
     private List<AssignmentExpression> visit(CParser.ArgumentExpressionListContext ctx) {
         List<AssignmentExpression> assignmentExpressions = new ArrayList<>();
-        while (ctx != null) {
-            assignmentExpressions.add(visit(ctx.assignmentExpression()));
-            ctx = ctx.argumentExpressionList();
-        }
-        return assignmentExpressions;
+        List<CParser.AssignmentExpressionContext> assignmentExpressionContexts = ctx.assignmentExpression();
+        return assignmentExpressionContexts.stream().map(asgn -> visit(asgn)).collect(Collectors.toList());
     }
 
     private PrimaryExpression visit(CParser.PrimaryExpressionContext ctx) {
@@ -557,6 +565,7 @@ public class TreeToASTVisitor {
         } else if (ctx.enumSpecifier() != null) {
             System.err.println("ENUM ENCOUNTERED. TO DO");
             System.exit(0);
+            return null;
         } else if (ctx.typedefName() != null) {
             System.err.println("Typedef name " + ctx.getText());
             return new TypedefType(ctx.typedefName().Identifier().getSymbol().getText());
@@ -564,6 +573,5 @@ public class TreeToASTVisitor {
             System.err.println("Primitive " + ctx.getText());
             return new PrimitiveType(ctx.getChild(0).getText());
         }
-        return null;
     }
 }

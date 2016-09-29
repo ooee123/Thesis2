@@ -9,5 +9,5 @@ import lombok.Value;
 public class IterationStatementFor implements IterationStatement {
     private Expression initial;
     private Expression condition;
-    private Expression changer;
+    private Expression iteration;
 }
