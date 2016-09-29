@@ -20,6 +20,7 @@ public class TreeToASTVisitor {
 
     public Program visit(CParser.CompilationUnitContext ctx) {
         Collection<Function> functions = new ArrayList<>();
+        Collection<Declaration> declarations = new ArrayList<>();
         CParser.TranslationUnitContext translationUnitContext = ctx.translationUnit();
         while (translationUnitContext != null) {
             CParser.ExternalDeclarationContext externalDeclarationContext = translationUnitContext.externalDeclaration();
@@ -27,20 +28,16 @@ public class TreeToASTVisitor {
                 Function function = visit(externalDeclarationContext.functionDefinition());
                 functions.add(function);
             } else if (externalDeclarationContext.declaration() != null) {
-                //visit(externalDeclarationContext.declaration());
+                Declaration declaration = visit(externalDeclarationContext.declaration());
+                declarations.add(declaration);
             }
             translationUnitContext = translationUnitContext.translationUnit();
         }
-
-        System.out.println(functions);
-        return new Program(functions, Collections.emptyList());
+        return new Program(functions, declarations);
     }
 
     private String visit(CParser.DeclaratorContext ctx) {
         CParser.DirectDeclaratorContext currentContext = ctx.directDeclarator();
-        if (currentContext.declarator() != null) {
-            return visit(currentContext.declarator());
-        }
         while (currentContext.Identifier() == null) {
             currentContext = currentContext.directDeclarator();
         }
@@ -56,19 +53,7 @@ public class TreeToASTVisitor {
     }
 
     private Type visit(CParser.DeclarationSpecifiersContext ctx) {
-        List<CParser.DeclarationSpecifierContext> declarationSpecifier = ctx.declarationSpecifier().stream().filter(dec -> dec.typeSpecifier() != null).collect(Collectors.toList());
-        if (declarationSpecifier.size() == 1) {
-            CParser.DeclarationSpecifierContext type = declarationSpecifier.stream().findAny().get();
-            RuleContext ruleNode = type.typeSpecifier().getRuleContext();
-            for (int i = 0; i < ruleNode.getChildCount(); i++) {
-                ParseTree innerTree = ruleNode.getChild(i);
-                return new PrimitiveType(innerTree.getText());
-            }
-        } else {
-            System.err.println(declarationSpecifier.stream().map(dec -> dec.getText()).collect(Collectors.toList()));
-            System.err.println("More than one type?");
-        }
-        return null;
+        return visit(ctx.typeSpecifier());
     }
 
     private ParameterList visit(CParser.ParameterTypeListContext ctx) {
@@ -96,8 +81,12 @@ public class TreeToASTVisitor {
     }
 
     private CompoundStatement visit(CParser.CompoundStatementContext ctx) {
-        List<BlockItem> blockItems = visit(ctx.blockItemList());
-        return new CompoundStatement(blockItems);
+        if (ctx.blockItemList() != null) {
+            List<BlockItem> blockItems = visit(ctx.blockItemList());
+            return new CompoundStatement(blockItems);
+        } else {
+            return new CompoundStatement(Collections.emptyList());
+        }
     }
 
     private List<BlockItem> visit(CParser.BlockItemListContext ctx) {
@@ -112,6 +101,9 @@ public class TreeToASTVisitor {
     }
 
     private BlockItem visit(CParser.BlockItemContext ctx) {
+        if (ctx.declaration() != null && ctx.statement() != null) {
+            System.err.println("BOTH NOT NULL");
+        }
         if (ctx.declaration() != null) {
             return visit(ctx.declaration());
         } else {
@@ -122,6 +114,7 @@ public class TreeToASTVisitor {
     private Declaration visit(CParser.DeclarationContext ctx) {
         Type type = visit(ctx.declarationSpecifiers());
         CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
+        System.err.println(initDeclaratorListContext.getText());
         List<Declaration.DeclaredVariable> declaredVariables = new ArrayList<>();
         while (initDeclaratorListContext != null) {
             Declaration.DeclaredVariable declaredVariable = visit(initDeclaratorListContext.initDeclarator(), type);
@@ -540,7 +533,7 @@ public class TreeToASTVisitor {
             return type;
         }
     }
-
+/*
     private Type visit(CParser.TypeSpecifierContext ctx) {
         if (ctx.structOrUnionSpecifier() != null) {
             return new StructUnionType(ctx.structOrUnionSpecifier().Identifier().getSymbol().getText());
@@ -552,5 +545,25 @@ public class TreeToASTVisitor {
             String token = ctx.getChild(0).getText();
             return new PrimitiveType(token);
         }
+    }
+*/
+    private Type visit(CParser.TypeSpecifierContext ctx) {
+        if (ctx.atomicTypeSpecifier() != null) {
+            System.err.println("Atomic "+ ctx.getText());
+            return visit(ctx.atomicTypeSpecifier().typeName());
+        } else if (ctx.structOrUnionSpecifier() != null) {
+            System.err.println("StructUnion " + ctx.getText());
+            return new StructUnionType(ctx.structOrUnionSpecifier().Identifier().getSymbol().getText());
+        } else if (ctx.enumSpecifier() != null) {
+            System.err.println("ENUM ENCOUNTERED. TO DO");
+            System.exit(0);
+        } else if (ctx.typedefName() != null) {
+            System.err.println("Typedef name " + ctx.getText());
+            return new TypedefType(ctx.typedefName().Identifier().getSymbol().getText());
+        } else {
+            System.err.println("Primitive " + ctx.getText());
+            return new PrimitiveType(ctx.getChild(0).getText());
+        }
+        return null;
     }
 }

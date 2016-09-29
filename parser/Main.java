@@ -1,5 +1,6 @@
 package parser;
 
+import ast.Program;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import visitor.TreeToASTVisitor;
@@ -17,6 +18,7 @@ public class Main {
 
         CParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
         TreeToASTVisitor visitor = new TreeToASTVisitor();
-        visitor.visit(compilationUnit);
+        Program program = visitor.visit(compilationUnit);
+        System.out.println(program);
     }
 }

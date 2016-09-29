@@ -10,4 +10,19 @@ import java.util.List;
 @Value
 public class CompoundStatement implements Statement {
     private List<BlockItem> blockItems;
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        int number = 1;
+        for (BlockItem blockItem : blockItems) {
+            builder.append("\n");
+            builder.append(number);
+            builder.append(": ");
+            builder.append(blockItem.toString());
+            number++;
+        }
+        builder.append("\n");
+        return builder.toString();
+    }
 }
