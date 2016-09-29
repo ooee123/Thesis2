@@ -38,6 +38,9 @@ public class TreeToASTVisitor {
 
     private String visit(CParser.DeclaratorContext ctx) {
         CParser.DirectDeclaratorContext currentContext = ctx.directDeclarator();
+        if (currentContext.declarator() != null) {
+            return visit(currentContext.declarator());
+        }
         while (currentContext.Identifier() == null) {
             currentContext = currentContext.directDeclarator();
         }
