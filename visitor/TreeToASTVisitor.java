@@ -183,9 +183,22 @@ public class TreeToASTVisitor {
     }
 
     private SelectionStatement visit(CParser.SelectionStatementContext ctx) {
-        System.err.println("Selected Statement Encountered");
-        System.exit(0);
-        return null;
+        if (ctx.ifStatement() != null) {
+            CParser.IfStatementContext ifStatementContext = ctx.ifStatement();
+            Expression condition = visit(ifStatementContext.expression());
+            List<CParser.StatementContext> statementContexts = ifStatementContext.statement();
+            Statement thenStatement = visit(statementContexts.get(0));
+            Statement elseStatement = null;
+            if (statementContexts.size() > 1) {
+                elseStatement = visit(statementContexts.get(1));
+            }
+            return new SelectionStatementIf(condition, thenStatement, elseStatement);
+        } else {
+            CParser.SwitchStatementContext switchStatementContext = ctx.switchStatement();
+            Expression expression = visit(switchStatementContext.expression());
+            Statement statement = visit(switchStatementContext.statement());
+            return new SelectionStatementSwitch(expression, statement);
+        }
     }
 
     private IterationStatement visit(CParser.IterationStatementContext ctx) {

@@ -778,6 +778,26 @@ public interface CListener extends ParseTreeListener {
 	 */
 	void exitSelectionStatement(CParser.SelectionStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CParser#ifStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfStatement(CParser.IfStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#ifStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfStatement(CParser.IfStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CParser#switchStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterSwitchStatement(CParser.SwitchStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#switchStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitSwitchStatement(CParser.SwitchStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CParser#iterationStatement}.
 	 * @param ctx the parse tree
 	 */
