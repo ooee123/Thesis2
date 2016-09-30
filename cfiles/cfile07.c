@@ -1,5 +1,5 @@
 int main() {
-   int j;
-   printNumber(j);
-   return j;
+   int a;
+   int b, c = 6, d;
+   return 0;
 }
