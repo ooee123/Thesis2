@@ -45,8 +45,7 @@ genericSelection
     ;
 
 genericAssocList
-    :   genericAssociation
-    |   genericAssocList ',' genericAssociation
+    :   genericAssociation (',' genericAssociation)*
     ;
 
 genericAssociation
@@ -160,8 +159,7 @@ assignmentOperator
     ;
 
 expression
-    :   assignmentExpression
-    |   expression ',' assignmentExpression
+    :   assignmentExpression (',' assignmentExpression)*
     ;
 
 constantExpression
@@ -276,8 +274,7 @@ enumeratorList
     ;
 
 enumerator
-    :   enumerationConstant
-    |   enumerationConstant '=' constantExpression
+    :   enumerationConstant ('=' constantExpression)?
     ;
 
 enumerationConstant
@@ -367,8 +364,7 @@ parameterTypeList
     ;
 
 parameterList
-    :   parameterDeclaration
-    |   parameterList ',' parameterDeclaration
+    :   parameterDeclaration (',' parameterDeclaration)*
     ;
 
 parameterDeclaration
@@ -377,8 +373,7 @@ parameterDeclaration
     ;
 
 identifierList
-    :   Identifier
-    |   identifierList ',' Identifier
+    :   Identifier (',' Identifier)*
     ;
 
 typeName
@@ -424,8 +419,7 @@ designation
     ;
 
 designatorList
-    :   designator
-    |   designatorList designator
+    :   designator+
     ;
 
 designator
@@ -458,8 +452,7 @@ compoundStatement
     ;
 
 blockItemList
-    :   blockItem
-    |   blockItemList blockItem
+    :   blockItem+
     ;
 
 blockItem
@@ -532,8 +525,7 @@ compilationUnit
     ;
 
 translationUnit
-    :   externalDeclaration
-    |   translationUnit externalDeclaration
+    :   externalDeclaration+
     ;
 
 externalDeclaration
@@ -547,8 +539,7 @@ functionDefinition
     ;
 
 declarationList
-    :   declaration
-    |   declarationList declaration
+    :   declaration+
     ;
 
 Auto : 'auto';

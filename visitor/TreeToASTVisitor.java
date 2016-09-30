@@ -3,15 +3,10 @@ package visitor;
 import ast.*;
 import ast.Function;
 import ast.type.*;
-import jdk.nashorn.internal.ir.Block;
-import org.antlr.v4.codegen.model.Sync;
-import org.antlr.v4.codegen.model.decl.Decl;
-import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.*;
 import parser.CParser;
 
 import java.util.*;
-import java.util.function.*;
 import java.util.stream.Collectors;
 
 /**
@@ -19,12 +14,14 @@ import java.util.stream.Collectors;
  */
 public class TreeToASTVisitor {
 
+    public static final boolean GROUP_EXPRESSIONS = true;
+
     public Program visit(CParser.CompilationUnitContext ctx) {
         Collection<Function> functions = new ArrayList<>();
         Collection<Declaration> declarations = new ArrayList<>();
         CParser.TranslationUnitContext translationUnitContext = ctx.translationUnit();
-        while (translationUnitContext != null) {
-            CParser.ExternalDeclarationContext externalDeclarationContext = translationUnitContext.externalDeclaration();
+        List<CParser.ExternalDeclarationContext> externalDeclarationContexts = translationUnitContext.externalDeclaration();
+        for (CParser.ExternalDeclarationContext externalDeclarationContext : externalDeclarationContexts) {
             if (externalDeclarationContext.functionDefinition() != null) {
                 Function function = visit(externalDeclarationContext.functionDefinition());
                 functions.add(function);
@@ -32,7 +29,6 @@ public class TreeToASTVisitor {
                 Declaration declaration = visit(externalDeclarationContext.declaration());
                 declarations.add(declaration);
             }
-            translationUnitContext = translationUnitContext.translationUnit();
         }
         return new Program(functions, declarations);
     }
@@ -66,12 +62,8 @@ public class TreeToASTVisitor {
     }
 
     private ParameterList visit(CParser.ParameterListContext ctx) {
-        List<Parameter> parameters = new ArrayList<>();
-        while (ctx != null) {
-            Parameter parameter = visit(ctx.parameterDeclaration());
-            parameters.add(parameter);
-            ctx = ctx.parameterList();
-        }
+        List<CParser.ParameterDeclarationContext> parameterDeclarationContexts = ctx.parameterDeclaration();
+        List<Parameter> parameters = parameterDeclarationContexts.stream().map(para -> visit(para)).collect(Collectors.toList());
         return new ParameterList(parameters);
     }
 
@@ -91,14 +83,12 @@ public class TreeToASTVisitor {
     }
 
     private List<BlockItem> visit(CParser.BlockItemListContext ctx) {
-        List<BlockItem> blockItems;
-        if (ctx.blockItemList() != null) {
-            blockItems = visit(ctx.blockItemList());
+        if (ctx.blockItem() != null) {
+            List<CParser.BlockItemContext> blockItemContexts = ctx.blockItem();
+            return blockItemContexts.stream().map(bl -> visit(bl)).collect(Collectors.toList());
         } else {
-            blockItems = new ArrayList<>();
+            return Collections.emptyList();
         }
-        blockItems.add(visit(ctx.blockItem()));
-        return blockItems;
     }
 
     private BlockItem visit(CParser.BlockItemContext ctx) {
@@ -262,18 +252,12 @@ public class TreeToASTVisitor {
     }
 
     private Expression visit(CParser.ExpressionContext ctx) {
-        AssignmentExpression assignmentExpression = visit(ctx.assignmentExpression());
-        if (ctx.expression() != null) {
-            List<AssignmentExpression> assignmentExpressions = new ArrayList<>();
-            assignmentExpressions.add(assignmentExpression);
-            while (ctx.expression() != null) {
-                ctx = ctx.expression();
-                assignmentExpression = visit(ctx.assignmentExpression());
-                assignmentExpressions.add(assignmentExpression);
-            }
+        List<CParser.AssignmentExpressionContext> assignmentExpressionContexts = ctx.assignmentExpression();
+        List<AssignmentExpression> assignmentExpressions = assignmentExpressionContexts.stream().map(exp -> visit(exp)).collect(Collectors.toList());
+        if (assignmentExpressions.size() > 1) {
             return new CommaExpression(assignmentExpressions);
         } else {
-            return assignmentExpression;
+            return assignmentExpressions.get(0);
         }
     }
 
@@ -382,12 +366,41 @@ public class TreeToASTVisitor {
     private AdditiveExpression visit(CParser.AdditiveExpressionContext ctx) {
         MultiplicativeExpression multiplicativeExpression = visit(ctx.multiplicativeExpression());
         if (ctx.additiveExpression() != null) {
-            AdditiveExpression additiveExpression = visit(ctx.additiveExpression());
-            AdditiveExpressionImpl.AdditiveOperator additiveOperator = AdditiveExpressionImpl.AdditiveOperator.toAdditiveOperator(ctx.getChild(1).getText());
-            return new AdditiveExpressionImpl(additiveExpression, additiveOperator, multiplicativeExpression);
+            if (GROUP_EXPRESSIONS) {
+                return visitAddGroups(ctx);
+            } else {
+                AdditiveExpression additiveExpression = visit(ctx.additiveExpression());
+                AdditiveExpression.AdditiveOperator additiveOperator = AdditiveExpression.AdditiveOperator.toAdditiveOperator(ctx.getChild(1).getText());
+                return new AdditiveExpressionImplTree(additiveExpression, additiveOperator, multiplicativeExpression);
+            }
         } else {
             return multiplicativeExpression;
         }
+    }
+
+    private AdditiveExpressionImplGroups visitAddGroups(CParser.AdditiveExpressionContext ctx) {
+        Collection<MultiplicativeExpression> addingTerms = new ArrayList<>();
+        Collection<MultiplicativeExpression> subtractingTerms = new ArrayList<>();
+
+        while (ctx.additiveExpression() != null) {
+            MultiplicativeExpression multiplicativeExpression = visit(ctx.multiplicativeExpression());
+            AdditiveExpression.AdditiveOperator additiveOperator = AdditiveExpression.AdditiveOperator.toAdditiveOperator(ctx.getChild(1).getText());
+            switch (additiveOperator) {
+                case PLUS:
+                    addingTerms.add(multiplicativeExpression);
+                    break;
+                case MINUS:
+                    subtractingTerms.add(multiplicativeExpression);
+                    break;
+                default:
+                    System.err.println(ctx.getChild(1).getText());
+                    System.err.println("NOT PLUS OR MINUS?");
+                    System.exit(0);
+            }
+            ctx = ctx.additiveExpression();
+        }
+        addingTerms.add(visit(ctx.multiplicativeExpression()));
+        return new AdditiveExpressionImplGroups(addingTerms, subtractingTerms);
     }
 
     private MultiplicativeExpression visit(CParser.MultiplicativeExpressionContext ctx) {
@@ -554,20 +567,7 @@ public class TreeToASTVisitor {
             return type;
         }
     }
-/*
-    private Type visit(CParser.TypeSpecifierContext ctx) {
-        if (ctx.structOrUnionSpecifier() != null) {
-            return new StructUnionType(ctx.structOrUnionSpecifier().Identifier().getSymbol().getText());
-        } else if (ctx.typedefName() != null) {
-            return new TypedefType(ctx.typedefName().Identifier().getSymbol().getText());
-        } else if (ctx.enumSpecifier() != null) {
-            return new TypedefType(ctx.enumSpecifier().Identifier().getSymbol().getText());
-        } else {
-            String token = ctx.getChild(0).getText();
-            return new PrimitiveType(token);
-        }
-    }
-*/
+
     private Type visit(CParser.TypeSpecifierContext ctx) {
         if (ctx.atomicTypeSpecifier() != null) {
             System.err.println("Atomic "+ ctx.getText());

@@ -1,8 +1,9 @@
 package ast;
 
+import com.google.common.collect.Lists;
 import lombok.Value;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ooee on 9/24/16.

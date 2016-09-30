@@ -2,7 +2,9 @@ package ast;
 
 import lombok.Value;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by ooee on 9/26/16.
