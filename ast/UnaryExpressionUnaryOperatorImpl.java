@@ -3,6 +3,9 @@ package ast;
 import ast.type.Type;
 import lombok.Value;
 
+import java.util.Collections;
+import java.util.Set;
+
 /**
  * Created by ooee on 9/26/16.
  */
@@ -34,4 +37,9 @@ public class UnaryExpressionUnaryOperatorImpl implements UnaryExpression {
 
     private UnaryOperator unaryOperator;
     private CastExpression castExpression;
+
+    @Override
+    public Set<String> getLValues() {
+        return castExpression.getLValues();
+    }
 }

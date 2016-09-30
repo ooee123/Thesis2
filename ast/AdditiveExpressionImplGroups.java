@@ -3,6 +3,7 @@ package ast;
 import lombok.Value;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by ooee on 9/26/16.

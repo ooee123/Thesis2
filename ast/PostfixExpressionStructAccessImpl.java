@@ -2,11 +2,14 @@ package ast;
 
 import lombok.Value;
 
+import java.util.Set;
+
 /**
  * Created by ooee on 9/26/16.
  */
 @Value
 public class PostfixExpressionStructAccessImpl implements PostfixExpression {
+
     public enum AccessOperator {
         DOT("."),
         ARROW("->");
@@ -30,4 +33,9 @@ public class PostfixExpressionStructAccessImpl implements PostfixExpression {
     private PostfixExpression postfixExpression;
     private AccessOperator accessOperator;
     private String identifier;
+
+    @Override
+    public Set<String> getLValues() {
+        return postfixExpression.getLValues();
+    }
 }

@@ -2,6 +2,9 @@ package ast;
 
 import lombok.Value;
 
+import java.util.Collections;
+import java.util.Set;
+
 /**
  * Created by kly04 on 9/26/16.
  */
@@ -23,5 +26,10 @@ public class PrimaryExpressionConstant implements PrimaryExpression {
 
     public PrimaryExpressionConstant(String s) {
         value = s;
+    }
+
+    @Override
+    public Set<String> getLValues() {
+        return Collections.emptySet();
     }
 }

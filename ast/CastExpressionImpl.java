@@ -3,6 +3,8 @@ package ast;
 import ast.type.Type;
 import lombok.Value;
 
+import java.util.Set;
+
 /**
  * Created by ooee on 9/26/16.
  */
@@ -10,4 +12,9 @@ import lombok.Value;
 public class CastExpressionImpl implements CastExpression {
     private Type type;
     private CastExpression castExpression;
+
+    @Override
+    public Set<String> getLValues() {
+        return castExpression.getLValues();
+    }
 }
