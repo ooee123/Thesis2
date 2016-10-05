@@ -10,4 +10,5 @@ public class IterationStatementFor implements IterationStatement {
     private Expression initial;
     private Expression condition;
     private Expression iteration;
+    private Statement statement;
 }

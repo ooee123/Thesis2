@@ -17,4 +17,18 @@ public class TypeScope {
       types = new HashMap<>();
       parent = null;
    }
+
+   public void put(String id, Type type) {
+      types.put(id, type);
+   }
+
+   public Type get(String id) {
+      if (types.containsKey(id)) {
+         return types.get(id);
+      } else if (parent != null) {
+         return parent.get(id);
+      } else {
+         return null;
+      }
+   }
 }
