@@ -203,6 +203,35 @@ public class TreeToASTVisitor {
         }
     }
 
+    private List<Statement> visit(CParser.ForLoopStatementContext ctx) {
+        Statement statement = visit(ctx.statement());
+        return new IterationStatementFor(initExpression, condExpression, iterExpression, statement);
+        
+        Expression initExpression = null, condExpression = null, iterExpression = null;
+        if (ctx.initExpression() != null) {
+            initExpression = visit(ctx.initExpression().expression());
+            statements.add(new ExpressionStatement(initExpression));
+        }
+        if (ctx.condExpression() != null) {
+            condExpression = visit(ctx.condExpression().expression());
+        }
+        if (ctx.iterExpression() != null) {
+            iterExpression = visit(ctx.initExpression().expression());
+            Statement iterationStatement = new ExpressionStatement(iterExpression);
+            if (statement instanceof CompoundStatement) {
+                CompoundStatement compoundStatement = (CompoundStatement)statement;
+                compoundStatement.getBlockItems().add(iterationStatement);
+            } else {
+                List<BlockItem> statements = new ArrayList<>();
+                statements.add(statement);
+                statements.add(iterationStatement);
+                
+                CompoundStatement compoundStatement = new CompoundStatement(statements);
+            }
+
+        }
+    }
+
     private IterationStatementFor visit(CParser.ForLoopStatementContext ctx) {
         Expression initExpression = null, condExpression = null, iterExpression = null;
         if (ctx.initExpression() != null) {
@@ -214,7 +243,8 @@ public class TreeToASTVisitor {
         if (ctx.iterExpression() != null) {
             iterExpression = visit(ctx.initExpression().expression());
         }
-        return new IterationStatementFor(initExpression, condExpression, iterExpression);
+        Statement statement = visit(ctx.statement());
+        return new IterationStatementFor(initExpression, condExpression, iterExpression, statement);
     }
 
     private IterationStatementDoWhile visit(CParser.DoWhileStatementContext ctx) {
@@ -233,7 +263,8 @@ public class TreeToASTVisitor {
         Declaration declaration = visit(ctx.declaration());
         Expression expression = visit(ctx.condExpression().expression());
         Expression iteration = visit(ctx.iterExpression().expression());
-        return new IterationStatementDeclareFor(declaration, expression, iteration);
+        Statement statement = visit(ctx.statement());
+        return new IterationStatementDeclareFor(declaration, expression, iteration, statement);
     }
 
     private JumpStatement visit(CParser.JumpStatementContext ctx) {
