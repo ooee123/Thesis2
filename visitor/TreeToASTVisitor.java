@@ -158,9 +158,14 @@ public class TreeToASTVisitor {
     }
 
     private LabeledStatement visit(CParser.LabeledStatementContext ctx) {
-        System.err.println("Labeled Statement encountered");
-        System.exit(0);
-        return null;
+        Statement statement = visit(ctx.statement());
+        if (ctx.Identifier() != null) {
+            return new LabeledIdentifierStatement(ctx.Identifier().getSymbol().getText(), statement);
+        } else if (ctx.constantExpression() != null) {
+            return new LabeledCaseStatement(visit(ctx.constantExpression().conditionalExpression()), statement);
+        } else {
+            return new LabeledDefaultStatement(statement);
+        }
     }
 
     private ExpressionStatement visit(CParser.ExpressionStatementContext ctx) {
