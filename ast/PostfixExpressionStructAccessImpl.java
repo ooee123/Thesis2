@@ -38,4 +38,8 @@ public class PostfixExpressionStructAccessImpl implements PostfixExpression {
     public Set<String> getLValues() {
         return postfixExpression.getLValues();
     }
+
+    public String toCode() {
+        return postfixExpression.toCode() + accessOperator.token + identifier;
+    }
 }

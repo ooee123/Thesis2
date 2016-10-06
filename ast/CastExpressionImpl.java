@@ -17,4 +17,8 @@ public class CastExpressionImpl implements CastExpression {
     public Set<String> getLValues() {
         return castExpression.getLValues();
     }
+
+    public String toCode() {
+        return "(" + type.toString() + ")" + castExpression.toCode();
+    }
 }

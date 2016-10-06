@@ -16,4 +16,8 @@ public class PrimaryExpressionParentheses implements PrimaryExpression {
     public Set<String> getLValues() {
         return Collections.emptySet();
     }
+
+    public String toCode() {
+        return "(" + expression.toCode() + " )";
+    }
 }

@@ -16,4 +16,8 @@ public class PrimaryExpressionIdentifier implements PrimaryExpression {
     public Set<String> getLValues() {
         return Sets.newHashSet(identifier);
     }
+
+    public String toCode() {
+        return identifier;
+    }
 }

@@ -33,4 +33,9 @@ public class MultiplicativeExpressionImpl implements MultiplicativeExpression {
     private MultiplicativeExpression multiplicativeExpression;
     private MultiplicativeOperator multiplicativeOperator;
     private CastExpression castExpression;
+
+    @Override
+    public String toCode() {
+        return multiplicativeExpression.toCode() + multiplicativeOperator.token + castExpression.toCode();
+    }
 }

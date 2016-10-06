@@ -32,4 +32,8 @@ public class PrimaryExpressionConstant implements PrimaryExpression {
     public Set<String> getLValues() {
         return Collections.emptySet();
     }
+
+    public String toCode() {
+        return value.toString();
+    }
 }

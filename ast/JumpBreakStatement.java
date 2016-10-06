@@ -7,4 +7,8 @@ import lombok.Value;
  */
 @Value
 public class JumpBreakStatement implements JumpStatement {
+    @Override
+    public String toCode() {
+        return "break;";
+    }
 }

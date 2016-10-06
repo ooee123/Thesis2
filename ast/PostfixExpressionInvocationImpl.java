@@ -18,4 +18,9 @@ public class PostfixExpressionInvocationImpl implements PostfixExpression {
     public Set<String> getLValues() {
         return Collections.emptySet();
     }
+
+    public String toCode() {
+        List<String> args = collectionToCode(arguments);
+        return postfixExpression.toCode() + "(" + String.join(",", args) + ")";
+    }
 }

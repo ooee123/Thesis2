@@ -11,4 +11,9 @@ public class IterationStatementFor implements IterationStatement {
     private Expression condition;
     private Expression iteration;
     private Statement statement;
+
+    @Override
+    public String toCode() {
+        return String.format("for (%s; %s; %s) %s", initial.toCode(), condition.toCode(), iteration.toCode(), statement.toCode());
+    }
 }

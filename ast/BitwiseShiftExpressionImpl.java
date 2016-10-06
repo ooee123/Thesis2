@@ -30,4 +30,9 @@ public class BitwiseShiftExpressionImpl implements BitwiseShiftExpression {
     private BitwiseShiftExpression bitwiseShiftExpression;
     private ShiftOperator shiftOperator;
     private AdditiveExpression additiveExpression;
+
+    @Override
+    public String toCode() {
+        return bitwiseShiftExpression.toCode() + shiftOperator.token + additiveExpression.toCode();
+    }
 }

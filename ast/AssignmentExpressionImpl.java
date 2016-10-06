@@ -47,4 +47,9 @@ public class AssignmentExpressionImpl implements AssignmentExpression {
     private UnaryExpression unaryExpression;
     private AssignmentOperator assignmentOperator;
     private AssignmentExpression assignmentExpression;
+
+    @Override
+    public String toCode() {
+        return unaryExpression.toCode() + assignmentOperator.token + assignmentExpression.toCode();
+    }
 }

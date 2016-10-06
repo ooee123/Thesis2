@@ -16,4 +16,8 @@ public class PostfixExpressionArrayAccessImpl implements PostfixExpression {
     public Set<String> getLValues() {
         return postfixExpression.getLValues();
     }
+
+    public String toCode() {
+        return postfixExpression.toCode() + "[" + arrayIndex.toCode() + "]";
+    }
 }

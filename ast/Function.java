@@ -1,15 +1,22 @@
 package ast;
 
 import ast.type.Type;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /**
  * Created by ooee on 9/24/16.
  */
-@Value
+@Data
+@AllArgsConstructor
 public class Function implements BaseElement {
     private Type returnType;
     private String identifier;
     private ParameterList parameterList;
     private CompoundStatement compoundStatement;
+
+    @Override
+    public String toCode() {
+        return returnType.toCode() + " " + identifier + "(" + parameterList.toCode() + ")" + compoundStatement.toCode();
+    }
 }

@@ -17,4 +17,8 @@ public class UnaryExpressionSizeofExpressionImpl implements UnaryExpression {
     public Set<String> getLValues() {
         return Collections.emptySet();
     }
+
+    public String toCode() {
+        return "sizeof " + unaryExpression.toCode();
+    }
 }

@@ -3,7 +3,6 @@ package parser;
 import ast.Program;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import visitor.ASTGeneralVisitor;
 import visitor.TreeToASTVisitor;
 
 import java.io.IOException;
@@ -20,9 +19,5 @@ public class Main {
         CParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
         TreeToASTVisitor visitor = new TreeToASTVisitor();
         Program program = visitor.visit(compilationUnit);
-        System.out.println(program);
-
-        ASTGeneralVisitor astGeneralVisitor = new ASTGeneralVisitor(program);
-        System.out.println(astGeneralVisitor);
     }
 }
