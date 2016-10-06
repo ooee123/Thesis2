@@ -8,4 +8,9 @@ import lombok.Value;
 @Value
 public class JumpReturnStatement implements JumpStatement {
     private Expression returnExpression;
+
+    @Override
+    public String toCode() {
+        return "return " + returnExpression.toCode() + ";";
+    }
 }

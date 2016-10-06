@@ -10,4 +10,9 @@ import java.util.Set;
 @Value
 public class PrimaryExpressionIdentifier implements PrimaryExpression {
     private String identifier;
+
+    @Override
+    public String toCode() {
+        return identifier;
+    }
 }

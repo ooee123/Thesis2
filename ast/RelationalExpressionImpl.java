@@ -32,4 +32,9 @@ public class RelationalExpressionImpl implements RelationalExpression {
     private RelationalExpression relationalExpression;
     private RelationalOperator relationalOperator;
     private BitwiseShiftExpression bitwiseShiftExpression;
+
+    @Override
+    public String toCode() {
+        return relationalExpression.toCode() + relationalOperator.token + bitwiseShiftExpression.toCode();
+    }
 }

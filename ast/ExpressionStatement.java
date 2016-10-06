@@ -10,4 +10,9 @@ import java.util.Set;
 @Value
 public class ExpressionStatement implements Statement {
     private Expression expression;
+
+    @Override
+    public String toCode() {
+        return expression.toCode() + ";";
+    }
 }

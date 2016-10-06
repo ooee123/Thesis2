@@ -34,4 +34,9 @@ public class UnaryExpressionUnaryOperatorImpl implements UnaryExpression {
 
     private UnaryOperator unaryOperator;
     private CastExpression castExpression;
+
+    @Override
+    public String toCode() {
+        return unaryOperator.token + castExpression.toCode();
+    }
 }

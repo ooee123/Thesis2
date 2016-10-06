@@ -114,7 +114,7 @@ public class TreeToASTVisitor {
         String identifier = visit(ctx.declarator());
         if (ctx.declarator().pointer() != null) {
             int nestedPointers = visit(ctx.declarator().pointer());
-            type = new PointerType(nestedPointers, type);
+            type = new PointerType(nestedPointers, (ActualType)type);
         }
         if (ctx.initializer() != null) {
             CParser.InitializerContext initializerContext = ctx.initializer();
@@ -203,35 +203,6 @@ public class TreeToASTVisitor {
         }
     }
 
-    private List<Statement> visit(CParser.ForLoopStatementContext ctx) {
-        Statement statement = visit(ctx.statement());
-        return new IterationStatementFor(initExpression, condExpression, iterExpression, statement);
-        
-        Expression initExpression = null, condExpression = null, iterExpression = null;
-        if (ctx.initExpression() != null) {
-            initExpression = visit(ctx.initExpression().expression());
-            statements.add(new ExpressionStatement(initExpression));
-        }
-        if (ctx.condExpression() != null) {
-            condExpression = visit(ctx.condExpression().expression());
-        }
-        if (ctx.iterExpression() != null) {
-            iterExpression = visit(ctx.initExpression().expression());
-            Statement iterationStatement = new ExpressionStatement(iterExpression);
-            if (statement instanceof CompoundStatement) {
-                CompoundStatement compoundStatement = (CompoundStatement)statement;
-                compoundStatement.getBlockItems().add(iterationStatement);
-            } else {
-                List<BlockItem> statements = new ArrayList<>();
-                statements.add(statement);
-                statements.add(iterationStatement);
-                
-                CompoundStatement compoundStatement = new CompoundStatement(statements);
-            }
-
-        }
-    }
-
     private IterationStatementFor visit(CParser.ForLoopStatementContext ctx) {
         Expression initExpression = null, condExpression = null, iterExpression = null;
         if (ctx.initExpression() != null) {
@@ -241,7 +212,7 @@ public class TreeToASTVisitor {
             condExpression = visit(ctx.condExpression().expression());
         }
         if (ctx.iterExpression() != null) {
-            iterExpression = visit(ctx.initExpression().expression());
+            iterExpression = visit(ctx.iterExpression().expression());
         }
         Statement statement = visit(ctx.statement());
         return new IterationStatementFor(initExpression, condExpression, iterExpression, statement);
@@ -574,7 +545,7 @@ public class TreeToASTVisitor {
 
         if (ctx.abstractDeclarator() != null) {
             int nestedPointers = visit(ctx.abstractDeclarator().pointer());
-            return new PointerType(nestedPointers, type);
+            return new PointerType(nestedPointers, (ActualType)type);
         } else {
             return type;
         }
@@ -593,7 +564,7 @@ public class TreeToASTVisitor {
         Type type = visit(declarationSpecifiersContext);
         if (declaratorContext.pointer() != null) {
             int nestedPointers = visit(declaratorContext.pointer());
-            return new PointerType(nestedPointers, type);
+            return new PointerType(nestedPointers, (ActualType)type);
         } else {
             return type;
         }

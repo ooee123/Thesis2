@@ -30,4 +30,9 @@ public class PostfixExpressionStructAccessImpl implements PostfixExpression {
     private PostfixExpression postfixExpression;
     private AccessOperator accessOperator;
     private String identifier;
+
+    @Override
+    public String toCode() {
+        return postfixExpression.toCode() + accessOperator.token + identifier;
+    }
 }

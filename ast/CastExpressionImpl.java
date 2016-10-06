@@ -10,4 +10,9 @@ import lombok.Value;
 public class CastExpressionImpl implements CastExpression {
     private Type type;
     private CastExpression castExpression;
+
+    @Override
+    public String toCode() {
+        return "(" + type.toString() + ")" + castExpression.toCode();
+    }
 }

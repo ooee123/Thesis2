@@ -11,4 +11,11 @@ import java.util.List;
 public class PostfixExpressionInvocationImpl implements PostfixExpression {
     private PostfixExpression postfixExpression;
     private List<AssignmentExpression> arguments;
+
+    @Override
+    public String toCode() {
+        List<String> args = collectionToCode(arguments);
+
+        return postfixExpression.toCode() + "(" + String.join(",", args) + ")";
+    }
 }

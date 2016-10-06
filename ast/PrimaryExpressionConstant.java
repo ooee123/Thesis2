@@ -24,4 +24,9 @@ public class PrimaryExpressionConstant implements PrimaryExpression {
     public PrimaryExpressionConstant(String s) {
         value = s;
     }
+
+    @Override
+    public String toCode() {
+        return value.toString();
+    }
 }

@@ -1,5 +1,6 @@
 package ast;
 
+import lombok.NonNull;
 import lombok.Value;
 
 /**
@@ -7,8 +8,19 @@ import lombok.Value;
  */
 @Value
 public class IterationStatementDeclareFor implements IterationStatement {
-    private Declaration declaration;
+    @NonNull private Declaration declaration;
     private Expression condition;
     private Expression iteration;
-    private Statement statement;
+    @NonNull private Statement statement;
+
+    public String toCode() {
+        String conditionString = "", iterationString = "";
+        if (condition != null) {
+            conditionString = condition.toCode();
+        }
+        if (iteration != null) {
+            iterationString = iteration.toCode();
+        }
+        return String.format("for (%s %s; %s) {\n%s}", declaration.toCode(), conditionString, iterationString, statement.toCode());
+    }
 }

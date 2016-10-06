@@ -9,4 +9,9 @@ import lombok.Value;
 public class PostfixExpressionArrayAccessImpl implements PostfixExpression {
     private PostfixExpression postfixExpression;
     private Expression arrayIndex;
+
+    @Override
+    public String toCode() {
+        return postfixExpression.toCode() + "[" + arrayIndex.toCode() + "]";
+    }
 }

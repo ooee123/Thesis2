@@ -9,4 +9,9 @@ import lombok.Value;
 @Value
 public class UnaryExpressionSizeofTypeImpl implements UnaryExpression {
     private Type type;
+
+    @Override
+    public String toCode() {
+        return "sizeof(" + type.toString() + ")";
+    }
 }

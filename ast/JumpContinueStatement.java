@@ -7,4 +7,8 @@ import lombok.Value;
  */
 @Value
 public class JumpContinueStatement implements JumpStatement {
+    @Override
+    public String toCode() {
+        return "continue;";
+    }
 }

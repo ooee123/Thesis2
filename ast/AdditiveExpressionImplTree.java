@@ -12,4 +12,8 @@ public class AdditiveExpressionImplTree implements AdditiveExpression {
     private AdditiveExpression additiveExpression;
     private AdditiveOperator additiveOperator;
     private MultiplicativeExpression multiplicativeExpression;
+
+    public String toCode() {
+        return additiveExpression.toCode() + additiveOperator.token + "(" + multiplicativeExpression.toCode() + ")";
+    }
 }

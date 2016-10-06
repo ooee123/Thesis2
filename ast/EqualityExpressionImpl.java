@@ -31,4 +31,9 @@ public class EqualityExpressionImpl implements EqualityExpression {
     private EqualityExpression equalityExpression;
     private EqualityOperator equalityOperator;
     private RelationalExpression relationalExpression;
+
+    @Override
+    public String toCode() {
+        return equalityExpression.toCode() + equalityOperator.token + relationalExpression.toCode();
+    }
 }

@@ -3,6 +3,7 @@ package parser;
 import ast.Program;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import visitor.LoopsToWhileVisitor;
 import visitor.TreeToASTVisitor;
 
 import java.io.IOException;
@@ -19,6 +20,13 @@ public class Main {
         CParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
         TreeToASTVisitor visitor = new TreeToASTVisitor();
         Program program = visitor.visit(compilationUnit);
-        System.out.println(program);
+        System.out.println(program.toCode());
+
+
+        System.out.println("FINISH PARSING");
+
+        LoopsToWhileVisitor loopsToWhileVisitor = new LoopsToWhileVisitor();
+        program = loopsToWhileVisitor.visit(program);
+        System.out.print(program.toCode());
     }
 }
