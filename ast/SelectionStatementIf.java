@@ -3,16 +3,26 @@ package ast;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Created by ooee on 9/25/16.
  */
 @Data
-@AllArgsConstructor
 public class SelectionStatementIf implements SelectionStatement {
     @NonNull private Expression condition;
     @NonNull private Statement thenStatement;
     private Statement elseStatement;
+
+    public SelectionStatementIf(Expression condition, Statement thenStatement, Statement elseStatement) {
+        this.condition = condition;
+        this.thenStatement = thenStatement;
+        this.elseStatement = elseStatement;
+    }
+
+    public SelectionStatementIf(Expression condition, Statement thenStatement) {
+        this(condition, thenStatement, null);
+    }
 
     @Override
     public String toCode() {

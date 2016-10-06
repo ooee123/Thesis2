@@ -33,4 +33,17 @@ public class CompoundStatement implements Statement {
         List<String> codes = collectionToCode(blockItems);
         return "{\n " + String.join("\n", codes) + "\n}";
     }
+
+    public static CompoundStatement addToEnd(BlockItem toBeAdded, Statement body) {
+        if (body instanceof CompoundStatement) {
+            CompoundStatement compoundStatement = (CompoundStatement) body;
+            compoundStatement.getBlockItems().add(toBeAdded);
+            return compoundStatement;
+        } else {
+            List<BlockItem> compoundStatement = new ArrayList<>();
+            compoundStatement.add(body);
+            compoundStatement.add(toBeAdded);
+            return new CompoundStatement(compoundStatement);
+        }
+    }
 }

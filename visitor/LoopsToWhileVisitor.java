@@ -70,7 +70,7 @@ public class LoopsToWhileVisitor {
         Statement iterStatement = new ExpressionStatement(iterationStatementFor.getIteration());
         Statement body = visit(iterationStatementFor.getStatement());
 
-        body = addToEnd(iterStatement, body);
+        body = CompoundStatement.addToEnd(iterStatement, body);
         BlockItem whileStatement = new IterationStatementWhile(iterationStatementFor.getCondition(), body);
 
         List<BlockItem> blockItems = new ArrayList<>();
@@ -84,7 +84,7 @@ public class LoopsToWhileVisitor {
         blockItems.add(iterationStatementDeclareFor.getDeclaration());
         Statement iterStatement = new ExpressionStatement(iterationStatementDeclareFor.getIteration());
         Statement body = visit(iterationStatementDeclareFor.getStatement());
-        body = addToEnd(iterStatement, body);
+        body = CompoundStatement.addToEnd(iterStatement, body);
 
         BlockItem whileStatement = new IterationStatementWhile(iterationStatementDeclareFor.getCondition(), body);
 
@@ -102,18 +102,5 @@ public class LoopsToWhileVisitor {
         }
         blockItems.add(new IterationStatementWhile(iterationStatementDoWhile.getCondition(), iterationStatementDoWhile.getStatement()));
         return blockItems;
-    }
-
-    public CompoundStatement addToEnd(Statement toBeAdded, Statement body) {
-        if (body instanceof CompoundStatement) {
-            CompoundStatement compoundStatement = (CompoundStatement) body;
-            compoundStatement.getBlockItems().add(toBeAdded);
-            return compoundStatement;
-        } else {
-            List<BlockItem> compoundStatement = new ArrayList<>();
-            compoundStatement.add(body);
-            compoundStatement.add(toBeAdded);
-            return new CompoundStatement(compoundStatement);
-        }
     }
 }
