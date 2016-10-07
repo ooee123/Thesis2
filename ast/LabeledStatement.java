@@ -5,9 +5,5 @@ package ast;
  */
 
 // Has a label for jumps
-public class LabeledStatement implements Statement {
-    @Override
-    public String toCode() {
-        return "LABELED STATEMENT";
-    }
+public interface LabeledStatement extends Statement {
 }
