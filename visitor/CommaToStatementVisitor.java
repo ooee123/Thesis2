@@ -2,14 +2,13 @@ package visitor;
 
 import ast.*;
 import lombok.Value;
-import org.antlr.v4.codegen.model.decl.Decl;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by ooee on 10/6/16.
- *
+ * <p>
  * Checks only for Commas inside CompoundStatements and Loops
  */
 public class CommaToStatementVisitor {
@@ -42,130 +41,138 @@ public class CommaToStatementVisitor {
         return new CompoundStatement(newBlockItems);
     }
 
+    public Statement visit(Statement statement) {
+        if (statement instanceof CompoundStatement) {
+            return visit(((CompoundStatement) statement));
+        } else if (statement instanceof IterationStatement) {
+            return new CompoundStatement(visit((IterationStatement) statement));
+        } else if (statement instanceof ExpressionStatement) {
+            ExpressionStatement expressionStatement = (ExpressionStatement) statement;
+            if (expressionStatement.getExpression() instanceof CommaExpression) {
+                return new CompoundStatement(visit(((CommaExpression) expressionStatement.getExpression())));
+            }
+        }
+        return statement;
+    }
+
     public List<BlockItem> visit(ExpressionStatement statement) {
         Expression expression = statement.getExpression();
         if (expression instanceof CommaExpression) {
-            List<AssignmentExpression> assignmentExpressions = ((CommaExpression) expression).getAssignmentExpressions();
-            return assignmentExpressions.stream().map(exp -> new ExpressionStatement(exp)).collect(Collectors.toList());
+            return visit(((CommaExpression) expression));
         } else {
             return Arrays.asList(statement);
         }
     }
 
+    public List<BlockItem> visit(CommaExpression expression) {
+        List<AssignmentExpression> assignmentExpressions = ((CommaExpression) expression).getAssignmentExpressions();
+        return assignmentExpressions.stream().map(exp -> new ExpressionStatement(exp)).collect(Collectors.toList());
+    }
+
+    public List<BlockItem> visit(IterationStatementWhile iterationStatementWhile) {
+        Expression condition = iterationStatementWhile.getCondition();
+        iterationStatementWhile.setStatement(visit(iterationStatementWhile.getStatement()));
+        if (condition instanceof CommaExpression) {
+            return processWhile(((CommaExpression) condition), iterationStatementWhile.getStatement());
+        }
+        return Arrays.asList(iterationStatementWhile);
+    }
+
+    public List<BlockItem> visit(IterationStatementDoWhile iterationStatementDoWhile) {
+        Expression condition = iterationStatementDoWhile.getCondition();
+        if (condition instanceof CommaExpression) {
+            return processWhile(((CommaExpression) condition), iterationStatementDoWhile.getStatement());
+        }
+        return Arrays.asList(iterationStatementDoWhile);
+    }
+
+    private List<BlockItem> processWhile(CommaExpression condition, Statement body) {
+        List<BlockItem> newBlockItems = new ArrayList<>();
+        CommaComponent commaComponent = breakCommaExpression(((CommaExpression) condition));
+        newBlockItems.addAll(commaComponent.getStatements());
+        for (ExpressionStatement conditionStatement : commaComponent.getStatements()) {
+            CompoundStatement.addToEnd(conditionStatement, body);
+        }
+        Expression last = commaComponent.getLastExp();
+        newBlockItems.add(new IterationStatementWhile(last, body));
+        return newBlockItems;
+    }
+
+    public List<BlockItem> visit(IterationStatementFor iterationStatementFor) {
+        List<BlockItem> newBlockItems = new ArrayList<>();
+        Expression initial = iterationStatementFor.getInitial();
+        Expression condition = iterationStatementFor.getCondition();
+        Expression iteration = iterationStatementFor.getIteration();
+        iterationStatementFor.setStatement(visit(iterationStatementFor.getStatement()));
+        Statement body = iterationStatementFor.getStatement();
+        if (initial instanceof CommaExpression) {
+            CommaComponent initialComponent = breakCommaExpression(((CommaExpression) initial));
+            newBlockItems.addAll(initialComponent.getStatements());
+            initial = initialComponent.getLastExp();
+        }
+        List<BlockItem> toAddToBody = new ArrayList<>();
+        condition = processConditionExpression(condition, toAddToBody, newBlockItems);
+        iteration = processIterationExpression(iteration, toAddToBody);
+        for (BlockItem blockItem : toAddToBody) {
+            CompoundStatement.addToEnd(blockItem, body);
+        }
+        newBlockItems.add(new IterationStatementFor(initial, condition, iteration, body));
+        return newBlockItems;
+    }
+
+    public List<BlockItem> visit(IterationStatementDeclareFor iterationStatementDeclareFor) {
+        Expression condition = iterationStatementDeclareFor.getCondition();
+        Expression iteration = iterationStatementDeclareFor.getIteration();
+        iterationStatementDeclareFor.setStatement(visit(iterationStatementDeclareFor.getStatement()));
+        List<BlockItem> newBlockItems = new ArrayList<>();
+        List<BlockItem> toAddToBody = new ArrayList<>();
+        condition = processConditionExpression(condition, toAddToBody, newBlockItems);
+        iteration = processIterationExpression(iteration, toAddToBody);
+
+        Statement body = iterationStatementDeclareFor.getStatement();
+        for (BlockItem blockItem : toAddToBody) {
+            CompoundStatement.addToEnd(blockItem, body);
+        }
+
+        newBlockItems.add(new IterationStatementDeclareFor(iterationStatementDeclareFor.getDeclaration(), condition, iteration, body));
+        return newBlockItems;
+    }
+
+    public Expression processConditionExpression(Expression condition, List<BlockItem> toAddToBody, List<BlockItem> newBlockItems) {
+        return condition;
+        /*
+        if (condition instanceof CommaExpression) {
+            CommaComponent conditionComponent = breakCommaExpression(((CommaExpression) condition));
+            for (ExpressionStatement expressionStatement : conditionComponent.getStatements()) {
+                newBlockItems.add(expressionStatement);
+                toAddToBody.add(expressionStatement);
+            }
+            return conditionComponent.getLastExp();
+        }
+        return condition;
+        */
+    }
+
+    public Expression processIterationExpression(Expression iteration, List<BlockItem> toAddToBody) {
+        if (iteration instanceof CommaExpression) {
+            CommaComponent iterationComponent = breakCommaExpression(((CommaExpression) iteration));
+            toAddToBody.addAll(iterationComponent.getStatements());
+            return iterationComponent.getLastExp();
+        } else {
+            return iteration;
+        }
+    }
+
+
     public List<BlockItem> visit(IterationStatement statement) {
         if (statement instanceof IterationStatementWhile) {
-            IterationStatementWhile iterationStatementWhile = (IterationStatementWhile) statement;
-
-            Expression condition = iterationStatementWhile.getCondition();
-            if (condition instanceof CommaExpression) {
-                Statement body = iterationStatementWhile.getStatement();
-                List<BlockItem> newBlockItems = new ArrayList<>();
-                CommaComponent commaComponent = breakCommaExpression(((CommaExpression) condition));
-                newBlockItems.addAll(commaComponent.getStatements());
-                for (ExpressionStatement conditionStatement : commaComponent.getStatements()) {
-                    CompoundStatement.addToEnd(conditionStatement, body);
-                }
-                Expression last = commaComponent.getLastExp();
-                newBlockItems.add(new IterationStatementWhile(last, body));
-                return newBlockItems;
-            }
+            return visit(((IterationStatementWhile) statement));
         } else if (statement instanceof IterationStatementFor) {
-            IterationStatementFor iterationStatementFor = (IterationStatementFor) statement;
-            List<BlockItem> newBlockItems = new ArrayList<>();
-            Expression initial = iterationStatementFor.getInitial();
-            Expression condition = iterationStatementFor.getCondition();
-            Expression iteration = iterationStatementFor.getIteration();
-
-            Statement body = iterationStatementFor.getStatement();
-            if (initial instanceof CommaExpression) {
-                CommaComponent initialComponent = breakCommaExpression(((CommaExpression) initial));
-                for (ExpressionStatement expressionStatement : initialComponent.getStatements()) {
-                    newBlockItems.add(expressionStatement);
-                }
-                initial = initialComponent.getLastExp();
-            }
-            List<BlockItem> toAddToBody = new ArrayList<>();
-
-            /* Can't refactor condition, because operations may go out of order.
-            /*
-            if (condition instanceof CommaExpression) {
-                List<BlockItem> toAddToBodyComma = new ArrayList<>();
-                CommaComponent conditionComponent = breakCommaExpression(((CommaExpression) condition));
-                for (ExpressionStatement expressionStatement : conditionComponent.getStatements()) {
-                    newBlockItems.add(expressionStatement);
-                    toAddToBodyComma.add(expressionStatement);
-                }
-                condition = conditionComponent.getLastExp();
-                toAddToBody.addAll(toAddToBodyComma);
-            }
-            */
-
-            if (iteration instanceof CommaExpression) {
-                CommaComponent iterationComponent = breakCommaExpression(((CommaExpression) iteration));
-                List<BlockItem> toAddToBodyIter = new ArrayList<>();
-                for (ExpressionStatement expressionStatement : iterationComponent.getStatements()) {
-                    toAddToBodyIter.add(expressionStatement);
-                }
-                iteration = iterationComponent.getLastExp();
-                toAddToBody.addAll(0, toAddToBodyIter);
-            }
-            for (BlockItem blockItem : toAddToBody) {
-                CompoundStatement.addToEnd(blockItem, body);
-            }
-            newBlockItems.add(new IterationStatementFor(initial, condition, iteration, body));
-            return newBlockItems;
+            return visit(((IterationStatementFor) statement));
         } else if (statement instanceof IterationStatementDeclareFor) {
-            IterationStatementDeclareFor iterationStatementDeclareFor = (IterationStatementDeclareFor) statement;
-            Expression condition = iterationStatementDeclareFor.getCondition();
-            Expression iteration = iterationStatementDeclareFor.getIteration();
-
-            Statement body = iterationStatementDeclareFor.getStatement();
-            List<BlockItem> toAddToBody = new ArrayList<>();
-
-            /* Can't refactor condition, because operations may go out of order.
-            /*
-            if (condition instanceof CommaExpression) {
-                List<BlockItem> toAddToBodyComma = new ArrayList<>();
-                CommaComponent conditionComponent = breakCommaExpression(((CommaExpression) condition));
-                for (ExpressionStatement expressionStatement : conditionComponent.getStatements()) {
-                    newBlockItems.add(expressionStatement);
-                    toAddToBodyComma.add(expressionStatement);
-                }
-                condition = conditionComponent.getLastExp();
-                toAddToBody.addAll(toAddToBodyComma);
-            }
-            */
-
-            if (iteration instanceof CommaExpression) {
-                CommaComponent iterationComponent = breakCommaExpression(((CommaExpression) iteration));
-                List<BlockItem> toAddToBodyIter = new ArrayList<>();
-                for (ExpressionStatement expressionStatement : iterationComponent.getStatements()) {
-                    toAddToBodyIter.add(expressionStatement);
-                }
-                iteration = iterationComponent.getLastExp();
-                toAddToBody.addAll(0, toAddToBodyIter);
-            }
-            for (BlockItem blockItem : toAddToBody) {
-                CompoundStatement.addToEnd(blockItem, body);
-            }
-            List<BlockItem> newBlockItems = new ArrayList<>();
-            newBlockItems.add(new IterationStatementDeclareFor(iterationStatementDeclareFor.getDeclaration(), condition, iteration, body));
-            return newBlockItems;
+            return visit(((IterationStatementDeclareFor) statement));
         } else if (statement instanceof IterationStatementDoWhile) {
-            IterationStatementDoWhile iterationStatementDoWhile = (IterationStatementDoWhile) statement;
-            Expression condition = iterationStatementDoWhile.getCondition();
-            if (condition instanceof CommaExpression) {
-                Statement body = iterationStatementDoWhile.getStatement();
-                List<BlockItem> newBlockItems = new ArrayList<>();
-                CommaComponent commaComponent = breakCommaExpression(((CommaExpression) condition));
-                newBlockItems.addAll(commaComponent.getStatements());
-                for (ExpressionStatement conditionStatement : commaComponent.getStatements()) {
-                    CompoundStatement.addToEnd(conditionStatement, body);
-                }
-                Expression last = commaComponent.getLastExp();
-                newBlockItems.add(new IterationStatementWhile(last, body));
-                return newBlockItems;
-            }
+            return visit(((IterationStatementDoWhile) statement));
         }
         return Arrays.asList(statement);
     }

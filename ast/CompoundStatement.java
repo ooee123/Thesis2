@@ -31,7 +31,7 @@ public class CompoundStatement implements Statement {
     @Override
     public String toCode() {
         List<String> codes = collectionToCode(blockItems);
-        return "{\n " + String.join("\n", codes) + "\n}";
+        return "{\n" + String.join("\n", codes) + "\n}";
     }
 
     public static CompoundStatement addToEnd(BlockItem toBeAdded, Statement body) {

@@ -1,12 +1,14 @@
 package ast;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.Value;
 
 /**
  * Created by ooee on 9/25/16.
  */
-@Value
+@Data
+@AllArgsConstructor
 public class IterationStatementFor implements IterationStatement {
     private Expression initial;
     private Expression condition;
