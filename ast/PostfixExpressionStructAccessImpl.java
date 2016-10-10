@@ -42,4 +42,9 @@ public class PostfixExpressionStructAccessImpl implements PostfixExpression {
     public String toCode() {
         return postfixExpression.toCode() + accessOperator.token + identifier;
     }
+
+    @Override
+    public Set<String> getVariables() {
+        return postfixExpression.getVariables();
+    }
 }

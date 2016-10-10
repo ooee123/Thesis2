@@ -32,4 +32,9 @@ public class UnaryExpressionImpl implements UnaryExpression {
     public String toCode() {
         return incrementOperator.token + unaryExpression.toCode();
     }
+
+    @Override
+    public Set<String> getVariables() {
+        return unaryExpression.getVariables();
+    }
 }

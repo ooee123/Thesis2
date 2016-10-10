@@ -2,6 +2,7 @@ package ast;
 
 import lombok.Value;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,12 +12,37 @@ import java.util.stream.Collectors;
  * Created by ooee on 9/26/16.
  */
 @Value
-public class CommaExpression implements Expression {
+public class CommaExpression implements Expression, Assigning {
     private List<AssignmentExpression> assignmentExpressions;
 
     @Override
     public String toCode() {
         List<String> expCodes = assignmentExpressions.stream().map(exp -> exp.toCode()).collect(Collectors.toList());
         return String.join(", ", expCodes);
+    }
+
+    @Override
+    public Set<String> getLValues() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getRightVariables() {
+        Set<String> rightVariables = new HashSet<>();
+        for (AssignmentExpression assignmentExpression : assignmentExpressions) {
+            if (assignmentExpression instanceof Assigning) {
+                rightVariables.addAll(((Assigning) assignmentExpression).getRightVariables());
+            }
+        }
+        return rightVariables;
+    }
+
+    @Override
+    public Set<String> getVariables() {
+        Set<String> variables = new HashSet<>();
+        for (AssignmentExpression assignmentExpression : assignmentExpressions) {
+            variables.addAll(assignmentExpression.getVariables());
+        }
+        return variables;
     }
 }

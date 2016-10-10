@@ -2,6 +2,11 @@ package ast;
 
 import lombok.Value;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by ooee on 9/26/16.
  */
@@ -36,5 +41,18 @@ public class RelationalExpressionImpl implements RelationalExpression {
     @Override
     public String toCode() {
         return relationalExpression.toCode() + relationalOperator.token + bitwiseShiftExpression.toCode();
+    }
+
+    @Override
+    public Set<String> getLValues() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getVariables() {
+        Set<String> variables = new HashSet<>();
+        variables.addAll(relationalExpression.getVariables());
+        variables.addAll(bitwiseShiftExpression.getVariables());
+        return variables;
     }
 }

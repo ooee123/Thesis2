@@ -14,12 +14,19 @@ public class TypeScope {
    private TypeScope parent;
 
    public TypeScope() {
-      types = new HashMap<>();
-      parent = null;
+      this(null);
+   }
+
+   public TypeScope(TypeScope parent) {
+      this(new HashMap<>(), parent);
    }
 
    public void put(String id, Type type) {
       types.put(id, type);
+   }
+
+   public void putAll(Map<? extends String, ? extends Type> moreTypes) {
+      types.putAll(moreTypes);
    }
 
    public Type get(String id) {

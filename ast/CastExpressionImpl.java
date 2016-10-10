@@ -21,4 +21,9 @@ public class CastExpressionImpl implements CastExpression {
     public String toCode() {
         return "(" + type.toString() + ")" + castExpression.toCode();
     }
+
+    @Override
+    public Set<String> getVariables() {
+        return castExpression.getVariables();
+    }
 }

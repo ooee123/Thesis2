@@ -36,4 +36,9 @@ public class PrimaryExpressionConstant implements PrimaryExpression {
     public String toCode() {
         return value.toString();
     }
+
+    @Override
+    public Set<String> getVariables() {
+        return Collections.emptySet();
+    }
 }

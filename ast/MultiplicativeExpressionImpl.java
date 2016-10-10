@@ -2,6 +2,7 @@ package ast;
 
 import lombok.Value;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -37,5 +38,17 @@ public class MultiplicativeExpressionImpl implements MultiplicativeExpression {
     @Override
     public String toCode() {
         return multiplicativeExpression.toCode() + multiplicativeOperator.token + castExpression.toCode();
+    }
+
+    @Override
+    public Set<String> getLValues() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getVariables() {
+        Set<String> variables = multiplicativeExpression.getVariables();
+        variables.addAll(castExpression.getVariables());
+        return variables;
     }
 }

@@ -3,68 +3,306 @@ package visitor;
 import ast.*;
 import ast.type.Type;
 import lombok.Value;
+import pdg.PDGNode;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 import static ast.Declaration.DeclaredVariable;
 
 @Value
 public class ASTGeneralVisitor {
-
-    private Map<String, TypeScope> functionScopes;
+    private TypeScope globalScope;
+    private Map<Statement, TypeScope> functionScopes;
+    private Map<String, Type> functionTypes;
+    private Program program;
 
     public ASTGeneralVisitor(Program p) {
-        functionScopes = new LinkedHashMap<>();
-
-        Map<String, Type> types = new LinkedHashMap<>();
-        putDeclarations(p.getDeclarations(), types);
-        TypeScope globalScope = new TypeScope(types, null);
+        this.program = p;
+        functionScopes = new IdentityHashMap<>();
+        functionTypes = new HashMap<>();
+        Map<String, Type> variableDeclarations = getVariableDeclarations(p.getDeclarations().toArray(new Declaration[0]));
+        globalScope = new TypeScope(variableDeclarations, null);
         Collection<Function> functions = p.getFunction();
         for (Function f : functions) {
             String functionId = f.getIdentifier();
             Type functionReturnType = f.getReturnType();
-            globalScope.put(functionId, functionReturnType);
-            Map<String, Type> functionScope = getDeclarations(f.getCompoundStatement(), new HashMap<>());
-            TypeScope functionTypeScope = new TypeScope(functionScope, globalScope);
-            functionScopes.put(f.getIdentifier(), functionTypeScope);
+            functionTypes.put(functionId, functionReturnType);
+            TypeScope functionScope = getDeclarations(f.getCompoundStatement(), globalScope);
+            for (Parameter parameter : f.getParameterList().getParameters()) {
+                functionScope.put(parameter.getFormalParameterName(), parameter.getType());
+            }
         }
     }
 
-    private Map<String, Type> getDeclarations(Statement stm, Map<String, Type> types) {
+    private TypeScope getDeclarations(Statement stm, TypeScope parent) {
         if (stm instanceof SelectionStatementIf) {
-            getDeclarations(((SelectionStatementIf) stm).getElseStatement(), types);
-            getDeclarations(((SelectionStatementIf) stm).getThenStatement(), types);
+            SelectionStatementIf selectionStatementIf = (SelectionStatementIf) stm;
+            Statement thenStatement = selectionStatementIf.getThenStatement();
+            TypeScope thenScope = getDeclarations(thenStatement, parent);
+            functionScopes.put(thenStatement, thenScope);
+            if (selectionStatementIf.getElseStatement() != null) {
+                Statement elseStatement = selectionStatementIf.getElseStatement();
+                TypeScope elseScope = getDeclarations(elseStatement, parent);
+                functionScopes.put(elseStatement, elseScope);
+            }
+            return new TypeScope(parent);
         } else if (stm instanceof IterationStatementFor) {
-            getDeclarations(((IterationStatementFor) stm).getStatement(), types);
+            IterationStatementFor iterationStatementFor = (IterationStatementFor) stm;
+            Statement body = iterationStatementFor.getStatement();
+            TypeScope bodyScope = getDeclarations(body, parent);
+            functionScopes.put(body, bodyScope);
+            return bodyScope;
         } else if (stm instanceof IterationStatementDeclareFor) {
-            getDeclarations(((IterationStatementDeclareFor) stm).getStatement(), types);
-            putDeclarations(Arrays.asList(((IterationStatementDeclareFor) stm).getDeclaration()), types);
+            IterationStatementDeclareFor iterationStatementDeclareFor = (IterationStatementDeclareFor) stm;
+            Statement forBody = iterationStatementDeclareFor.getStatement();
+            Map<String, Type> variableDeclarations = getVariableDeclarations(iterationStatementDeclareFor.getDeclaration());
+            TypeScope forBodyScope = getDeclarations(forBody, parent);
+            forBodyScope.putAll(variableDeclarations);
+            functionScopes.put(forBody, forBodyScope);
+            return forBodyScope;
         } else if (stm instanceof IterationStatementWhile) {
-            getDeclarations(((IterationStatementWhile) stm).getStatement(), types);
+            IterationStatementWhile iterationStatementWhile = (IterationStatementWhile) stm;
+            Statement whileBody = iterationStatementWhile.getStatement();
+            TypeScope whileScope = getDeclarations(whileBody, parent);
+            functionScopes.put(whileBody, whileScope);
+            return whileScope;
         } else if (stm instanceof IterationStatementDoWhile) {
-            getDeclarations(((IterationStatementDoWhile) stm).getStatement(), types);
+            Statement whileBody = ((IterationStatementDoWhile) stm).getStatement();
+            TypeScope whileScope = getDeclarations(whileBody, parent);
+            functionScopes.put(whileBody, whileScope);
+            return whileScope;
         } else if (stm instanceof CompoundStatement) {
-            Collection<BlockItem> blockItems = ((CompoundStatement) stm).getBlockItems();
-            Collection<Declaration> declarations = new ArrayList<>();
+            CompoundStatement compoundStatement = (CompoundStatement) stm;
+            TypeScope newScope = new TypeScope(parent);
+            Collection<BlockItem> blockItems = compoundStatement.getBlockItems();
             for (BlockItem blockItem : blockItems) {
                 if (blockItem instanceof Declaration) {
-                    declarations.add(((Declaration) blockItem));
+                    newScope.putAll(getVariableDeclarations(((Declaration) blockItem)));
                 } else if (blockItem instanceof Statement) {
-                    getDeclarations(((Statement) blockItem), types);
+                    getDeclarations(((Statement) blockItem), newScope);
                 }
             }
-            putDeclarations(declarations, types);
+            functionScopes.put(compoundStatement, newScope);
+            return newScope;
+        } else {
+            return null;
         }
-        return types;
     }
 
-    private void putDeclarations(Collection<Declaration> declarations, Map<String, Type> types) {
+    private void blah() {
+
+        Map<String, List<Statement>> interchangable;
+        List<Statement> statements;
+
+    }
+
+    private void foo(Program program) {
+        for (Function function : program.getFunction()) {
+            foo(function.getCompoundStatement());
+        }
+    }
+
+    private void foo(CompoundStatement statement) {
+        Map<String, BlockItem> lastAssigned = new HashMap<>(), lastUsed = new HashMap<>();
+        for (BlockItem blockItem : statement.getBlockItems()) {
+            if (blockItem instanceof ExpressionStatement) {
+                ExpressionStatement expressionStatement = (ExpressionStatement) blockItem;
+                if (expressionStatement.getExpression() instanceof Assigning) {
+                    Assigning assigning = (Assigning) expressionStatement.getExpression();
+                    Set<String> lValues = assigning.getLValues();
+                    for (String lValue : lValues) {
+                        lastAssigned.put(lValue, statement);
+                    }
+
+                    Set<String> usedVariables = assigning.getRightVariables();
+                    for (String usedVariable : usedVariables) {
+                        lastUsed.put(usedVariable, statement);
+                        if (lastAssigned.containsKey(usedVariable)) {
+                            PDGNode.link(lastAssigned.get(usedVariable), statement);
+                        }
+                    }
+                }
+            } else if (blockItem instanceof )
+        }
+    }
+
+    private void foo(SelectionStatementIf statement) {
+        Statement thenStatement = statement.getThenStatement();
+        if (statement.getElseStatement() != null) {
+            Statement elseStatement = statement.getElseStatement();
+            
+        }
+    }
+
+    private Map<String, Type> getVariableDeclarations(Declaration... declarations) {
+        Map<String, Type> declarationsMap = new HashMap<>();
         for (Declaration declaration : declarations) {
             for (DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
                 String id = declaredVariable.getIdentifier();
                 Type type = declaredVariable.getType();
-                types.put(id, type);
+                declarationsMap.put(id, type);
+            }
+        }
+        return declarationsMap;
+    }
+
+    public void walk() {
+        Collection<Function> functions = program.getFunction();
+        for (Function function : functions) {
+            walk(function.getCompoundStatement());
+        }
+    }
+
+    public void walk(Statement statement) {
+        if (statement instanceof ExpressionStatement) {
+            Expression expression = ((ExpressionStatement) statement).getExpression();
+            System.out.println(expression.toCode());
+            System.out.println(expression.getLValues());
+            System.out.println("=====");
+        } else if (statement instanceof IterationStatementFor) {
+            IterationStatementFor iterationStatementFor = (IterationStatementFor) statement;
+            if (iterationStatementFor.getInitial() != null) {
+                System.out.println(iterationStatementFor.getInitial().getLValues());
+            }
+            if (iterationStatementFor.getCondition() != null) {
+                System.out.println(iterationStatementFor.getCondition().getLValues());
+            }
+            if (iterationStatementFor.getIteration() != null) {
+                System.out.println(iterationStatementFor.getIteration().getLValues());
+            }
+
+            walk(iterationStatementFor.getStatement());
+        } else if (statement instanceof IterationStatementWhile) {
+            IterationStatementWhile iterationStatementWhile = (IterationStatementWhile) statement;
+            System.out.println(iterationStatementWhile.getCondition().getLValues());
+            walk(iterationStatementWhile.getStatement());
+        } else if (statement instanceof SelectionStatementIf) {
+            SelectionStatementIf selectionStatementIf = (SelectionStatementIf) statement;
+            System.out.println(selectionStatementIf.getCondition().getLValues());
+            walk(selectionStatementIf.getThenStatement());
+            if (selectionStatementIf.getElseStatement() != null) {
+                walk(selectionStatementIf.getElseStatement());
+            }
+        } else if (statement instanceof IterationStatementDeclareFor) {
+            IterationStatementDeclareFor iterationStatementDeclareFor = (IterationStatementDeclareFor) statement;
+            walk(iterationStatementDeclareFor.getDeclaration());
+            if (iterationStatementDeclareFor.getCondition() != null) {
+                System.out.println(iterationStatementDeclareFor.getCondition().getLValues());
+            }
+            if (iterationStatementDeclareFor.getIteration() != null) {
+                System.out.println(iterationStatementDeclareFor.getIteration().getLValues());
+            }
+            walk(iterationStatementDeclareFor.getStatement());
+        } else if (statement instanceof IterationStatementDoWhile) {
+            IterationStatementDoWhile iterationStatementDoWhile = (IterationStatementDoWhile) statement;
+            System.out.println(iterationStatementDoWhile.getCondition().getLValues());
+            walk(iterationStatementDoWhile.getStatement());
+        } else if (statement instanceof CompoundStatement) {
+            CompoundStatement compoundStatement = (CompoundStatement) statement;
+            walk(compoundStatement);
+        }
+    }
+
+    public void walk(CompoundStatement statement) {
+        for (BlockItem blockItem : statement.getBlockItems()) {
+            if (blockItem instanceof Statement) {
+                walk((Statement) blockItem);
+            } else if (blockItem instanceof Declaration) {
+                walk(((Declaration) blockItem));
             }
         }
     }
+
+    public void walk(Expression expression) {
+        if (expression instanceof AssignmentExpressionImpl) {
+            walk(((AssignmentExpressionImpl) expression).getUnaryExpression());
+        } else if (expression instanceof CommaExpression) {
+            for (AssignmentExpression assignmentExpression : ((CommaExpression) expression).getAssignmentExpressions()) {
+                walk(assignmentExpression);
+            }
+        } else if (expression instanceof PrimaryExpressionParentheses) {
+            walk(((PrimaryExpressionParentheses) expression).getExpression());
+        }
+    }
+
+    public void walk(UnaryExpression expression) {
+        if (expression instanceof PrimaryExpressionParentheses) {
+        } else if (expression instanceof UnaryExpressionUnaryOperatorImpl) {
+            UnaryExpressionUnaryOperatorImpl.UnaryOperator unaryOperator = ((UnaryExpressionUnaryOperatorImpl) expression).getUnaryOperator();
+            if (unaryOperator.equals(UnaryExpressionUnaryOperatorImpl.UnaryOperator.DEREFERENCE)) {
+
+            }
+        } else if (expression instanceof UnaryExpressionImpl) {
+            walk(((UnaryExpressionImpl) expression).getUnaryExpression());
+        } else {
+            System.out.println("LValue:");
+            System.out.println(expression.getLValues());
+        }
+    }
+
+    public void walk(Declaration declaration) {
+        for (DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+            if (declaredVariable.getInitializer() != null) {
+                AssignmentExpression initializer = declaredVariable.getInitializer();
+                if (initializer instanceof AssignmentExpressionImpl) {
+                    AssignmentExpressionImpl initializer1 = (AssignmentExpressionImpl) initializer;
+                    System.out.println(initializer1.getLValues());
+                }
+                System.out.println("[" + declaredVariable.getIdentifier() + "]");
+            }
+        }
+    }
+
+    public String diagnose() {
+
+        StringWriter writer = new StringWriter();
+        PrintWriter printer = new PrintWriter(writer);
+        printer.println("Functions");
+        Set<Map.Entry<String, Type>> entries = functionTypes.entrySet();
+        for (Map.Entry<String, Type> entry : entries) {
+            printer.println(entry.getKey() + " -> " + entry.getValue());
+        }
+        printer.println("Listing All Scopes...");
+        printer.println("===global===");
+        for (Map.Entry<String, Type> stringTypeEntry : globalScope.getTypes().entrySet()) {
+            printer.println(stringTypeEntry.getKey() + " is a " + stringTypeEntry.getValue().toString());
+        }
+        Map<TypeScope, String> statementLabel = new IdentityHashMap<>();
+        statementLabel.put(globalScope, "global");
+        int count = 0;
+        for (Map.Entry<Statement, TypeScope> entry : functionScopes.entrySet()) {
+            String label = String.valueOf(Character.valueOf((char)('A' + count++)));
+            statementLabel.put(entry.getValue(), label);
+
+            printer.println("===" + label + "===");
+            for (Map.Entry<String, Type> stringTypeEntry : entry.getValue().getTypes().entrySet()) {
+                printer.println(stringTypeEntry.getKey() + " is a " + stringTypeEntry.getValue().toString());
+            }
+        }
+
+        printer.println("Putting Dependencies");
+        for (TypeScope typeScope : functionScopes.values()) {
+            printer.println(statementLabel.get(typeScope) + " has parent " + statementLabel.get(typeScope.getParent()));
+        }
+
+        printer.flush();
+        return writer.getBuffer().toString();
+    }
+    /*
+    private Set<String> getLValue(PostfixExpressionInvocationImpl exp) {
+        List<AssignmentExpression> arguments = exp.getArguments();
+        for (AssignmentExpression argument : arguments) {
+            Set<String> lValues = argument.getLValues();
+            // Consult type mapping
+            for (String lValue : lValues) {
+                Type lValueType;
+                if (lValueType instanceof PointerType) {
+
+                }
+            }
+        }
+    }
+    */
 }

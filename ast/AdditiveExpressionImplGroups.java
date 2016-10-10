@@ -3,7 +3,9 @@ package ast;
 import lombok.Value;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -27,5 +29,29 @@ public class AdditiveExpressionImplGroups implements AdditiveExpression {
         } else {
             return addingTerms;
         }
+    }
+
+    @Override
+    public Set<String> getLValues() {
+        Set<String> lValues = new HashSet<>();
+        for (MultiplicativeExpression addingTerm : addingTerms) {
+            lValues.addAll(addingTerm.getLValues());
+        }
+        for (MultiplicativeExpression subtractingTerm : subtractingTerms) {
+            lValues.addAll(subtractingTerm.getLValues());
+        }
+        return lValues;
+    }
+
+    @Override
+    public Set<String> getVariables() {
+        Set<String> variables = new HashSet<>();
+        for (MultiplicativeExpression addingTerm : addingTerms) {
+            variables.addAll(addingTerm.getVariables());
+        }
+        for (MultiplicativeExpression subtractingTerm : subtractingTerms) {
+            variables.addAll(subtractingTerm.getVariables());
+        }
+        return variables;
     }
 }

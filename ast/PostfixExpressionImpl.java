@@ -9,10 +9,6 @@ import java.util.Set;
  */
 @Value
 public class PostfixExpressionImpl implements PostfixExpression {
-    @Override
-    public Set<String> getLValues() {
-        return postfixExpression.getLValues();
-    }
 
     public enum PostfixOperator {
         POSTFIX_INCREMENT("++"),
@@ -31,5 +27,15 @@ public class PostfixExpressionImpl implements PostfixExpression {
     @Override
     public String toCode() {
         return postfixExpression.toCode() + postfixOperator.token;
+    }
+
+    @Override
+    public Set<String> getLValues() {
+        return postfixExpression.getLValues();
+    }
+
+    @Override
+    public Set<String> getVariables() {
+        return postfixExpression.getVariables();
     }
 }

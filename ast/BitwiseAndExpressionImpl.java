@@ -2,8 +2,7 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -20,5 +19,19 @@ public class BitwiseAndExpressionImpl implements BitwiseAndExpression {
     public String toCode() {
         List<String> equalityCodes = equalityExpressions.stream().map(exp -> exp.toCode()).collect(Collectors.toList());
         return String.join(BITWISE_AND, equalityCodes);
+    }
+
+    @Override
+    public Set<String> getLValues() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getVariables() {
+        Set<String> variables = new HashSet<>();
+        for (EqualityExpression equalityExpression : equalityExpressions) {
+            variables.addAll(equalityExpression.getVariables());
+        }
+        return variables;
     }
 }

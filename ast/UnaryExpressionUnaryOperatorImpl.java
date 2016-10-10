@@ -46,4 +46,9 @@ public class UnaryExpressionUnaryOperatorImpl implements UnaryExpression {
     public String toCode() {
         return unaryOperator.token + castExpression.toCode();
     }
+
+    @Override
+    public Set<String> getVariables() {
+        return castExpression.getVariables();
+    }
 }

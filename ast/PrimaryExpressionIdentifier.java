@@ -20,4 +20,9 @@ public class PrimaryExpressionIdentifier implements PrimaryExpression {
     public String toCode() {
         return identifier;
     }
+
+    @Override
+    public Set<String> getVariables() {
+        return Sets.newHashSet(identifier);
+    }
 }

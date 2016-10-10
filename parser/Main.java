@@ -3,10 +3,7 @@ package parser;
 import ast.Program;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import visitor.CommaToStatementVisitor;
-import visitor.LoopsToWhileVisitor;
-import visitor.TernaryToIfVisitor;
-import visitor.TreeToASTVisitor;
+import visitor.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -50,6 +47,10 @@ public class Main {
         if (printParsedProgramFlag) {
             System.out.println(program.toCode());
         }
+
+        ASTGeneralVisitor astGeneralVisitor = new ASTGeneralVisitor(program);
+        System.out.println(astGeneralVisitor.diagnose());
+        astGeneralVisitor.walk();
 
         if (loopsToWhileVisitorFlag) {
             LoopsToWhileVisitor loopsToWhileVisitor = new LoopsToWhileVisitor();

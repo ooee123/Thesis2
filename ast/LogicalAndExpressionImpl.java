@@ -2,8 +2,7 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by ooee on 9/26/16.
@@ -18,5 +17,19 @@ public class LogicalAndExpressionImpl implements LogicalAndExpression {
     public String toCode() {
         List<String> codes = collectionToCode(inclusiveBitwiseOrExpressions);
         return String.join(AND, codes);
+    }
+
+    @Override
+    public Set<String> getLValues() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getVariables() {
+        Set<String> variables = new HashSet<>();
+        for (InclusiveBitwiseOrExpression inclusiveBitwiseOrExpression : inclusiveBitwiseOrExpressions) {
+            variables.addAll(inclusiveBitwiseOrExpression.getVariables());
+        }
+        return variables;
     }
 }

@@ -2,6 +2,10 @@ package ast;
 
 import lombok.Value;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by ooee on 9/26/16.
  */
@@ -35,5 +39,18 @@ public class EqualityExpressionImpl implements EqualityExpression {
     @Override
     public String toCode() {
         return equalityExpression.toCode() + equalityOperator.token + relationalExpression.toCode();
+    }
+
+    @Override
+    public Set<String> getLValues() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getVariables() {
+        Set<String> variables = new HashSet<>();
+        variables.addAll(equalityExpression.getVariables());
+        variables.addAll(relationalExpression.getVariables());
+        return variables;
     }
 }

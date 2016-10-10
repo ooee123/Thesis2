@@ -2,8 +2,7 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -19,5 +18,19 @@ public class InclusiveBitwiseOrExpressionImpl implements InclusiveBitwiseOrExpre
     public String toCode() {
         List<String> codes = exclusiveBitwiseOrExpressions.stream().map(exp -> exp.toCode()).collect(Collectors.toList());
         return String.join(INCLUSIVE_BITWISE_OR, codes);
+    }
+
+    @Override
+    public Set<String> getLValues() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getVariables() {
+        Set<String> variables = new HashSet<>();
+        for (ExclusiveBitwiseOrExpression exclusiveBitwiseOrExpression : exclusiveBitwiseOrExpressions) {
+            variables.addAll(exclusiveBitwiseOrExpression.getVariables());
+        }
+        return variables;
     }
 }

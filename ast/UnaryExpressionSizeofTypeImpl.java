@@ -21,4 +21,9 @@ public class UnaryExpressionSizeofTypeImpl implements UnaryExpression {
     public String toCode() {
         return "sizeof(" + type.toString() + ")";
     }
+
+    @Override
+    public Set<String> getVariables() {
+        return Collections.emptySet();
+    }
 }

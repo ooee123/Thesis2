@@ -23,6 +23,6 @@ public class IterationStatementDeclareFor implements IterationStatement {
         if (iteration != null) {
             iterationString = iteration.toCode();
         }
-        return String.format("for (%s %s; %s) {\n%s}", declaration.toCode(), conditionString, iterationString, statement.toCode());
+        return String.format("for (%s %s; %s) %s", declaration.toCode(), conditionString, iterationString, statement.toCode());
     }
 }

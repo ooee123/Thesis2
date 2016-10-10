@@ -2,13 +2,14 @@ package ast;
 
 import lombok.Value;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by ooee on 9/26/16.
  */
 @Value
-public class AssignmentExpressionImpl implements AssignmentExpression {
+public class AssignmentExpressionImpl implements AssignmentExpression, Assigning {
 
     public enum AssignmentOperator {
         ASSIGNMENT("="),
@@ -51,5 +52,23 @@ public class AssignmentExpressionImpl implements AssignmentExpression {
     @Override
     public String toCode() {
         return unaryExpression.toCode() + assignmentOperator.token + assignmentExpression.toCode();
+    }
+
+    @Override
+    public Set<String> getLValues() {
+        return unaryExpression.getLValues();
+    }
+
+    @Override
+    public Set<String> getRightVariables() {
+        return assignmentExpression.getVariables();
+    }
+
+    @Override
+    public Set<String> getVariables() {
+        Set<String> variables = new HashSet<>();
+        variables.addAll(unaryExpression.getVariables());
+        variables.addAll(assignmentExpression.getVariables());
+        return variables;
     }
 }

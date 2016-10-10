@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class TreeToASTVisitor {
 
     public static final boolean GROUP_EXPRESSIONS = true;
+    public static final boolean LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS = true;
 
     public Program visit(CParser.CompilationUnitContext ctx) {
         Collection<Function> functions = new ArrayList<>();
@@ -186,7 +187,15 @@ public class TreeToASTVisitor {
             Statement elseStatement = null;
             if (statementContexts.size() > 1) {
                 elseStatement = visit(statementContexts.get(1));
+                if (LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS && !(elseStatement instanceof CompoundStatement)) {
+                    elseStatement = containInCompoundStatement(elseStatement);
+                }
             }
+
+            if (LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS && !(thenStatement instanceof CompoundStatement)) {
+                thenStatement = containInCompoundStatement(thenStatement);
+            }
+
             return new SelectionStatementIf(condition, thenStatement, elseStatement);
         } else {
             CParser.SwitchStatementContext switchStatementContext = ctx.switchStatement();
@@ -208,6 +217,15 @@ public class TreeToASTVisitor {
         }
     }
 
+    private CompoundStatement containInCompoundStatement(Statement statement) {
+        if (statement == null) {
+            return null;
+        }
+        List<BlockItem> blockItems = new ArrayList<>();
+        blockItems.add(statement);
+        return new CompoundStatement(blockItems);
+    }
+
     private IterationStatementFor visit(CParser.ForLoopStatementContext ctx) {
         Expression initExpression = null, condExpression = null, iterExpression = null;
         if (ctx.initExpression() != null) {
@@ -220,26 +238,43 @@ public class TreeToASTVisitor {
             iterExpression = visit(ctx.iterExpression().expression());
         }
         Statement statement = visit(ctx.statement());
+        if (LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS && !(statement instanceof CompoundStatement)) {
+            statement = containInCompoundStatement(statement);
+        }
         return new IterationStatementFor(initExpression, condExpression, iterExpression, statement);
     }
 
     private IterationStatementDoWhile visit(CParser.DoWhileStatementContext ctx) {
         Statement statement = visit(ctx.statement());
         Expression expression = visit(ctx.expression());
+        if (LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS && !(statement instanceof CompoundStatement)) {
+            statement = containInCompoundStatement(statement);
+        }
         return new IterationStatementDoWhile(statement, expression);
     }
 
     private IterationStatementWhile visit(CParser.WhileStatementContext ctx) {
         Expression expression = visit(ctx.expression());
         Statement statement = visit(ctx.statement());
+        if (LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS && !(statement instanceof CompoundStatement)) {
+            statement = containInCompoundStatement(statement);
+        }
         return new IterationStatementWhile(expression, statement);
     }
 
     private IterationStatementDeclareFor visit(CParser.DeclareForLoopStatementContext ctx) {
         Declaration declaration = visit(ctx.declaration());
-        Expression expression = visit(ctx.condExpression().expression());
-        Expression iteration = visit(ctx.iterExpression().expression());
+        Expression expression = null, iteration = null;
+        if (ctx.condExpression() != null) {
+            expression = visit(ctx.condExpression().expression());
+        }
+        if (ctx.iterExpression() != null) {
+            iteration = visit(ctx.iterExpression().expression());
+        }
         Statement statement = visit(ctx.statement());
+        if (LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS && !(statement instanceof CompoundStatement)) {
+            statement = containInCompoundStatement(statement);
+        }
         return new IterationStatementDeclareFor(declaration, expression, iteration, statement);
     }
 
@@ -577,20 +612,16 @@ public class TreeToASTVisitor {
 
     private Type visit(CParser.TypeSpecifierContext ctx) {
         if (ctx.atomicTypeSpecifier() != null) {
-            System.err.println("Atomic "+ ctx.getText());
             return visit(ctx.atomicTypeSpecifier().typeName());
         } else if (ctx.structOrUnionSpecifier() != null) {
-            System.err.println("StructUnion " + ctx.getText());
             return new StructUnionType(ctx.structOrUnionSpecifier().Identifier().getSymbol().getText());
         } else if (ctx.enumSpecifier() != null) {
             System.err.println("ENUM ENCOUNTERED. TO DO");
             System.exit(0);
             return null;
         } else if (ctx.typedefName() != null) {
-            System.err.println("Typedef name " + ctx.getText());
             return new TypedefType(ctx.typedefName().Identifier().getSymbol().getText());
         } else {
-            System.err.println("Primitive " + ctx.getText());
             return new PrimitiveType(ctx.getChild(0).getText());
         }
     }
