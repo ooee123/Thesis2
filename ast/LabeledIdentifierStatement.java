@@ -2,6 +2,8 @@ package ast;
 
 import lombok.Value;
 
+import java.util.Set;
+
 /**
  * Created by ooee on 10/6/16.
  */
@@ -13,5 +15,15 @@ public class LabeledIdentifierStatement implements LabeledStatement {
     @Override
     public String toCode() {
         return identifier + ": " + statement.toCode();
+    }
+
+    @Override
+    public Set<String> getDependantVariables() {
+        return statement.getDependantVariables();
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        return statement.getChangedVariables();
     }
 }

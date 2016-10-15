@@ -56,12 +56,21 @@ public class AssignmentExpressionImpl implements AssignmentExpression, Assigning
 
     @Override
     public Set<String> getLValues() {
-        return unaryExpression.getLValues();
+        Set<String> lValues = new HashSet<>();
+        if (assignmentExpression instanceof Assigning) {
+            lValues.addAll(assignmentExpression.getLValues());
+        }
+        lValues.addAll(unaryExpression.getLValues());
+        return lValues;
     }
 
     @Override
     public Set<String> getRightVariables() {
-        return assignmentExpression.getVariables();
+        if (assignmentExpression instanceof Assigning) {
+            return ((Assigning) assignmentExpression).getRightVariables();
+        } else {
+            return assignmentExpression.getVariables();
+        }
     }
 
     @Override

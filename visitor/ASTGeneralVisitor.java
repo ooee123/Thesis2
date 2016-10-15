@@ -2,6 +2,7 @@ package visitor;
 
 import ast.*;
 import ast.type.Type;
+import lombok.Data;
 import lombok.Value;
 import pdg.PDGNode;
 
@@ -11,12 +12,12 @@ import java.util.*;
 
 import static ast.Declaration.DeclaredVariable;
 
-@Value
+@Data
 public class ASTGeneralVisitor {
-    private TypeScope globalScope;
-    private Map<Statement, TypeScope> functionScopes;
-    private Map<String, Type> functionTypes;
-    private Program program;
+    protected TypeScope globalScope;
+    protected Map<Statement, TypeScope> functionScopes;
+    protected Map<String, Type> functionTypes;
+    protected Program program;
 
     public ASTGeneralVisitor(Program p) {
         this.program = p;
@@ -88,51 +89,6 @@ public class ASTGeneralVisitor {
             return newScope;
         } else {
             return null;
-        }
-    }
-
-    private void blah() {
-
-        Map<String, List<Statement>> interchangable;
-        List<Statement> statements;
-
-    }
-
-    private void foo(Program program) {
-        for (Function function : program.getFunction()) {
-            foo(function.getCompoundStatement());
-        }
-    }
-
-    private void foo(CompoundStatement statement) {
-        Map<String, BlockItem> lastAssigned = new HashMap<>(), lastUsed = new HashMap<>();
-        for (BlockItem blockItem : statement.getBlockItems()) {
-            if (blockItem instanceof ExpressionStatement) {
-                ExpressionStatement expressionStatement = (ExpressionStatement) blockItem;
-                if (expressionStatement.getExpression() instanceof Assigning) {
-                    Assigning assigning = (Assigning) expressionStatement.getExpression();
-                    Set<String> lValues = assigning.getLValues();
-                    for (String lValue : lValues) {
-                        lastAssigned.put(lValue, statement);
-                    }
-
-                    Set<String> usedVariables = assigning.getRightVariables();
-                    for (String usedVariable : usedVariables) {
-                        lastUsed.put(usedVariable, statement);
-                        if (lastAssigned.containsKey(usedVariable)) {
-                            PDGNode.link(lastAssigned.get(usedVariable), statement);
-                        }
-                    }
-                }
-            } else if (blockItem instanceof )
-        }
-    }
-
-    private void foo(SelectionStatementIf statement) {
-        Statement thenStatement = statement.getThenStatement();
-        if (statement.getElseStatement() != null) {
-            Statement elseStatement = statement.getElseStatement();
-            
         }
     }
 
@@ -290,19 +246,4 @@ public class ASTGeneralVisitor {
         printer.flush();
         return writer.getBuffer().toString();
     }
-    /*
-    private Set<String> getLValue(PostfixExpressionInvocationImpl exp) {
-        List<AssignmentExpression> arguments = exp.getArguments();
-        for (AssignmentExpression argument : arguments) {
-            Set<String> lValues = argument.getLValues();
-            // Consult type mapping
-            for (String lValue : lValues) {
-                Type lValueType;
-                if (lValueType instanceof PointerType) {
-
-                }
-            }
-        }
-    }
-    */
 }

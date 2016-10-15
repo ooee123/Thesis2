@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by ooee on 9/25/16.
  */
@@ -16,5 +19,23 @@ public class SelectionStatementSwitch implements SelectionStatement {
     @Override
     public String toCode() {
         return String.format("switch (%s) %s", expression.toCode(), statement.toCode());
+    }
+
+    @Override
+    public Set<String> getDependantVariables() {
+        Set<String> dependentVariables = new HashSet<>();
+        dependentVariables.addAll(expression.getVariables());
+        dependentVariables.addAll(statement.getDependantVariables());
+        return dependentVariables;
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        Set<String> changedVariables = new HashSet<>();
+        if (expression instanceof Assigning) {
+            changedVariables.addAll(((Assigning) expression).getLValues());
+        }
+        changedVariables.addAll(statement.getChangedVariables());
+        return changedVariables;
     }
 }

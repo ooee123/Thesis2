@@ -2,6 +2,7 @@ package ast;
 
 import com.google.common.collect.Lists;
 import lombok.Value;
+import pdg.PDGNode;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,4 +47,65 @@ public class CompoundStatement implements Statement {
             return new CompoundStatement(compoundStatement);
         }
     }
+
+    @Override
+    public Set<String> getDependantVariables() {
+        Set<String> assignedValues = new HashSet<>();
+        Set<String> incomingValues = new HashSet<>();
+        for (BlockItem blockItem : blockItems) {
+            if (blockItem instanceof Statement) {
+                Statement statement = (Statement) blockItem;
+                Set<String> dependantVariables = statement.getDependantVariables();
+                dependantVariables.removeAll(assignedValues);
+                incomingValues.addAll(dependantVariables);
+                assignedValues.addAll(statement.getChangedVariables());
+            }
+        }
+        return incomingValues;
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        Set<String> declaredVariables = getDeclaredVariables();
+        Set<String> changedVariables = new HashSet<>();
+        for (BlockItem blockItem : blockItems) {
+            if (blockItem instanceof Statement) {
+                changedVariables.addAll(((Statement) blockItem).getChangedVariables());
+            }
+        }
+        changedVariables.removeAll(declaredVariables);
+        return changedVariables;
+    }
+
+    public Set<String> getDeclaredVariables() {
+        Set<String> declaredVariables = new HashSet<>();
+        for (BlockItem blockItem : blockItems) {
+            if (blockItem instanceof Declaration) {
+                List<Declaration.DeclaredVariable> declaredVariablesList = ((Declaration) blockItem).getDeclaredVariables();
+                for (Declaration.DeclaredVariable declaredVariable : declaredVariablesList) {
+                    declaredVariables.add(declaredVariable.getIdentifier());
+                }
+            }
+        }
+        return declaredVariables;
+    }
+
+    /*
+    public CompoundStatementGroups toCompoundStatementGroups() {
+        List<Declaration> declarations = new ArrayList<>();
+        List<Statement> statements = new ArrayList<>();
+
+        for (BlockItem blockItem : blockItems) {
+            if (blockItem instanceof Declaration) {
+                List<Declaration.DeclaredVariable> declaredVariables = ((Declaration) blockItem).getDeclaredVariables();
+                for (Declaration.DeclaredVariable declaredVariable : declaredVariables) {
+                    if (declaredVariable.getInitializer() != null) {
+                        statements.add(new ExpressionStatement(new AssignmentExpressionImpl(new PrimaryExpressionIdentifier(declaredVariable.getIdentifier()))));
+                    }
+                }
+            }
+        }
+
+    }
+    */
 }

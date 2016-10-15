@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by ooee on 9/25/16.
  */
@@ -32,5 +35,29 @@ public class SelectionStatementIf implements SelectionStatement {
         } else {
             return base;
         }
+    }
+
+    @Override
+    public Set<String> getDependantVariables() {
+        Set<String> dependentVariables = new HashSet<>();
+        dependentVariables.addAll(condition.getVariables());
+        dependentVariables.addAll(thenStatement.getDependantVariables());
+        if (elseStatement != null) {
+            dependentVariables.addAll(elseStatement.getDependantVariables());
+        }
+        return dependentVariables;
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        Set<String> changedVariables = new HashSet<>();
+        if (condition instanceof Assigning) {
+            changedVariables.addAll(((Assigning) condition).getLValues());
+        }
+        changedVariables.addAll(thenStatement.getChangedVariables());
+        if (elseStatement != null) {
+            changedVariables.addAll(elseStatement.getChangedVariables());
+        }
+        return changedVariables;
     }
 }

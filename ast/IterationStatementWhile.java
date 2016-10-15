@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by ooee on 9/25/16.
  */
@@ -16,5 +19,23 @@ public class IterationStatementWhile implements IterationStatement {
     @Override
     public String toCode() {
         return String.format("while (%s) %s", condition.toCode(), statement.toCode());
+    }
+
+    @Override
+    public Set<String> getDependantVariables() {
+        Set<String> dependentVariables = new HashSet<>();
+        dependentVariables.addAll(condition.getVariables());
+        dependentVariables.addAll(statement.getDependantVariables());
+        return dependentVariables;
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        Set<String> changedVariables = new HashSet<>();
+        if (condition instanceof Assigning) {
+            changedVariables.addAll(((Assigning) condition).getLValues());
+        }
+        changedVariables.addAll(statement.getChangedVariables());
+        return changedVariables;
     }
 }
