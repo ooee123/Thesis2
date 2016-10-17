@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * Created by ooee on 9/26/16.
  */
 @Value
-public class CommaExpression implements Expression, Assigning {
+public class CommaExpression implements Expression {
     private List<AssignmentExpression> assignmentExpressions;
 
     @Override
@@ -22,17 +22,15 @@ public class CommaExpression implements Expression, Assigning {
     }
 
     @Override
-    public Set<String> getLValues() {
+    public Set<String> getChangedVariables() {
         return Collections.emptySet();
     }
 
     @Override
-    public Set<String> getRightVariables() {
+    public Set<String> getDependentVariables() {
         Set<String> rightVariables = new HashSet<>();
         for (AssignmentExpression assignmentExpression : assignmentExpressions) {
-            if (assignmentExpression instanceof Assigning) {
-                rightVariables.addAll(((Assigning) assignmentExpression).getRightVariables());
-            }
+            rightVariables.addAll(( assignmentExpression).getDependentVariables());
         }
         return rightVariables;
     }
@@ -44,5 +42,14 @@ public class CommaExpression implements Expression, Assigning {
             variables.addAll(assignmentExpression.getVariables());
         }
         return variables;
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+        for (AssignmentExpression assignmentExpression : assignmentExpressions) {
+            invocations.addAll(assignmentExpression.getInvocations());
+        }
+        return invocations;
     }
 }

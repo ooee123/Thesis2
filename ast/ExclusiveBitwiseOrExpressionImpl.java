@@ -21,8 +21,18 @@ public class ExclusiveBitwiseOrExpressionImpl implements ExclusiveBitwiseOrExpre
     }
 
     @Override
-    public Set<String> getLValues() {
-        return Collections.emptySet();
+    public Set<String> getDependentVariables() {
+        return multiGetDependentVariables(bitwiseAndExpressions.toArray(new Expression[0]));
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return multiGetInvocations(bitwiseAndExpressions.toArray(new Expression[0]));
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        return multiGetChangedVariables(bitwiseAndExpressions.toArray(new Expression[0]));
     }
 
     @Override

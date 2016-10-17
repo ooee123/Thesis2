@@ -2,7 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,13 +9,13 @@ import java.util.Set;
  * Created by ooee on 9/26/16.
  */
 @Value
-public class PostfixExpressionArrayAccessImpl implements PostfixExpression, Assigning {
+public class PostfixExpressionArrayAccessImpl implements PostfixExpression {
     private PostfixExpression postfixExpression;
     private Expression arrayIndex;
 
     @Override
-    public Set<String> getLValues() {
-        return postfixExpression.getLValues();
+    public Set<String> getChangedVariables() {
+        return multiGetChangedVariables(postfixExpression, arrayIndex);
     }
 
     public String toCode() {
@@ -25,18 +24,16 @@ public class PostfixExpressionArrayAccessImpl implements PostfixExpression, Assi
 
     @Override
     public Set<String> getVariables() {
-        Set<String> variables = new HashSet<>();
-        variables.addAll(postfixExpression.getVariables());
-        variables.addAll(arrayIndex.getVariables());
-        return variables;
+        return multiGetVariables(postfixExpression, arrayIndex);
     }
 
     @Override
-    public Set<String> getRightVariables() {
-        if (arrayIndex instanceof Assigning) {
-            return ((Assigning) arrayIndex).getRightVariables();
-        } else {
-            return Collections.emptySet();
-        }
+    public Set<String> getDependentVariables() {
+        return multiGetDependentVariables(postfixExpression, arrayIndex);
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return multiGetInvocations(postfixExpression, arrayIndex);
     }
 }

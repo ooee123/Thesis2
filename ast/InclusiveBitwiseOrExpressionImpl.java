@@ -21,8 +21,8 @@ public class InclusiveBitwiseOrExpressionImpl implements InclusiveBitwiseOrExpre
     }
 
     @Override
-    public Set<String> getLValues() {
-        return Collections.emptySet();
+    public Set<String> getChangedVariables() {
+        return multiGetChangedVariables(exclusiveBitwiseOrExpressions.toArray(new Expression[0]));
     }
 
     @Override
@@ -32,5 +32,15 @@ public class InclusiveBitwiseOrExpressionImpl implements InclusiveBitwiseOrExpre
             variables.addAll(exclusiveBitwiseOrExpression.getVariables());
         }
         return variables;
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        return multiGetDependentVariables(exclusiveBitwiseOrExpressions.toArray(new Expression[0]));
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return multiGetInvocations(exclusiveBitwiseOrExpressions.toArray(new Expression[0]));
     }
 }

@@ -1,9 +1,7 @@
 package ast;
 
-import ast.type.Type;
 import lombok.Value;
 
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -39,8 +37,18 @@ public class UnaryExpressionUnaryOperatorImpl implements UnaryExpression {
     private CastExpression castExpression;
 
     @Override
-    public Set<String> getLValues() {
-        return castExpression.getLValues();
+    public Set<String> getChangedVariables() {
+        return castExpression.getChangedVariables();
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        return castExpression.getDependentVariables();
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return castExpression.getInvocations();
     }
 
     public String toCode() {

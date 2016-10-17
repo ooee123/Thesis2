@@ -42,15 +42,28 @@ public class EqualityExpressionImpl implements EqualityExpression {
     }
 
     @Override
-    public Set<String> getLValues() {
-        return Collections.emptySet();
+    public Set<String> getChangedVariables() {
+        return multiGet(exp -> exp.getChangedVariables(), equalityExpression, relationalExpression);
     }
 
     @Override
     public Set<String> getVariables() {
+        return multiGet(exp -> exp.getVariables(), equalityExpression, relationalExpression);
+        /*
         Set<String> variables = new HashSet<>();
         variables.addAll(equalityExpression.getVariables());
         variables.addAll(relationalExpression.getVariables());
         return variables;
+        */
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        return multiGet(exp -> exp.getDependentVariables(), equalityExpression, relationalExpression);
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return multiGet(exp -> exp.getInvocations(), equalityExpression, relationalExpression);
     }
 }

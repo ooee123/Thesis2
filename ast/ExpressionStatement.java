@@ -1,7 +1,6 @@
 package ast;
 
 import lombok.Value;
-import pdg.PDGNode;
 
 import java.util.Collections;
 import java.util.Set;
@@ -20,21 +19,16 @@ public class ExpressionStatement implements Statement {
 
     @Override
     public Set<String> getDependantVariables() {
-        if (expression instanceof Assigning) {
-            Assigning assigning = (Assigning) expression;
-            Set<String> usedVariables = assigning.getRightVariables();
-            return usedVariables;
-        }
-        return expression.getVariables();
+        return expression.getDependentVariables();
     }
 
     @Override
     public Set<String> getChangedVariables() {
-        if (expression instanceof Assigning) {
-            Assigning assigning = (Assigning) expression;
-            Set<String> changedVariables = assigning.getLValues();
-            return changedVariables;
-        }
-        return Collections.emptySet();
+        return expression.getChangedVariables();
+    }
+
+    @Override
+    public boolean isCritical() {
+        return !expression.getInvocations().isEmpty();
     }
 }

@@ -3,6 +3,8 @@ package ast;
 import com.google.common.collect.Sets;
 import lombok.Value;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -12,11 +14,6 @@ import java.util.Set;
 public class PrimaryExpressionIdentifier implements PrimaryExpression {
     private String identifier;
 
-    @Override
-    public Set<String> getLValues() {
-        return Sets.newHashSet(identifier);
-    }
-
     public String toCode() {
         return identifier;
     }
@@ -24,5 +21,20 @@ public class PrimaryExpressionIdentifier implements PrimaryExpression {
     @Override
     public Set<String> getVariables() {
         return Sets.newHashSet(identifier);
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        return Sets.newHashSet(identifier);
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return Collections.emptySet();
     }
 }

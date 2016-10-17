@@ -9,7 +9,7 @@ import java.util.Set;
  * Created by ooee on 9/25/16.
  */
 @Value
-public class JumpContinueStatement implements JumpStatement {
+public class JumpContinueStatement implements JumpStatementStrict {
     @Override
     public String toCode() {
         return "continue;";
@@ -23,5 +23,10 @@ public class JumpContinueStatement implements JumpStatement {
     @Override
     public Set<String> getChangedVariables() {
         return Collections.emptySet();
+    }
+
+    @Override
+    public boolean isCritical() {
+        return true;
     }
 }

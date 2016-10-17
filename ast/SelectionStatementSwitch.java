@@ -32,10 +32,13 @@ public class SelectionStatementSwitch implements SelectionStatement {
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
-        if (expression instanceof Assigning) {
-            changedVariables.addAll(((Assigning) expression).getLValues());
-        }
+        changedVariables.addAll(expression.getChangedVariables());
         changedVariables.addAll(statement.getChangedVariables());
         return changedVariables;
+    }
+
+    @Override
+    public boolean isCritical() {
+        return true;
     }
 }

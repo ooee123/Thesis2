@@ -6,6 +6,7 @@ import lombok.Value;
 import java.util.Collections;
 import java.util.Set;
 
+
 /**
  * Created by ooee on 9/26/16.
  */
@@ -14,8 +15,18 @@ public class UnaryExpressionSizeofExpressionImpl implements UnaryExpression {
     private UnaryExpression unaryExpression;
 
     @Override
-    public Set<String> getLValues() {
-        return Collections.emptySet();
+    public Set<String> getDependentVariables() {
+        return unaryExpression.getDependentVariables();
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return unaryExpression.getInvocations();
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        return unaryExpression.getChangedVariables();
     }
 
     public String toCode() {

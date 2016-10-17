@@ -65,4 +65,9 @@ public class Declaration implements BlockItem {
         }
         return actualType.toCode() + " " + String.join(", ", declaredVariableCode) + ";";
     }
+
+    @Override
+    public boolean isCritical() {
+        return true;
+    }
 }

@@ -41,8 +41,18 @@ public class MultiplicativeExpressionImpl implements MultiplicativeExpression {
     }
 
     @Override
-    public Set<String> getLValues() {
-        return Collections.emptySet();
+    public Set<String> getChangedVariables() {
+        return multiGetChangedVariables(multiplicativeExpression, castExpression);
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        return multiGetDependentVariables(multiplicativeExpression, castExpression);
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return multiGetInvocations(multiplicativeExpression, castExpression);
     }
 
     @Override

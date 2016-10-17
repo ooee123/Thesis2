@@ -20,8 +20,8 @@ public class LogicalAndExpressionImpl implements LogicalAndExpression {
     }
 
     @Override
-    public Set<String> getLValues() {
-        return Collections.emptySet();
+    public Set<String> getChangedVariables() {
+        return multiGetChangedVariables(inclusiveBitwiseOrExpressions.toArray(new Expression[0]));
     }
 
     @Override
@@ -31,5 +31,15 @@ public class LogicalAndExpressionImpl implements LogicalAndExpression {
             variables.addAll(inclusiveBitwiseOrExpression.getVariables());
         }
         return variables;
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        return multiGetDependentVariables(inclusiveBitwiseOrExpressions.toArray(new Expression[0]));
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return multiGetInvocations(inclusiveBitwiseOrExpressions.toArray(new Expression[0]));
     }
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * Created by ooee on 9/27/16.
  */
 @Value
-public class InitializerList implements AssignmentExpression, Assigning {
+public class InitializerList implements AssignmentExpression {
     public static final String TOKEN = ",";
 
     private List<AssignmentExpression> assignmentExpressions;
@@ -23,10 +23,10 @@ public class InitializerList implements AssignmentExpression, Assigning {
     }
 
     @Override
-    public Set<String> getLValues() {
+    public Set<String> getChangedVariables() {
         Set<String> lValues = new HashSet<>();
         for (AssignmentExpression assignmentExpression : assignmentExpressions) {
-            lValues.addAll(assignmentExpression.getLValues());
+            lValues.addAll((assignmentExpression).getChangedVariables());
         }
         return lValues;
     }
@@ -41,13 +41,16 @@ public class InitializerList implements AssignmentExpression, Assigning {
     }
 
     @Override
-    public Set<String> getRightVariables() {
+    public Set<String> getDependentVariables() {
         Set<String> rightVariables = new HashSet<>();
         for (AssignmentExpression assignmentExpression : assignmentExpressions) {
-            if (assignmentExpression instanceof Assigning) {
-                rightVariables.addAll(((Assigning) assignmentExpression).getRightVariables());
-            }
+            rightVariables.addAll(assignmentExpression.getDependentVariables());
         }
         return rightVariables;
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return multiGetInvocations(assignmentExpressions.toArray(new Expression[0]));
     }
 }

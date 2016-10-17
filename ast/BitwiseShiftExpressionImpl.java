@@ -41,7 +41,7 @@ public class BitwiseShiftExpressionImpl implements BitwiseShiftExpression {
     }
 
     @Override
-    public Set<String> getLValues() {
+    public Set<String> getChangedVariables() {
         return Collections.emptySet();
     }
 
@@ -51,5 +51,21 @@ public class BitwiseShiftExpressionImpl implements BitwiseShiftExpression {
         variables.addAll(bitwiseShiftExpression.getVariables());
         variables.addAll(additiveExpression.getVariables());
         return variables;
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        Set<String> dependentVariables = new HashSet<>();
+        dependentVariables.addAll(bitwiseShiftExpression.getDependentVariables());
+        dependentVariables.addAll(additiveExpression.getDependentVariables());
+        return dependentVariables;
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+        invocations.addAll(bitwiseShiftExpression.getInvocations());
+        invocations.addAll(additiveExpression.getInvocations());
+        return invocations;
     }
 }

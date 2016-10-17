@@ -13,17 +13,27 @@ import java.util.Set;
 public class UnaryExpressionSizeofTypeImpl implements UnaryExpression {
     private Type type;
 
-    @Override
-    public Set<String> getLValues() {
-        return Collections.emptySet();
-    }
-
     public String toCode() {
         return "sizeof(" + type.toString() + ")";
     }
 
     @Override
     public Set<String> getVariables() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
         return Collections.emptySet();
     }
 }

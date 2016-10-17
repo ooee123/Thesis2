@@ -26,4 +26,9 @@ public class LabeledIdentifierStatement implements LabeledStatement {
     public Set<String> getChangedVariables() {
         return statement.getChangedVariables();
     }
+
+    @Override
+    public boolean isCritical() {
+        return false;
+    }
 }

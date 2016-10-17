@@ -9,7 +9,7 @@ import java.util.Set;
  * Created by ooee on 9/25/16.
  */
 @Value
-public class JumpReturnStatement implements JumpStatement {
+public class JumpReturnStatement implements JumpStatementStrict {
     private Expression returnExpression;
 
     @Override
@@ -19,19 +19,16 @@ public class JumpReturnStatement implements JumpStatement {
 
     @Override
     public Set<String> getDependantVariables() {
-        if (returnExpression instanceof Assigning) {
-            return ((Assigning) returnExpression).getRightVariables();
-        } else {
-            return returnExpression.getVariables();
-        }
+        return returnExpression.getDependentVariables();
     }
 
     @Override
     public Set<String> getChangedVariables() {
-        if (returnExpression instanceof Assigning) {
-            return returnExpression.getLValues();
-        } else {
-            return Collections.emptySet();
-        }
+        return returnExpression.getChangedVariables();
+    }
+
+    @Override
+    public boolean isCritical() {
+        return true;
     }
 }

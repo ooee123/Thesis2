@@ -2,7 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,18 +19,22 @@ public class AdditiveExpressionImplTree implements AdditiveExpression {
     }
 
     @Override
-    public Set<String> getLValues() {
-        Set<String> lValues = new HashSet<>();
-        lValues.addAll(additiveExpression.getLValues());
-        lValues.addAll(multiplicativeExpression.getLValues());
-        return lValues;
+    public Set<String> getDependentVariables() {
+        return multiGetDependentVariables(additiveExpression, multiplicativeExpression);
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        return multiGetChangedVariables(additiveExpression, multiplicativeExpression);
     }
 
     @Override
     public Set<String> getVariables() {
-        Set<String> variables = new HashSet<>();
-        variables.addAll(additiveExpression.getVariables());
-        variables.addAll(multiplicativeExpression.getVariables());
-        return variables;
+        return multiGetVariables(additiveExpression, multiplicativeExpression);
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return multiGetInvocations(additiveExpression, multiplicativeExpression);
     }
 }

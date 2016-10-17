@@ -28,17 +28,27 @@ public class PrimaryExpressionConstant implements PrimaryExpression {
         value = s;
     }
 
-    @Override
-    public Set<String> getLValues() {
-        return Collections.emptySet();
-    }
-
     public String toCode() {
         return value.toString();
     }
 
     @Override
     public Set<String> getVariables() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
         return Collections.emptySet();
     }
 }

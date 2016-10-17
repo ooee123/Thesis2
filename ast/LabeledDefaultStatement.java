@@ -26,4 +26,9 @@ public class LabeledDefaultStatement implements LabeledStatement {
     public Set<String> getChangedVariables() {
         return Collections.emptySet();
     }
+
+    @Override
+    public boolean isCritical() {
+        return true;
+    }
 }

@@ -2,6 +2,7 @@ package ast;
 
 import lombok.Value;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -35,8 +36,13 @@ public class PostfixExpressionStructAccessImpl implements PostfixExpression {
     private String identifier;
 
     @Override
-    public Set<String> getLValues() {
-        return postfixExpression.getLValues();
+    public Set<String> getChangedVariables() {
+        return postfixExpression.getChangedVariables();
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        return postfixExpression.getDependentVariables();
     }
 
     public String toCode() {
@@ -46,5 +52,10 @@ public class PostfixExpressionStructAccessImpl implements PostfixExpression {
     @Override
     public Set<String> getVariables() {
         return postfixExpression.getVariables();
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return postfixExpression.getInvocations();
     }
 }

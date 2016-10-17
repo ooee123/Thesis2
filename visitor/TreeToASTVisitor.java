@@ -479,10 +479,10 @@ public class TreeToASTVisitor {
             switch (firstToken) {
                 case "++":
                     unaryExpression = visit(ctx.unaryExpression());
-                    return new UnaryExpressionImpl(UnaryExpressionImpl.IncrementOperator.PREFIX_INCREMENT, unaryExpression);
+                    return new UnaryExpressionIncrementImpl(UnaryExpressionIncrementImpl.IncrementOperator.PREFIX_INCREMENT, unaryExpression);
                 case "--":
                     unaryExpression = visit(ctx.unaryExpression());
-                    return new UnaryExpressionImpl(UnaryExpressionImpl.IncrementOperator.PREFIX_DECREMENT, unaryExpression);
+                    return new UnaryExpressionIncrementImpl(UnaryExpressionIncrementImpl.IncrementOperator.PREFIX_DECREMENT, unaryExpression);
                 case "sizeof":
                     if (ctx.unaryExpression() != null) {
                         unaryExpression = visit(ctx.unaryExpression());
@@ -522,9 +522,9 @@ public class TreeToASTVisitor {
                     identifier = ctx.Identifier().getSymbol().getText();
                     return new PostfixExpressionStructAccessImpl(postfixExpression, PostfixExpressionStructAccessImpl.AccessOperator.ARROW, identifier);
                 case "++":
-                    return new PostfixExpressionImpl(postfixExpression, PostfixExpressionImpl.PostfixOperator.POSTFIX_INCREMENT);
+                    return new PostfixExpressionIncrementImpl(postfixExpression, PostfixExpressionIncrementImpl.PostfixOperator.POSTFIX_INCREMENT);
                 case "--":
-                    return new PostfixExpressionImpl(postfixExpression, PostfixExpressionImpl.PostfixOperator.POSTFIX_DECREMENT);
+                    return new PostfixExpressionIncrementImpl(postfixExpression, PostfixExpressionIncrementImpl.PostfixOperator.POSTFIX_DECREMENT);
                 default:
                     return null;
             }

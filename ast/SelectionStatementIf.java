@@ -1,9 +1,7 @@
 package ast;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -51,13 +49,17 @@ public class SelectionStatementIf implements SelectionStatement {
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
-        if (condition instanceof Assigning) {
-            changedVariables.addAll(((Assigning) condition).getLValues());
-        }
+        changedVariables.addAll(condition.getChangedVariables());
         changedVariables.addAll(thenStatement.getChangedVariables());
         if (elseStatement != null) {
             changedVariables.addAll(elseStatement.getChangedVariables());
         }
         return changedVariables;
+    }
+
+    @Override
+    public boolean isCritical() {
+        //TODO
+        return true;
     }
 }

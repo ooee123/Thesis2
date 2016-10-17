@@ -44,15 +44,22 @@ public class RelationalExpressionImpl implements RelationalExpression {
     }
 
     @Override
-    public Set<String> getLValues() {
-        return Collections.emptySet();
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return multiGetInvocations(relationalExpression, bitwiseShiftExpression);
     }
 
     @Override
     public Set<String> getVariables() {
-        Set<String> variables = new HashSet<>();
-        variables.addAll(relationalExpression.getVariables());
-        variables.addAll(bitwiseShiftExpression.getVariables());
-        return variables;
+        return multiGetVariables(relationalExpression, bitwiseShiftExpression);
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        return multiGetDependentVariables(relationalExpression, bitwiseShiftExpression);
+    }
+
+    @Override
+    public Set<String> getChangedVariables() {
+        return multiGetChangedVariables(relationalExpression, bitwiseShiftExpression);
     }
 }

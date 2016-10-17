@@ -8,6 +8,7 @@ import java.util.Set;
 /**
  * Created by ooee on 10/6/16.
  */
+//TODO: This is incorrect, need to consider for switch statements
 @Value
 public class LabeledCaseStatement implements LabeledStatement {
     private ConditionalExpression conditionalExpression;
@@ -20,15 +21,16 @@ public class LabeledCaseStatement implements LabeledStatement {
 
     @Override
     public Set<String> getDependantVariables() {
-        return conditionalExpression.getVariables();
+        return conditionalExpression.getDependentVariables();
     }
 
     @Override
     public Set<String> getChangedVariables() {
-        if (conditionalExpression instanceof Assigning) {
-            return ((Assigning) conditionalExpression).getLValues();
-        } else {
-            return Collections.emptySet();
-        }
+        return conditionalExpression.getChangedVariables();
+    }
+
+    @Override
+    public boolean isCritical() {
+        return true;
     }
 }

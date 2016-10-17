@@ -30,8 +30,42 @@ public class ConditionalExpressionImpl implements ConditionalExpression {
     }
 
     @Override
-    public Set<String> getLValues() {
-        return Collections.emptySet();
+    public Set<String> getChangedVariables() {
+        Set<String> changedVariables = new HashSet<>();
+        changedVariables.addAll(logicalOrExpression.getChangedVariables());
+        if (trueExpression != null) {
+            changedVariables.addAll(trueExpression.getChangedVariables());
+        }
+        if (falseExpression != null) {
+            changedVariables.addAll(falseExpression.getChangedVariables());
+        }
+        return changedVariables;
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        Set<String> dependentVariables = new HashSet<>();
+        dependentVariables.addAll(logicalOrExpression.getDependentVariables());
+        if (trueExpression != null) {
+            dependentVariables.addAll(trueExpression.getDependentVariables());
+        }
+        if (falseExpression != null) {
+            dependentVariables.addAll(falseExpression.getDependentVariables());
+        }
+        return dependentVariables;
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+        invocations.addAll(logicalOrExpression.getInvocations());
+        if (trueExpression != null) {
+            invocations.addAll(trueExpression.getInvocations());
+        }
+        if (falseExpression != null) {
+            invocations.addAll(falseExpression.getInvocations());
+        }
+        return invocations;
     }
 
     @Override

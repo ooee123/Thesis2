@@ -3,8 +3,6 @@ package visitor;
 import ast.*;
 import ast.type.Type;
 import lombok.Data;
-import lombok.Value;
-import pdg.PDGNode;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -115,28 +113,28 @@ public class ASTGeneralVisitor {
         if (statement instanceof ExpressionStatement) {
             Expression expression = ((ExpressionStatement) statement).getExpression();
             System.out.println(expression.toCode());
-            System.out.println(expression.getLValues());
+            System.out.println(expression.getChangedVariables());
             System.out.println("=====");
         } else if (statement instanceof IterationStatementFor) {
             IterationStatementFor iterationStatementFor = (IterationStatementFor) statement;
             if (iterationStatementFor.getInitial() != null) {
-                System.out.println(iterationStatementFor.getInitial().getLValues());
+                System.out.println(iterationStatementFor.getInitial().getChangedVariables());
             }
             if (iterationStatementFor.getCondition() != null) {
-                System.out.println(iterationStatementFor.getCondition().getLValues());
+                System.out.println(iterationStatementFor.getCondition().getChangedVariables());
             }
             if (iterationStatementFor.getIteration() != null) {
-                System.out.println(iterationStatementFor.getIteration().getLValues());
+                System.out.println(iterationStatementFor.getIteration().getChangedVariables());
             }
 
             walk(iterationStatementFor.getStatement());
         } else if (statement instanceof IterationStatementWhile) {
             IterationStatementWhile iterationStatementWhile = (IterationStatementWhile) statement;
-            System.out.println(iterationStatementWhile.getCondition().getLValues());
+            System.out.println(iterationStatementWhile.getCondition().getChangedVariables());
             walk(iterationStatementWhile.getStatement());
         } else if (statement instanceof SelectionStatementIf) {
             SelectionStatementIf selectionStatementIf = (SelectionStatementIf) statement;
-            System.out.println(selectionStatementIf.getCondition().getLValues());
+            System.out.println(selectionStatementIf.getCondition().getChangedVariables());
             walk(selectionStatementIf.getThenStatement());
             if (selectionStatementIf.getElseStatement() != null) {
                 walk(selectionStatementIf.getElseStatement());
@@ -145,15 +143,15 @@ public class ASTGeneralVisitor {
             IterationStatementDeclareFor iterationStatementDeclareFor = (IterationStatementDeclareFor) statement;
             walk(iterationStatementDeclareFor.getDeclaration());
             if (iterationStatementDeclareFor.getCondition() != null) {
-                System.out.println(iterationStatementDeclareFor.getCondition().getLValues());
+                System.out.println(iterationStatementDeclareFor.getCondition().getChangedVariables());
             }
             if (iterationStatementDeclareFor.getIteration() != null) {
-                System.out.println(iterationStatementDeclareFor.getIteration().getLValues());
+                System.out.println(iterationStatementDeclareFor.getIteration().getChangedVariables());
             }
             walk(iterationStatementDeclareFor.getStatement());
         } else if (statement instanceof IterationStatementDoWhile) {
             IterationStatementDoWhile iterationStatementDoWhile = (IterationStatementDoWhile) statement;
-            System.out.println(iterationStatementDoWhile.getCondition().getLValues());
+            System.out.println(iterationStatementDoWhile.getCondition().getChangedVariables());
             walk(iterationStatementDoWhile.getStatement());
         } else if (statement instanceof CompoundStatement) {
             CompoundStatement compoundStatement = (CompoundStatement) statement;
@@ -190,11 +188,11 @@ public class ASTGeneralVisitor {
             if (unaryOperator.equals(UnaryExpressionUnaryOperatorImpl.UnaryOperator.DEREFERENCE)) {
 
             }
-        } else if (expression instanceof UnaryExpressionImpl) {
-            walk(((UnaryExpressionImpl) expression).getUnaryExpression());
+        } else if (expression instanceof UnaryExpressionIncrementImpl) {
+            walk(((UnaryExpressionIncrementImpl) expression).getUnaryExpression());
         } else {
             System.out.println("LValue:");
-            System.out.println(expression.getLValues());
+            System.out.println(expression.getChangedVariables());
         }
     }
 
@@ -204,7 +202,7 @@ public class ASTGeneralVisitor {
                 AssignmentExpression initializer = declaredVariable.getInitializer();
                 if (initializer instanceof AssignmentExpressionImpl) {
                     AssignmentExpressionImpl initializer1 = (AssignmentExpressionImpl) initializer;
-                    System.out.println(initializer1.getLValues());
+                    System.out.println(initializer1.getChangedVariables());
                 }
                 System.out.println("[" + declaredVariable.getIdentifier() + "]");
             }

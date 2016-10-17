@@ -15,6 +15,11 @@ public class CompoundStatement implements Statement {
     private List<BlockItem> blockItems;
 
     @Override
+    public boolean isCritical() {
+        return blockItems.stream().anyMatch(itm -> itm.isCritical());
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         int number = 1;

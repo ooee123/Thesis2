@@ -32,15 +32,39 @@ public class AdditiveExpressionImplGroups implements AdditiveExpression {
     }
 
     @Override
-    public Set<String> getLValues() {
+    public Set<String> getChangedVariables() {
         Set<String> lValues = new HashSet<>();
         for (MultiplicativeExpression addingTerm : addingTerms) {
-            lValues.addAll(addingTerm.getLValues());
+            lValues.addAll(addingTerm.getChangedVariables());
         }
         for (MultiplicativeExpression subtractingTerm : subtractingTerms) {
-            lValues.addAll(subtractingTerm.getLValues());
+            lValues.addAll(subtractingTerm.getChangedVariables());
         }
         return lValues;
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        Set<String> dependentVariables = new HashSet<>();
+        for (MultiplicativeExpression addingTerm : addingTerms) {
+            dependentVariables.addAll(addingTerm.getDependentVariables());
+        }
+        for (MultiplicativeExpression subtractingTerm : subtractingTerms) {
+            dependentVariables.addAll(subtractingTerm.getDependentVariables());
+        }
+        return dependentVariables;
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+        for (MultiplicativeExpression addingTerm : addingTerms) {
+            invocations.addAll(addingTerm.getInvocations());
+        }
+        for (MultiplicativeExpression subtractingTerm : subtractingTerms) {
+            invocations.addAll(subtractingTerm.getInvocations());
+        }
+        return invocations;
     }
 
     @Override

@@ -52,16 +52,21 @@ public class IterationStatementFor implements IterationStatement {
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
-        if (iteration != null && iteration instanceof Assigning) {
-            changedVariables.addAll(((Assigning) iteration).getLValues());
+        if (iteration != null) {
+            changedVariables.addAll(iteration.getChangedVariables());
         }
-        if (condition != null && condition instanceof Assigning) {
-            changedVariables.addAll(((Assigning) condition).getLValues());
+        if (condition != null) {
+            changedVariables.addAll(condition.getChangedVariables());
         }
-        if (iteration != null && iteration instanceof Assigning) {
-            changedVariables.addAll(((Assigning) iteration).getLValues());
+        if (iteration != null) {
+            changedVariables.addAll(iteration.getChangedVariables());
         }
         changedVariables.addAll(statement.getChangedVariables());
         return changedVariables;
+    }
+
+    @Override
+    public boolean isCritical() {
+        return true;
     }
 }

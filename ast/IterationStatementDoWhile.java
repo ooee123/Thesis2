@@ -31,10 +31,13 @@ public class IterationStatementDoWhile implements IterationStatement {
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
-        if (condition instanceof Assigning) {
-            changedVariables.addAll(((Assigning) condition).getLValues());
-        }
+        changedVariables.addAll(condition.getChangedVariables());
         changedVariables.addAll(statement.getChangedVariables());
         return changedVariables;
+    }
+
+    @Override
+    public boolean isCritical() {
+        return true;
     }
 }

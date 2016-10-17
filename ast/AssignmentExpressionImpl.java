@@ -9,7 +9,7 @@ import java.util.Set;
  * Created by ooee on 9/26/16.
  */
 @Value
-public class AssignmentExpressionImpl implements AssignmentExpression, Assigning {
+public class AssignmentExpressionImpl implements AssignmentExpression {
 
     public enum AssignmentOperator {
         ASSIGNMENT("="),
@@ -55,22 +55,43 @@ public class AssignmentExpressionImpl implements AssignmentExpression, Assigning
     }
 
     @Override
-    public Set<String> getLValues() {
+    public Set<String> getChangedVariables() {
         Set<String> lValues = new HashSet<>();
-        if (assignmentExpression instanceof Assigning) {
-            lValues.addAll(assignmentExpression.getLValues());
-        }
-        lValues.addAll(unaryExpression.getLValues());
+        lValues.addAll(assignmentExpression.getChangedVariables());
+        lValues.addAll(unaryExpression.getVariables());
         return lValues;
     }
 
     @Override
-    public Set<String> getRightVariables() {
-        if (assignmentExpression instanceof Assigning) {
-            return ((Assigning) assignmentExpression).getRightVariables();
-        } else {
-            return assignmentExpression.getVariables();
+    public Set<String> getDependentVariables() {
+        Set<String> dependentVariables = new HashSet<>();
+        dependentVariables.addAll(assignmentExpression.getDependentVariables());
+        if (unaryExpression instanceof UnaryExpressionUnaryOperatorImpl) {
+            UnaryExpressionUnaryOperatorImpl unaryExpression = (UnaryExpressionUnaryOperatorImpl) this.unaryExpression;
+            if (unaryExpression.getUnaryOperator().equals(UnaryExpressionUnaryOperatorImpl.UnaryOperator.DEREFERENCE)) {
+                // Is a dereference operator
+                // We'll do a grand sweeping one. All involved variables on left side are dependent
+                dependentVariables.addAll(unaryExpression.getVariables());
+            }
         }
+        if (unaryExpression instanceof PostfixExpressionArrayAccessImpl) {
+            PostfixExpressionArrayAccessImpl unaryExpression = (PostfixExpressionArrayAccessImpl) this.unaryExpression;
+            // Array access
+            unaryExpression.getDependentVariables();
+        }
+        if (!assignmentOperator.equals(AssignmentOperator.ASSIGNMENT)) {
+            dependentVariables.addAll(unaryExpression.getVariables());
+        }
+        return dependentVariables;
+
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+        invocations.addAll(unaryExpression.getInvocations());
+        invocations.addAll(assignmentExpression.getInvocations());
+        return invocations;
     }
 
     @Override

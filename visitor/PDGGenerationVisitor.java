@@ -1,6 +1,8 @@
 package visitor;
 
 import ast.*;
+import ast.Function;
+import ast.type.PointerType;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import pdg.PDGNode;
@@ -11,27 +13,31 @@ import java.util.stream.Collectors;
 @Value
 public class PDGGenerationVisitor extends ASTGeneralVisitor {
 
+    public Collection<PDGNode> getPDGNodes() {
+        return allNodes.values();
+    }
+
     private Map<BlockItem, PDGNode> allNodes = new IdentityHashMap<>();
 
     public void link(BlockItem from, BlockItem to) {
         if (!allNodes.containsKey(from)) {
-            allNodes.put(from, new PDGNode(from, new ArrayList<>(), new ArrayList<>()));
+            allNodes.put(from, new PDGNode(from, from.isCritical()));
         }
         if (!allNodes.containsKey(to)) {
-            allNodes.put(to, new PDGNode(to, new ArrayList<>(), new ArrayList<>()));
+            allNodes.put(to, new PDGNode(to, to.isCritical()));
         }
         PDGNode fromNode = allNodes.get(from), toNode = allNodes.get(to);
         fromNode.getIsADependencyFor().add(toNode);
-        //toNode.getDependsOn().add(fromNode);
+        toNode.getDependsOn().add(fromNode);
     }
 
     public void printAdjacencyMatrix() {
         int i = 0;
         String label;
-        System.out.println("Identity Matrix");
+        System.out.println("Adjacency Matrix");
         Map<PDGNode, String> labels = new IdentityHashMap<>();
         for (PDGNode pdgNode : allNodes.values()) {
-            label = String.valueOf(Character.valueOf((char)('A' + i)));
+            label = String.valueOf(Character.valueOf((char) ('A' + i)));
             labels.put(pdgNode, label);
             System.out.println(label + " := " + pdgNode.getBlockItem().toCode());
             i++;
@@ -68,17 +74,10 @@ public class PDGGenerationVisitor extends ASTGeneralVisitor {
 
     private void nullableExpression(Expression expression, Dependencies dependencies) {
         if (expression != null) {
-            if (expression instanceof Assigning) {
-                Set<String> rightVariables = ((Assigning) expression).getRightVariables();
-                System.out.println(rightVariables);
-                rightVariables.removeAll(dependencies.changedVariables);
-                dependencies.dependentVariables.addAll(rightVariables);
-                dependencies.changedVariables.addAll(expression.getLValues());
-            } else {
-                Set<String> variables = expression.getVariables();
-                variables.removeAll(dependencies.changedVariables);
-                dependencies.dependentVariables.addAll(variables);
-            }
+            Set<String> rightVariables = expression.getDependentVariables();
+            rightVariables.removeAll(dependencies.changedVariables);
+            dependencies.dependentVariables.addAll(rightVariables);
+            dependencies.changedVariables.addAll(expression.getChangedVariables());
         }
     }
 
@@ -90,8 +89,25 @@ public class PDGGenerationVisitor extends ASTGeneralVisitor {
 
     private void visit(Program p) {
         for (Function function : p.getFunction()) {
-            visit(function.getCompoundStatement());
+            visit(function);
         }
+    }
+
+    private Dependencies visit(Function function) {
+        Dependencies functionDependencies = visit(function.getCompoundStatement());
+        for (Parameter parameter : function.getParameterList().getParameters()) {
+            // If the type is a pointer, mark it as changed.
+            //functionDependencies.
+
+
+            if (parameter.getType() instanceof PointerType && functionDependencies.changedVariables.contains(parameter.getFormalParameterName())) {
+                // Pointer value changed
+
+            }
+        }
+        visit(function.getCompoundStatement());
+        //functionDependencies.getChangedVariables()
+        return null;
     }
 
     private Dependencies visit(Statement statement) {
@@ -164,30 +180,28 @@ public class PDGGenerationVisitor extends ASTGeneralVisitor {
     }
 
     private Dependencies visit(Expression expression) {
-        if (expression instanceof Assigning) {
-            Assigning assigning = (Assigning) expression;
-            Set<String> usedVariables = assigning.getRightVariables();
-            Set<String> lValues = assigning.getLValues();
-            return new Dependencies(usedVariables, lValues);
-        } else {
-            return new Dependencies(expression.getVariables(), Collections.emptySet());
-        }
+        Set<String> dependentVariables = expression.getDependentVariables();
+        Set<String> changedVariables = expression.getChangedVariables();
+        return new Dependencies(dependentVariables, changedVariables);
     }
 
     private Dependencies visit(CompoundStatement statement) {
         Map<String, BlockItem> lastAssigned = new HashMap<>();
         Set<String> incomingValues = new HashSet<>();
         for (BlockItem blockItem : statement.getBlockItems()) {
+            System.out.println(blockItem);
             if (blockItem instanceof Statement) {
-                Dependencies dependencies = visit(((Statement) blockItem));
-                System.out.println("\nProcessing for " + blockItem);
+                Dependencies dependencies;
+                if (blockItem instanceof JumpStatementStrict) {
+                    dependencies = new Dependencies(lastAssigned.keySet(), Collections.emptySet());
+                } else {
+                    dependencies = visit(((Statement) blockItem));
+                }
                 System.out.println(dependencies);
-                printLastAssigned(lastAssigned);
                 for (String usedVariable : dependencies.getDependentVariables()) {
                     if (!lastAssigned.containsKey(usedVariable)) {
                         incomingValues.add(usedVariable);
                     } else {
-                        System.out.println("Depends on " + usedVariable);
                         BlockItem from = lastAssigned.get(usedVariable);
                         BlockItem to = blockItem;
                         link(from, to);
@@ -196,17 +210,22 @@ public class PDGGenerationVisitor extends ASTGeneralVisitor {
                 for (String changedVariables : dependencies.getChangedVariables()) {
                     lastAssigned.put(changedVariables, blockItem);
                 }
-                System.out.println("---");
                 printLastAssigned(lastAssigned);
+                if (blockItem instanceof JumpStatementStrict) {
+                    return new Dependencies(incomingValues, lastAssigned.keySet());
+                }
             } else if (blockItem instanceof Declaration) {
                 Declaration declaration = (Declaration) blockItem;
                 for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
-                    if (declaredVariable.getInitializer() instanceof Assigning) {
+                    if (declaredVariable.getInitializer() == null) {
                         lastAssigned.put(declaredVariable.getIdentifier(), declaration);
-                        Set<String> rightVariables = ((Assigning) declaredVariable.getInitializer()).getRightVariables();
+                    } else {
+                        lastAssigned.put(declaredVariable.getIdentifier(), declaration);
+                        Expression initializer = declaredVariable.getInitializer();
+                        Set<String> rightVariables = initializer.getDependentVariables();
                         rightVariables.removeAll(lastAssigned.keySet());
                         incomingValues.addAll(rightVariables);
-                        for (String lvalue : declaredVariable.getInitializer().getLValues()) {
+                        for (String lvalue : initializer.getChangedVariables()) {
                             lastAssigned.put(lvalue, declaration);
                         }
                     }

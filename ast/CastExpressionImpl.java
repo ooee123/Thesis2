@@ -14,12 +14,22 @@ public class CastExpressionImpl implements CastExpression {
     private CastExpression castExpression;
 
     @Override
-    public Set<String> getLValues() {
-        return castExpression.getLValues();
+    public Set<String> getChangedVariables() {
+        return castExpression.getChangedVariables();
     }
 
     public String toCode() {
         return "(" + type.toString() + ")" + castExpression.toCode();
+    }
+
+    @Override
+    public Set<String> getDependentVariables() {
+        return castExpression.getDependentVariables();
+    }
+
+    @Override
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return castExpression.getInvocations();
     }
 
     @Override
