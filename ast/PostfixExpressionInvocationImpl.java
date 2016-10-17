@@ -17,23 +17,17 @@ public class PostfixExpressionInvocationImpl implements PostfixExpression {
 
     @Override
     public Set<String> getChangedVariables() {
-        Set<String> lValues = new HashSet<>();
+        Set<String> changedVariables = new HashSet<>();
         for (AssignmentExpression argument : arguments) {
-            lValues.addAll(argument.getChangedVariables());
+            changedVariables.addAll(argument.getChangedVariables());
         }
         if (postfixExpression instanceof PrimaryExpressionIdentifier) {
             String functionName = ((PrimaryExpressionIdentifier) postfixExpression).getIdentifier();
-            //TODO: Get arguments that change
-            //Set<String> changedVariables = getChangedVariables(arguments);
-            Set<String> changedVariables = new HashSet<>();
-            for (AssignmentExpression argument : arguments) {
-                changedVariables.addAll(argument.getVariables());
-            }
-            lValues.addAll(changedVariables);
+            //TODO: Get pointer arguments, and add them to changedVariables
         } else if (postfixExpression instanceof PostfixExpressionStructAccessImpl) {
             System.err.println("Invoking a function as a member field");
         }
-        return lValues;
+        return changedVariables;
     }
 
     public String toCode() {

@@ -12,10 +12,10 @@ import static ast.Declaration.DeclaredVariable;
 
 @Data
 public class ASTGeneralVisitor {
-    protected TypeScope globalScope;
-    protected Map<Statement, TypeScope> functionScopes;
-    protected Map<String, Type> functionTypes;
-    protected Program program;
+    private TypeScope globalScope;
+    private Map<Statement, TypeScope> functionScopes;
+    private Map<String, Type> functionTypes;
+    private Program program;
 
     public ASTGeneralVisitor(Program p) {
         this.program = p;
@@ -112,9 +112,6 @@ public class ASTGeneralVisitor {
     public void walk(Statement statement) {
         if (statement instanceof ExpressionStatement) {
             Expression expression = ((ExpressionStatement) statement).getExpression();
-            System.out.println(expression.toCode());
-            System.out.println(expression.getChangedVariables());
-            System.out.println("=====");
         } else if (statement instanceof IterationStatementFor) {
             IterationStatementFor iterationStatementFor = (IterationStatementFor) statement;
             if (iterationStatementFor.getInitial() != null) {

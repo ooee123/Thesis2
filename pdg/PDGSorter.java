@@ -14,7 +14,7 @@ public class PDGSorter {
     private Collection<PDGNode> nodes;
 
     public void process() {
-        //processNonPrerequisiteNodes();
+        processNonPrerequisiteNodes();
         int previousSize = 0;
         while (previousSize != nodes.size()) {
             processNode(pickNextNode(getReadyNodes()));
@@ -59,7 +59,7 @@ public class PDGSorter {
         Collection<PDGNode> nonPreNodes = new ArrayList<>();
 
         for (PDGNode node : nodes) {
-            if (node.getIsADependencyFor().isEmpty()) {
+            if (node.getIsADependencyFor().isEmpty() && !node.isRequired()) {
                 nonPreNodes.add(node);
             }
         }
@@ -67,7 +67,7 @@ public class PDGSorter {
         while (nonPreNodes.size() != size) {
             size = nonPreNodes.size();
             for (PDGNode node : nodes) {
-                if (node.getIsADependencyFor().isEmpty()) {
+                if (node.getIsADependencyFor().isEmpty() && !node.isRequired()) {
                     nonPreNodes.add(node);
                 }
             }

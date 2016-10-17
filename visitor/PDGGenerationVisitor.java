@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Value
-public class PDGGenerationVisitor extends ASTGeneralVisitor {
+public class PDGGenerationVisitor {
 
     public Collection<PDGNode> getPDGNodes() {
         return allNodes.values();
@@ -49,14 +49,15 @@ public class PDGGenerationVisitor extends ASTGeneralVisitor {
             List<String> destLabels = pdgNode.getIsADependencyFor().stream().map(node -> labels.get(node)).collect(Collectors.toList());
             System.out.println(String.join(", ", destLabels));
         }
+        System.out.println("End Matrix");
     }
 
 
     @Value
     @AllArgsConstructor
     class Dependencies {
-        Set<String> dependentVariables;
-        Set<String> changedVariables;
+        private Set<String> dependentVariables;
+        private Set<String> changedVariables;
 
         Dependencies() {
             dependentVariables = Collections.emptySet();
@@ -81,16 +82,11 @@ public class PDGGenerationVisitor extends ASTGeneralVisitor {
         }
     }
 
-    public PDGGenerationVisitor(Program p) {
-        super(p);
-        visit(p);
-        printAdjacencyMatrix();
-    }
-
-    private void visit(Program p) {
+    public void visit(Program p) {
         for (Function function : p.getFunction()) {
             visit(function);
         }
+        printAdjacencyMatrix();
     }
 
     private Dependencies visit(Function function) {
@@ -189,8 +185,8 @@ public class PDGGenerationVisitor extends ASTGeneralVisitor {
         Map<String, BlockItem> lastAssigned = new HashMap<>();
         Set<String> incomingValues = new HashSet<>();
         for (BlockItem blockItem : statement.getBlockItems()) {
-            System.out.println(blockItem);
             if (blockItem instanceof Statement) {
+                System.out.println(blockItem.toCode());
                 Dependencies dependencies;
                 if (blockItem instanceof JumpStatementStrict) {
                     dependencies = new Dependencies(lastAssigned.keySet(), Collections.emptySet());
@@ -210,7 +206,6 @@ public class PDGGenerationVisitor extends ASTGeneralVisitor {
                 for (String changedVariables : dependencies.getChangedVariables()) {
                     lastAssigned.put(changedVariables, blockItem);
                 }
-                printLastAssigned(lastAssigned);
                 if (blockItem instanceof JumpStatementStrict) {
                     return new Dependencies(incomingValues, lastAssigned.keySet());
                 }
