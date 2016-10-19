@@ -2,6 +2,9 @@ package pdg;
 
 import ast.BlockItem;
 import ast.CompoundStatement;
+import ast.Statement;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.Value;
 
@@ -13,23 +16,24 @@ import java.util.Collection;
  */
 @Value
 public class PDGNodeCompoundStatement extends PDGNode<CompoundStatement> {
-    @NonNull private CompoundStatement compoundStatement;
     private Collection<PDGNode> body;
-    private Collection<PDGNode> isADependencyFor;
-    private Collection<PDGNode> dependsOn;
-    private boolean required;
 
-    public PDGNodeCompoundStatement(BlockItem blockItem) {
-        this(blockItem, false);
+    public PDGNodeCompoundStatement(CompoundStatement compoundStatement, Collection<PDGNode> body) {
+        this(compoundStatement, body, false);
     }
 
-    public PDGNodeCompoundStatement(BlockItem blockItem, boolean required) {
-        this.blockItem = blockItem;
-        this.isADependencyFor = new ArrayList<>();
-        this.dependsOn = new ArrayList<>();
-        this.required = required;
+    public PDGNodeCompoundStatement(CompoundStatement compoundStatement, Collection<PDGNode> body, boolean required) {
+        super(compoundStatement, required);
+        this.body = body;
     }
 
-    public String toCode(PDGSorterDefault sorter) {
+    @Override
+    public CompoundStatement sort(PDGSorter sorter) {
+        Statement sort = sorter.sort(body);
+        if (body.size() > 1) {
+            return ((CompoundStatement) sort);
+        } else {
+            return new CompoundStatement(Lists.newArrayList(sort));
+        }
     }
 }

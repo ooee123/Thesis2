@@ -1,10 +1,12 @@
 package pdg;
 
 import ast.BlockItem;
+import ast.CompoundStatement;
 import ast.SelectionStatementIf;
 import ast.Statement;
 import lombok.Value;
 
+import java.rmi.activation.ActivationGroup_Stub;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,27 +24,34 @@ public class PDGSorterDefault implements PDGSorter {
      * @return
      */
     @Override
-    public List<BlockItem> sort(Collection<PDGNode> nodes) {
+    public Statement sort(Collection<PDGNode> nodes) {
         List<BlockItem> blockItems = new ArrayList<>();
-        processNonPrerequisiteNodes();
-        int previousSize = 0;
-        while (previousSize != nodes.size()) {
+        //processNonPrerequisiteNodes(nodes);
+        while (nodes.size() > 0) {
+            System.out.println(nodes.size());
             Collection<PDGNode> candidateNextNodes = getReadyNodes(nodes);
+            System.out.println(candidateNextNodes.size());
             PDGNode chosenNode = pickNextNode(candidateNextNodes);
             removeNode(chosenNode, nodes);
             blockItems.add(processNode(chosenNode));
         }
-        return blockItems;
+        if (blockItems.size() > 1) {
+            return new CompoundStatement(blockItems);
+        } else {
+            return ((Statement) blockItems.get(0));
+        }
     }
 
     public Set<PDGNode> getPDGForest(PDGNode node, Set<PDGNode> forest) {
-        for (PDGNode dependsOn : node.getDependsOn()) {
+        for (Object obj : node.getDependsOn()) {
+            PDGNode dependsOn = (PDGNode) obj;
             if (!forest.contains(dependsOn)) {
                 forest.add(dependsOn);
                 getPDGForest(dependsOn, forest);
             }
         }
-        for (PDGNode<? extends BlockItem> aDependencyFor : node.getIsADependencyFor()) {
+        for (Object obj : node.getIsADependencyFor()) {
+            PDGNode aDependencyFor = (PDGNode) obj;
             if (!forest.contains(aDependencyFor)) {
                 forest.add(aDependencyFor);
                 getPDGForest(aDependencyFor, forest);
@@ -88,7 +97,7 @@ public class PDGSorterDefault implements PDGSorter {
         return readyNodes;
     }
 
-    private Collection<PDGNode> processNonPrerequisiteNodes() {
+    private Collection<PDGNode> processNonPrerequisiteNodes(Collection<PDGNode> nodes) {
         int size = 0;
         Collection<PDGNode> nonPreNodes = new ArrayList<>();
 

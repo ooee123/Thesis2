@@ -49,11 +49,6 @@ public class IterationStatementWhile implements IterationStatement {
         return true;
     }
 
-    @Override
-    public PDGNodeWhile getPDGNode() {
-        return new PDGNodeWhile(this);
-    }
-
     public static String toCode(String conditionCode, String statementCode) {
         return String.format("while (%s) %s", conditionCode, statementCode);
     }

@@ -13,7 +13,7 @@ import java.util.Collection;
  */
 
 public abstract class PDGNode<T extends BlockItem> {
-    @NonNull T blockItem;
+    @Getter @NonNull T blockItem;
     @Getter Collection<PDGNode<? extends BlockItem>> isADependencyFor;
     @Getter Collection<PDGNode<? extends BlockItem>> dependsOn;
     @Getter boolean required;

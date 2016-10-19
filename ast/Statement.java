@@ -15,8 +15,6 @@ public interface Statement extends BlockItem {
 
     Set<String> getGuaranteedChangedVariables();
 
-    <T extends PDGNode> T getPDGNode();
-
     default Set<String> getPotentiallyChangedVariables() {
         Set<String> potentiallyChangedVariables = new HashSet<>(getChangedVariables());
         potentiallyChangedVariables.removeAll(getGuaranteedChangedVariables());

@@ -1,33 +1,31 @@
 package pdg;
 
-import ast.BlockItem;
 import ast.Expression;
+import ast.IterationStatementDoWhile;
 import ast.IterationStatementWhile;
 import ast.Statement;
 import lombok.Value;
-
-import java.util.List;
 
 /**
  * Created by ooee on 10/9/16.
  */
 @Value
-public class PDGNodeWhile extends PDGNode<IterationStatementWhile> {
+public class PDGNodeDoWhile extends PDGNode<IterationStatementDoWhile> {
     private PDGNode<? extends Statement> body;
 
-    public PDGNodeWhile(IterationStatementWhile statement, PDGNode<? extends Statement> body) {
+    public PDGNodeDoWhile(IterationStatementDoWhile statement, PDGNode<? extends Statement> body) {
         this(statement, body, false);
     }
 
-    public PDGNodeWhile(IterationStatementWhile statement, PDGNode<? extends Statement> body, boolean required) {
+    public PDGNodeDoWhile(IterationStatementDoWhile statement, PDGNode<? extends Statement> body, boolean required) {
         super(statement, required);
         this.body = body;
     }
 
-    public IterationStatementWhile sort(PDGSorter sorter) {
+    public IterationStatementDoWhile sort(PDGSorter sorter) {
         Expression condition = blockItem.getCondition();
         Statement statement = body.sort(sorter);
-        return new IterationStatementWhile(condition, statement);
+        return new IterationStatementDoWhile(statement, condition);
     }
 
     public String toCode(PDGSorterDefault sorter) {
