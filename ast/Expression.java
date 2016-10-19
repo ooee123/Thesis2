@@ -1,10 +1,8 @@
 package ast;
 
-import java.lang.reflect.Method;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.*;
 
 /**
  * Created by ooee on 9/25/16.
@@ -14,7 +12,11 @@ public interface Expression extends BaseElement {
 
     Set<String> getDependentVariables();
 
-    Set<String> getChangedVariables();
+    Set<String> getGuaranteedChangedVariables();
+
+    default Set<String> getPotentiallyChangedVariables() {
+        return Collections.emptySet();
+    }
 
     Set<PostfixExpressionInvocationImpl> getInvocations();
 
@@ -34,11 +36,17 @@ public interface Expression extends BaseElement {
         return multiGet(exp -> exp.getDependentVariables(), expressions);
     }
 
-    default Set<String> multiGetChangedVariables(Expression... expressions) {
-        return multiGet(exp -> exp.getChangedVariables(), expressions);
+    default Set<String> multiGetGuaranteedChangedVariables(Expression... expressions) {
+        return multiGet(exp -> exp.getGuaranteedChangedVariables(), expressions);
+    }
+
+    default Set<String> multiGetPotentiallyChangedVariables(Expression... expressions) {
+        return multiGet(exp -> exp.getPotentiallyChangedVariables(), expressions);
     }
 
     default Set<PostfixExpressionInvocationImpl> multiGetInvocations(Expression... expressions) {
         return multiGet(exp -> exp.getInvocations(), expressions);
     }
+
+
 }

@@ -2,6 +2,7 @@ package ast;
 
 import lombok.Value;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -30,5 +31,15 @@ public class LabeledIdentifierStatement implements LabeledStatement {
     @Override
     public boolean isCritical() {
         return false;
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        return statement.getGuaranteedChangedVariables();
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        return statement.getPotentiallyChangedVariables();
     }
 }

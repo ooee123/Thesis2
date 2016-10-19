@@ -1,6 +1,7 @@
 package pdg;
 
 import ast.BlockItem;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
 
@@ -10,21 +11,23 @@ import java.util.Collection;
 /**
  * Created by ooee on 10/9/16.
  */
-@Value
-public class PDGNode {
-    @NonNull private BlockItem blockItem;
-    private Collection<PDGNode> isADependencyFor;
-    private Collection<PDGNode> dependsOn;
-    private boolean required;
 
-    public PDGNode(BlockItem blockItem) {
+public abstract class PDGNode<T extends BlockItem> {
+    @NonNull T blockItem;
+    @Getter Collection<PDGNode<? extends BlockItem>> isADependencyFor;
+    @Getter Collection<PDGNode<? extends BlockItem>> dependsOn;
+    @Getter boolean required;
+
+    public PDGNode(T blockItem) {
         this(blockItem, false);
     }
 
-    public PDGNode(BlockItem blockItem, boolean required) {
+    public PDGNode(T blockItem, boolean required) {
         this.blockItem = blockItem;
         this.isADependencyFor = new ArrayList<>();
         this.dependsOn = new ArrayList<>();
         this.required = required;
     }
+
+    public abstract T sort(PDGSorter sorter);
 }

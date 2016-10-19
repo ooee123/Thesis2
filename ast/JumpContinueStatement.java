@@ -26,6 +26,16 @@ public class JumpContinueStatement implements JumpStatementStrict {
     }
 
     @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        return Collections.emptySet();
+    }
+
+    @Override
     public boolean isCritical() {
         return true;
     }

@@ -18,6 +18,10 @@ public class IterationStatementFor implements IterationStatement {
     private Expression iteration;
     @NonNull private Statement statement;
 
+    public static String toCode(String initialCode, String conditionCode, String iterationCode, String statementCode) {
+        return String.format("for (%s; %s; %s) %s", initialCode, conditionCode, iterationCode, statementCode);
+    }
+
     @Override
     public String toCode() {
         String initialString = "", conditionString = "", iterationString = "";
@@ -30,7 +34,7 @@ public class IterationStatementFor implements IterationStatement {
         if (iteration != null) {
             iterationString = iteration.toCode();
         }
-        return String.format("for (%s; %s; %s) %s", initialString, conditionString, iterationString, statement.toCode());
+        return toCode(initialString, conditionString, iterationString, statement.toCode());
     }
 
     @Override
@@ -53,16 +57,34 @@ public class IterationStatementFor implements IterationStatement {
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
         if (iteration != null) {
-            changedVariables.addAll(iteration.getChangedVariables());
+            changedVariables.addAll(iteration.getGuaranteedChangedVariables());
         }
         if (condition != null) {
-            changedVariables.addAll(condition.getChangedVariables());
+            changedVariables.addAll(condition.getGuaranteedChangedVariables());
         }
         if (iteration != null) {
-            changedVariables.addAll(iteration.getChangedVariables());
+            changedVariables.addAll(iteration.getGuaranteedChangedVariables());
         }
         changedVariables.addAll(statement.getChangedVariables());
         return changedVariables;
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        Set<String> guaranteedChangedVariables = new HashSet<>();
+        guaranteedChangedVariables.addAll(initial.getGuaranteedChangedVariables());
+        guaranteedChangedVariables.addAll(condition.getGuaranteedChangedVariables());
+        return guaranteedChangedVariables;
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        Set<String> potentiallyChangedVariables = new HashSet<>();
+        potentiallyChangedVariables.addAll(initial.getPotentiallyChangedVariables());
+        potentiallyChangedVariables.addAll(condition.getPotentiallyChangedVariables());
+        potentiallyChangedVariables.addAll(statement.getPotentiallyChangedVariables());
+        potentiallyChangedVariables.addAll(iteration.getPotentiallyChangedVariables());
+        return potentiallyChangedVariables;
     }
 
     @Override

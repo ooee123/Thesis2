@@ -2,7 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -24,11 +23,21 @@ public class JumpReturnStatement implements JumpStatementStrict {
 
     @Override
     public Set<String> getChangedVariables() {
-        return returnExpression.getChangedVariables();
+        return returnExpression.getGuaranteedChangedVariables();
     }
 
     @Override
     public boolean isCritical() {
         return true;
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        return returnExpression.getPotentiallyChangedVariables();
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        return returnExpression.getGuaranteedChangedVariables();
     }
 }

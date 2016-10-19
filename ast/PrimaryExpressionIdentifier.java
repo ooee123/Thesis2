@@ -29,7 +29,7 @@ public class PrimaryExpressionIdentifier implements PrimaryExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         return Collections.emptySet();
     }
 

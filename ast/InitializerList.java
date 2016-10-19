@@ -23,10 +23,10 @@ public class InitializerList implements AssignmentExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         Set<String> lValues = new HashSet<>();
         for (AssignmentExpression assignmentExpression : assignmentExpressions) {
-            lValues.addAll((assignmentExpression).getChangedVariables());
+            lValues.addAll((assignmentExpression).getGuaranteedChangedVariables());
         }
         return lValues;
     }

@@ -31,8 +31,8 @@ public class ExclusiveBitwiseOrExpressionImpl implements ExclusiveBitwiseOrExpre
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        return multiGetChangedVariables(bitwiseAndExpressions.toArray(new Expression[0]));
+    public Set<String> getGuaranteedChangedVariables() {
+        return multiGetGuaranteedChangedVariables(bitwiseAndExpressions.toArray(new Expression[0]));
     }
 
     @Override

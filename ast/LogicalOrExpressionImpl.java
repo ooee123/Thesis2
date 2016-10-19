@@ -20,8 +20,8 @@ public class LogicalOrExpressionImpl implements LogicalOrExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        return multiGetChangedVariables(logicalAndExpressions.toArray(new Expression[0]));
+    public Set<String> getGuaranteedChangedVariables() {
+        return multiGetGuaranteedChangedVariables(logicalAndExpressions.toArray(new Expression[0]));
     }
 
     @Override

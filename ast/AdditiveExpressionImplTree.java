@@ -2,7 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -24,8 +23,8 @@ public class AdditiveExpressionImplTree implements AdditiveExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        return multiGetChangedVariables(additiveExpression, multiplicativeExpression);
+    public Set<String> getGuaranteedChangedVariables() {
+        return multiGetGuaranteedChangedVariables(additiveExpression, multiplicativeExpression);
     }
 
     @Override

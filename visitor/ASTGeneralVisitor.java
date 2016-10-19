@@ -115,23 +115,23 @@ public class ASTGeneralVisitor {
         } else if (statement instanceof IterationStatementFor) {
             IterationStatementFor iterationStatementFor = (IterationStatementFor) statement;
             if (iterationStatementFor.getInitial() != null) {
-                System.out.println(iterationStatementFor.getInitial().getChangedVariables());
+                System.out.println(iterationStatementFor.getInitial().getGuaranteedChangedVariables());
             }
             if (iterationStatementFor.getCondition() != null) {
-                System.out.println(iterationStatementFor.getCondition().getChangedVariables());
+                System.out.println(iterationStatementFor.getCondition().getGuaranteedChangedVariables());
             }
             if (iterationStatementFor.getIteration() != null) {
-                System.out.println(iterationStatementFor.getIteration().getChangedVariables());
+                System.out.println(iterationStatementFor.getIteration().getGuaranteedChangedVariables());
             }
 
             walk(iterationStatementFor.getStatement());
         } else if (statement instanceof IterationStatementWhile) {
             IterationStatementWhile iterationStatementWhile = (IterationStatementWhile) statement;
-            System.out.println(iterationStatementWhile.getCondition().getChangedVariables());
+            System.out.println(iterationStatementWhile.getCondition().getGuaranteedChangedVariables());
             walk(iterationStatementWhile.getStatement());
         } else if (statement instanceof SelectionStatementIf) {
             SelectionStatementIf selectionStatementIf = (SelectionStatementIf) statement;
-            System.out.println(selectionStatementIf.getCondition().getChangedVariables());
+            System.out.println(selectionStatementIf.getCondition().getGuaranteedChangedVariables());
             walk(selectionStatementIf.getThenStatement());
             if (selectionStatementIf.getElseStatement() != null) {
                 walk(selectionStatementIf.getElseStatement());
@@ -140,15 +140,15 @@ public class ASTGeneralVisitor {
             IterationStatementDeclareFor iterationStatementDeclareFor = (IterationStatementDeclareFor) statement;
             walk(iterationStatementDeclareFor.getDeclaration());
             if (iterationStatementDeclareFor.getCondition() != null) {
-                System.out.println(iterationStatementDeclareFor.getCondition().getChangedVariables());
+                System.out.println(iterationStatementDeclareFor.getCondition().getGuaranteedChangedVariables());
             }
             if (iterationStatementDeclareFor.getIteration() != null) {
-                System.out.println(iterationStatementDeclareFor.getIteration().getChangedVariables());
+                System.out.println(iterationStatementDeclareFor.getIteration().getGuaranteedChangedVariables());
             }
             walk(iterationStatementDeclareFor.getStatement());
         } else if (statement instanceof IterationStatementDoWhile) {
             IterationStatementDoWhile iterationStatementDoWhile = (IterationStatementDoWhile) statement;
-            System.out.println(iterationStatementDoWhile.getCondition().getChangedVariables());
+            System.out.println(iterationStatementDoWhile.getCondition().getGuaranteedChangedVariables());
             walk(iterationStatementDoWhile.getStatement());
         } else if (statement instanceof CompoundStatement) {
             CompoundStatement compoundStatement = (CompoundStatement) statement;
@@ -189,7 +189,7 @@ public class ASTGeneralVisitor {
             walk(((UnaryExpressionIncrementImpl) expression).getUnaryExpression());
         } else {
             System.out.println("LValue:");
-            System.out.println(expression.getChangedVariables());
+            System.out.println(expression.getGuaranteedChangedVariables());
         }
     }
 
@@ -199,7 +199,7 @@ public class ASTGeneralVisitor {
                 AssignmentExpression initializer = declaredVariable.getInitializer();
                 if (initializer instanceof AssignmentExpressionImpl) {
                     AssignmentExpressionImpl initializer1 = (AssignmentExpressionImpl) initializer;
-                    System.out.println(initializer1.getChangedVariables());
+                    System.out.println(initializer1.getGuaranteedChangedVariables());
                 }
                 System.out.println("[" + declaredVariable.getIdentifier() + "]");
             }

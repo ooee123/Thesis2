@@ -49,12 +49,24 @@ public class SelectionStatementIf implements SelectionStatement {
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
-        changedVariables.addAll(condition.getChangedVariables());
+        changedVariables.addAll(condition.getGuaranteedChangedVariables());
         changedVariables.addAll(thenStatement.getChangedVariables());
         if (elseStatement != null) {
             changedVariables.addAll(elseStatement.getChangedVariables());
         }
         return changedVariables;
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        if (elseStatement != null) {
+            Set<String> changedVariables = new HashSet<>(thenStatement.getChangedVariables());
+            changedVariables.retainAll(elseStatement.getChangedVariables());
+            changedVariables.addAll(condition.getGuaranteedChangedVariables());
+            return changedVariables;
+        } else {
+            return condition.getGuaranteedChangedVariables();
+        }
     }
 
     @Override

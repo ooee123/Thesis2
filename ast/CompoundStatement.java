@@ -34,10 +34,14 @@ public class CompoundStatement implements Statement {
         return builder.toString();
     }
 
+    public static String toCode(String body) {
+        return "{\n" + body + "\n}";
+    }
+
     @Override
     public String toCode() {
         List<String> codes = collectionToCode(blockItems);
-        return "{\n" + String.join("\n", codes) + "\n}";
+        return toCode(String.join("\n", codes));
     }
 
     public static CompoundStatement addToEnd(BlockItem toBeAdded, Statement body) {
@@ -93,6 +97,17 @@ public class CompoundStatement implements Statement {
             }
         }
         return declaredVariables;
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        Set<String> guaranteedChangedVariables = new HashSet<>();
+        for (BlockItem blockItem : blockItems) {
+            if (blockItem instanceof Statement) {
+                guaranteedChangedVariables.addAll(((Statement) blockItem).getGuaranteedChangedVariables());
+            }
+        }
+        return guaranteedChangedVariables;
     }
 
     /*

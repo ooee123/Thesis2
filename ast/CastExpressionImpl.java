@@ -14,8 +14,8 @@ public class CastExpressionImpl implements CastExpression {
     private CastExpression castExpression;
 
     @Override
-    public Set<String> getChangedVariables() {
-        return castExpression.getChangedVariables();
+    public Set<String> getGuaranteedChangedVariables() {
+        return castExpression.getGuaranteedChangedVariables();
     }
 
     public String toCode() {

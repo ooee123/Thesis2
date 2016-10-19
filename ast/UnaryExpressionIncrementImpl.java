@@ -2,7 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,9 +19,9 @@ public class UnaryExpressionIncrementImpl implements UnaryExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
-        changedVariables.addAll(unaryExpression.getChangedVariables());
+        changedVariables.addAll(unaryExpression.getGuaranteedChangedVariables());
         changedVariables.addAll(unaryExpression.getVariables());
         return changedVariables;
     }

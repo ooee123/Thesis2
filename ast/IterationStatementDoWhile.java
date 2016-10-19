@@ -31,9 +31,25 @@ public class IterationStatementDoWhile implements IterationStatement {
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
-        changedVariables.addAll(condition.getChangedVariables());
+        changedVariables.addAll(condition.getGuaranteedChangedVariables());
         changedVariables.addAll(statement.getChangedVariables());
         return changedVariables;
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        Set<String> potentiallyChangedVariables = new HashSet<>();
+        potentiallyChangedVariables.addAll(statement.getPotentiallyChangedVariables());
+        potentiallyChangedVariables.addAll(statement.getPotentiallyChangedVariables());
+        return potentiallyChangedVariables;
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        Set<String> guaranteedChangedVariables = new HashSet<>();
+        guaranteedChangedVariables.addAll(statement.getGuaranteedChangedVariables());
+        guaranteedChangedVariables.addAll(statement.getGuaranteedChangedVariables());
+        return guaranteedChangedVariables;
     }
 
     @Override

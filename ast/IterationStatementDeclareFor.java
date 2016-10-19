@@ -52,17 +52,49 @@ public class IterationStatementDeclareFor implements IterationStatement {
         Set<String> changedVariables = new HashSet<>();
         for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
             if (declaredVariable.getInitializer() != null) {
-                changedVariables.addAll(declaredVariable.getInitializer().getChangedVariables());
+                changedVariables.addAll(declaredVariable.getInitializer().getGuaranteedChangedVariables());
             }
         }
         if (condition != null) {
-            changedVariables.addAll(condition.getChangedVariables());
+            changedVariables.addAll(condition.getGuaranteedChangedVariables());
         }
         if (iteration != null) {
-            changedVariables.addAll(iteration.getChangedVariables());
+            changedVariables.addAll(iteration.getGuaranteedChangedVariables());
         }
         changedVariables.addAll(statement.getChangedVariables());
         return changedVariables;
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        Set<String> guaranteedChangedVariables = new HashSet<>();
+        for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+            if (declaredVariable.getInitializer() != null) {
+                guaranteedChangedVariables.addAll(declaredVariable.getInitializer().getGuaranteedChangedVariables());
+            }
+        }
+        if (condition != null) {
+            guaranteedChangedVariables.addAll(condition.getGuaranteedChangedVariables());
+        }
+        return guaranteedChangedVariables;
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        Set<String> potentiallyChangedVariables = new HashSet<>();
+        for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+            if (declaredVariable.getInitializer() != null) {
+                potentiallyChangedVariables.addAll(declaredVariable.getInitializer().getPotentiallyChangedVariables());
+            }
+        }
+        if (condition != null) {
+            potentiallyChangedVariables.addAll(condition.getPotentiallyChangedVariables());
+        }
+        potentiallyChangedVariables.addAll(statement.getPotentiallyChangedVariables());
+        if (iteration != null) {
+            potentiallyChangedVariables.addAll(iteration.getPotentiallyChangedVariables());
+        }
+        return potentiallyChangedVariables;
     }
 
     @Override

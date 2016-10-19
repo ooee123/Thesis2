@@ -3,7 +3,6 @@ package ast;
 import lombok.NonNull;
 import lombok.Value;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,16 +29,36 @@ public class ConditionalExpressionImpl implements ConditionalExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
-        changedVariables.addAll(logicalOrExpression.getChangedVariables());
         if (trueExpression != null) {
-            changedVariables.addAll(trueExpression.getChangedVariables());
+            changedVariables.addAll(trueExpression.getGuaranteedChangedVariables());
+            if (falseExpression != null) {
+                changedVariables.retainAll(falseExpression.getGuaranteedChangedVariables());
+            }
         }
         if (falseExpression != null) {
-            changedVariables.addAll(falseExpression.getChangedVariables());
+            changedVariables.addAll(falseExpression.getGuaranteedChangedVariables());
+            if (trueExpression != null) {
+                changedVariables.retainAll(trueExpression.getGuaranteedChangedVariables());
+            }
         }
+        changedVariables.addAll(logicalOrExpression.getGuaranteedChangedVariables());
         return changedVariables;
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        Set<String> potentiallyChangedVariables = new HashSet<>();
+        potentiallyChangedVariables.addAll(logicalOrExpression.getGuaranteedChangedVariables());
+        if (trueExpression != null) {
+            potentiallyChangedVariables.addAll(trueExpression.getGuaranteedChangedVariables());
+        }
+        if (falseExpression != null) {
+            potentiallyChangedVariables.addAll(falseExpression.getGuaranteedChangedVariables());
+        }
+        potentiallyChangedVariables.removeAll(getGuaranteedChangedVariables());
+        return potentiallyChangedVariables;
     }
 
     @Override

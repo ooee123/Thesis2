@@ -2,7 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -14,8 +13,8 @@ public class PostfixExpressionArrayAccessImpl implements PostfixExpression {
     private Expression arrayIndex;
 
     @Override
-    public Set<String> getChangedVariables() {
-        return multiGetChangedVariables(postfixExpression, arrayIndex);
+    public Set<String> getGuaranteedChangedVariables() {
+        return multiGetGuaranteedChangedVariables(postfixExpression, arrayIndex);
     }
 
     public String toCode() {

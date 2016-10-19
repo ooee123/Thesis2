@@ -22,7 +22,7 @@ public class BitwiseAndExpressionImpl implements BitwiseAndExpression {
     }
 /*
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         return Collections.emptySet();
     }
 */
@@ -45,10 +45,10 @@ public class BitwiseAndExpressionImpl implements BitwiseAndExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
         for (EqualityExpression equalityExpression : equalityExpressions) {
-            changedVariables.addAll(equalityExpression.getChangedVariables());
+            changedVariables.addAll(equalityExpression.getGuaranteedChangedVariables());
         }
         return changedVariables;
     }

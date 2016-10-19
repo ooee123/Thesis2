@@ -2,7 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -41,8 +40,8 @@ public class MultiplicativeExpressionImpl implements MultiplicativeExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        return multiGetChangedVariables(multiplicativeExpression, castExpression);
+    public Set<String> getGuaranteedChangedVariables() {
+        return multiGetGuaranteedChangedVariables(multiplicativeExpression, castExpression);
     }
 
     @Override

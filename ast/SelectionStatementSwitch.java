@@ -32,9 +32,19 @@ public class SelectionStatementSwitch implements SelectionStatement {
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
-        changedVariables.addAll(expression.getChangedVariables());
+        changedVariables.addAll(expression.getGuaranteedChangedVariables());
         changedVariables.addAll(statement.getChangedVariables());
         return changedVariables;
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

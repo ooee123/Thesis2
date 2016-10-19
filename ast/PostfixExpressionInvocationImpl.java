@@ -5,7 +5,6 @@ import lombok.Value;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by ooee on 9/26/16.
@@ -16,10 +15,10 @@ public class PostfixExpressionInvocationImpl implements PostfixExpression {
     private List<AssignmentExpression> arguments;
 
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
         for (AssignmentExpression argument : arguments) {
-            changedVariables.addAll(argument.getChangedVariables());
+            changedVariables.addAll(argument.getGuaranteedChangedVariables());
         }
         if (postfixExpression instanceof PrimaryExpressionIdentifier) {
             String functionName = ((PrimaryExpressionIdentifier) postfixExpression).getIdentifier();

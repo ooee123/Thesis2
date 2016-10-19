@@ -28,7 +28,7 @@ public class UnaryExpressionSizeofTypeImpl implements UnaryExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         return Collections.emptySet();
     }
 

@@ -2,7 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -13,8 +12,8 @@ public class PrimaryExpressionParentheses implements PrimaryExpression {
     private Expression expression;
 
     @Override
-    public Set<String> getChangedVariables() {
-        return expression.getChangedVariables();
+    public Set<String> getGuaranteedChangedVariables() {
+        return expression.getGuaranteedChangedVariables();
     }
 
     public String toCode() {

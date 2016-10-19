@@ -41,7 +41,7 @@ public class BitwiseShiftExpressionImpl implements BitwiseShiftExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         return Collections.emptySet();
     }
 

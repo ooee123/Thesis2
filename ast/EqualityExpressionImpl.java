@@ -2,8 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -42,8 +40,8 @@ public class EqualityExpressionImpl implements EqualityExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        return multiGet(exp -> exp.getChangedVariables(), equalityExpression, relationalExpression);
+    public Set<String> getGuaranteedChangedVariables() {
+        return multiGet(exp -> exp.getGuaranteedChangedVariables(), equalityExpression, relationalExpression);
     }
 
     @Override

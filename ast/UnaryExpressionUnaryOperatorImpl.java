@@ -37,8 +37,8 @@ public class UnaryExpressionUnaryOperatorImpl implements UnaryExpression {
     private CastExpression castExpression;
 
     @Override
-    public Set<String> getChangedVariables() {
-        return castExpression.getChangedVariables();
+    public Set<String> getGuaranteedChangedVariables() {
+        return castExpression.getGuaranteedChangedVariables();
     }
 
     @Override

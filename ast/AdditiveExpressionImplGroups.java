@@ -32,13 +32,13 @@ public class AdditiveExpressionImplGroups implements AdditiveExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         Set<String> lValues = new HashSet<>();
         for (MultiplicativeExpression addingTerm : addingTerms) {
-            lValues.addAll(addingTerm.getChangedVariables());
+            lValues.addAll(addingTerm.getGuaranteedChangedVariables());
         }
         for (MultiplicativeExpression subtractingTerm : subtractingTerms) {
-            lValues.addAll(subtractingTerm.getChangedVariables());
+            lValues.addAll(subtractingTerm.getGuaranteedChangedVariables());
         }
         return lValues;
     }

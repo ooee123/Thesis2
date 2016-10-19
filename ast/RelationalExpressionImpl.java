@@ -2,9 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -59,7 +56,7 @@ public class RelationalExpressionImpl implements RelationalExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        return multiGetChangedVariables(relationalExpression, bitwiseShiftExpression);
+    public Set<String> getGuaranteedChangedVariables() {
+        return multiGetGuaranteedChangedVariables(relationalExpression, bitwiseShiftExpression);
     }
 }

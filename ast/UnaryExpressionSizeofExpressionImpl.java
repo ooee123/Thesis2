@@ -1,9 +1,7 @@
 package ast;
 
-import ast.type.Type;
 import lombok.Value;
 
-import java.util.Collections;
 import java.util.Set;
 
 
@@ -25,8 +23,8 @@ public class UnaryExpressionSizeofExpressionImpl implements UnaryExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        return unaryExpression.getChangedVariables();
+    public Set<String> getGuaranteedChangedVariables() {
+        return unaryExpression.getGuaranteedChangedVariables();
     }
 
     public String toCode() {

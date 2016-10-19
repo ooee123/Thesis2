@@ -3,6 +3,8 @@ package ast;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import pdg.PDGNode;
+import pdg.PDGNodeWhile;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +20,7 @@ public class IterationStatementWhile implements IterationStatement {
 
     @Override
     public String toCode() {
-        return String.format("while (%s) %s", condition.toCode(), statement.toCode());
+        return toCode(condition.toCode(), statement.toCode());
     }
 
     @Override
@@ -32,13 +34,27 @@ public class IterationStatementWhile implements IterationStatement {
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
-        changedVariables.addAll(condition.getChangedVariables());
+        changedVariables.addAll(condition.getGuaranteedChangedVariables());
         changedVariables.addAll(statement.getChangedVariables());
         return changedVariables;
     }
 
     @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        return condition.getGuaranteedChangedVariables();
+    }
+
+    @Override
     public boolean isCritical() {
         return true;
+    }
+
+    @Override
+    public PDGNodeWhile getPDGNode() {
+        return new PDGNodeWhile(this);
+    }
+
+    public static String toCode(String conditionCode, String statementCode) {
+        return String.format("while (%s) %s", conditionCode, statementCode);
     }
 }

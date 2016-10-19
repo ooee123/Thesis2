@@ -20,8 +20,8 @@ public class LogicalAndExpressionImpl implements LogicalAndExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        return multiGetChangedVariables(inclusiveBitwiseOrExpressions.toArray(new Expression[0]));
+    public Set<String> getGuaranteedChangedVariables() {
+        return multiGetGuaranteedChangedVariables(inclusiveBitwiseOrExpressions.toArray(new Expression[0]));
     }
 
     @Override

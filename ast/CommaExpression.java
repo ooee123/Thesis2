@@ -22,7 +22,7 @@ public class CommaExpression implements Expression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         return Collections.emptySet();
     }
 

@@ -55,9 +55,9 @@ public class AssignmentExpressionImpl implements AssignmentExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
+    public Set<String> getGuaranteedChangedVariables() {
         Set<String> lValues = new HashSet<>();
-        lValues.addAll(assignmentExpression.getChangedVariables());
+        lValues.addAll(assignmentExpression.getGuaranteedChangedVariables());
         lValues.addAll(unaryExpression.getVariables());
         return lValues;
     }

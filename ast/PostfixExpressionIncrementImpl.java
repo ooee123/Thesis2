@@ -2,7 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -36,8 +35,8 @@ public class PostfixExpressionIncrementImpl implements PostfixExpression {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        return postfixExpression.getChangedVariables();
+    public Set<String> getGuaranteedChangedVariables() {
+        return postfixExpression.getGuaranteedChangedVariables();
     }
 
     @Override

@@ -2,7 +2,6 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -24,11 +23,16 @@ public class ExpressionStatement implements Statement {
 
     @Override
     public Set<String> getChangedVariables() {
-        return expression.getChangedVariables();
+        return expression.getGuaranteedChangedVariables();
     }
 
     @Override
     public boolean isCritical() {
         return !expression.getInvocations().isEmpty();
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        return expression.getGuaranteedChangedVariables();
     }
 }

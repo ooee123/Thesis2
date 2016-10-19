@@ -2,7 +2,7 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -26,11 +26,27 @@ public class LabeledCaseStatement implements LabeledStatement {
 
     @Override
     public Set<String> getChangedVariables() {
-        return conditionalExpression.getChangedVariables();
+        return conditionalExpression.getGuaranteedChangedVariables();
     }
 
     @Override
     public boolean isCritical() {
         return true;
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        Set<String> guaranteedChangedVariables = new HashSet<>();
+        guaranteedChangedVariables.addAll(conditionalExpression.getGuaranteedChangedVariables());
+        guaranteedChangedVariables.addAll(statement.getGuaranteedChangedVariables());
+        return guaranteedChangedVariables;
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        Set<String> potentiallyChangedVariables = new HashSet<>();
+        potentiallyChangedVariables.addAll(conditionalExpression.getPotentiallyChangedVariables());
+        potentiallyChangedVariables.addAll(statement.getPotentiallyChangedVariables());
+        return potentiallyChangedVariables;
     }
 }

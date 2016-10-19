@@ -21,8 +21,8 @@ public class InclusiveBitwiseOrExpressionImpl implements InclusiveBitwiseOrExpre
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        return multiGetChangedVariables(exclusiveBitwiseOrExpressions.toArray(new Expression[0]));
+    public Set<String> getGuaranteedChangedVariables() {
+        return multiGetGuaranteedChangedVariables(exclusiveBitwiseOrExpressions.toArray(new Expression[0]));
     }
 
     @Override

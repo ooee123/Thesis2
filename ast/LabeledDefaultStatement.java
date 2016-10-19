@@ -3,6 +3,7 @@ package ast;
 import lombok.Value;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -19,16 +20,26 @@ public class LabeledDefaultStatement implements LabeledStatement {
 
     @Override
     public Set<String> getDependantVariables() {
-        return Collections.emptySet();
+        return statement.getDependantVariables();
     }
 
     @Override
     public Set<String> getChangedVariables() {
-        return Collections.emptySet();
+        return statement.getChangedVariables();
     }
 
     @Override
     public boolean isCritical() {
         return true;
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        return statement.getGuaranteedChangedVariables();
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        return statement.getPotentiallyChangedVariables();
     }
 }
