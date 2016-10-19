@@ -111,6 +111,14 @@ public class PDGGenerationVisitor {
         return new Returns(visit(statement.getReturnExpression()), new PDGNodeReturn(statement));
     }
 
+    public Returns visit(JumpBreakStatement statement) {
+        return new Returns(new Dependencies(), new PDGNodeBreak(statement));
+    }
+
+    public Returns visit(JumpContinueStatement statement) {
+        return new Returns(new Dependencies(), new PDGNodeContinue(statement));
+    }
+
     public Returns visit(BlockItem blockItem) {
         if (blockItem instanceof CompoundStatement) {
             return visit(((CompoundStatement) blockItem));
@@ -128,6 +136,10 @@ public class PDGGenerationVisitor {
             return visit(((IterationStatementDoWhile) blockItem));
         } else if (blockItem instanceof JumpReturnStatement) {
             return visit(((JumpReturnStatement) blockItem));
+        } else if (blockItem instanceof JumpBreakStatement) {
+            return visit(((JumpBreakStatement) blockItem));
+        } else if (blockItem instanceof JumpContinueStatement) {
+            return visit(((JumpContinueStatement) blockItem));
         } else if (blockItem instanceof Declaration) {
             return visit(((Declaration) blockItem));
         } else {

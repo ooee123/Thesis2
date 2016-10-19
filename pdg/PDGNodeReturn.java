@@ -23,8 +23,4 @@ public class PDGNodeReturn extends PDGNode<JumpReturnStatement> {
     public JumpReturnStatement sort(PDGSorter sorter) {
         return new JumpReturnStatement(blockItem.getReturnExpression());
     }
-
-    public String toCode(PDGSorterDefault sorter) {
-        return "";
-    }
 }

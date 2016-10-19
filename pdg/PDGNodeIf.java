@@ -12,14 +12,14 @@ import java.util.Collection;
  */
 @Value
 public class PDGNodeIf extends PDGNode<SelectionStatementIf> {
-    private PDGNode thenNode;
-    private PDGNode elseNode;
+    private PDGNode<? extends Statement> thenNode;
+    private PDGNode<? extends Statement> elseNode;
 
-    public PDGNodeIf(SelectionStatementIf selectionStatementIf, PDGNode thenNode, PDGNode elseNode) {
+    public PDGNodeIf(SelectionStatementIf selectionStatementIf, PDGNode<? extends Statement> thenNode, PDGNode<? extends Statement> elseNode) {
         this(selectionStatementIf, thenNode, elseNode, false);
     }
 
-    public PDGNodeIf(SelectionStatementIf selectionStatementIf, PDGNode thenNode, PDGNode elseNode, boolean required) {
+    public PDGNodeIf(SelectionStatementIf selectionStatementIf, PDGNode<? extends Statement> thenNode, PDGNode<? extends Statement> elseNode, boolean required) {
         super(selectionStatementIf, required);
         this.thenNode = thenNode;
         this.elseNode = elseNode;
@@ -33,8 +33,8 @@ public class PDGNodeIf extends PDGNode<SelectionStatementIf> {
     public SelectionStatementIf sort(PDGSorter sorter) {
         Statement elseStatement = null;
         if (elseNode != null) {
-            elseStatement = (Statement)elseNode.sort(sorter);
+            elseStatement = elseNode.sort(sorter);
         }
-        return new SelectionStatementIf(blockItem.getCondition(), (Statement)thenNode.sort(sorter), elseStatement);
+        return new SelectionStatementIf(blockItem.getCondition(), thenNode.sort(sorter), elseStatement);
     }
 }

@@ -1,8 +1,7 @@
 package pdg;
 
 import ast.Expression;
-import ast.IterationStatementDoWhile;
-import ast.JumpReturnStatement;
+import ast.JumpContinueStatement;
 import ast.Statement;
 import lombok.Value;
 
@@ -21,6 +20,6 @@ public class PDGNodeContinue extends PDGNode<JumpContinueStatement> {
     }
 
     public JumpContinueStatement sort(PDGSorter sorter) {
-        return statement;
+        return blockItem;
     }
 }

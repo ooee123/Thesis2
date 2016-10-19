@@ -29,8 +29,4 @@ public class PDGNodeWhile extends PDGNode<IterationStatementWhile> {
         Statement statement = body.sort(sorter);
         return new IterationStatementWhile(condition, statement);
     }
-
-    public String toCode(PDGSorterDefault sorter) {
-        return "";
-    }
 }
