@@ -1,7 +1,6 @@
 package visitor;
 
 import ast.*;
-import ast.Function;
 import ast.type.PointerType;
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
@@ -253,15 +252,12 @@ public class PDGGenerationVisitor {
 
     private Returns<CompoundStatement> visit(CompoundStatement statement) {
         Map<BlockItem, PDGNode<? extends BlockItem>> allNodes = new IdentityHashMap<>();
-        //Map<String, Collection<BlockItem>> lastAssigned = new HashMap<>();
         Map<String, Collection<PDGNode<? extends BlockItem>>> lastAssigned = new HashMap<>();
         Set<String> dependentVariables = new HashSet<>();
         Set<String> locallyDeclaredVariables = new HashSet<>();
         for (BlockItem blockItem : statement.getBlockItems()) {
-            //System.out.println(blockItem.toCode());
             Returns returns = visit(blockItem);
             allNodes.put(blockItem, returns.getPdgNode());
-            //System.out.println(returns.dependencies);
             for (String usedVariable : returns.dependencies.getDependentVariables()) {
                 if (!lastAssigned.containsKey(usedVariable)) {
                     dependentVariables.add(usedVariable);
@@ -278,9 +274,16 @@ public class PDGGenerationVisitor {
                 lastAssigned.put(changedVariables, Sets.newHashSet(returns.getPdgNode()));
             }
             for (String potentiallyChangedVariable : returns.dependencies.getPotentiallyChangedVariables()) {
+                if (lastAssigned.containsKey(potentiallyChangedVariable)) {
+                    Collection<PDGNode<? extends BlockItem>> lastAssignedForVariable = lastAssigned.get(potentiallyChangedVariable);
+                    for (PDGNode<? extends BlockItem> pdgNode : lastAssignedForVariable) {
+                        link(pdgNode, allNodes.get(blockItem));
+                    }
+                }
                 if (!lastAssigned.containsKey(potentiallyChangedVariable)) {
                     lastAssigned.put(potentiallyChangedVariable, new ArrayList<>());
                 }
+
                 lastAssigned.get(potentiallyChangedVariable).add(returns.getPdgNode());
             }
             if (blockItem instanceof Declaration) {
@@ -327,6 +330,7 @@ public class PDGGenerationVisitor {
             guaranteedChangedVariables.addAll(branchesChangedVariables);
         } else {
             potentiallyChangedVariables.addAll(thenDependencies.getGuaranteedChangedVariables());
+            potentiallyChangedVariables.addAll(thenDependencies.getPotentiallyChangedVariables());
         }
         return new Returns<>(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeIf(statement, thenReturns.pdgNode, elseNode));
 

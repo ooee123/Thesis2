@@ -1,6 +1,7 @@
 package pdg;
 
 import ast.*;
+import com.google.common.collect.Sets;
 import lombok.Value;
 
 import java.util.*;
@@ -12,7 +13,7 @@ import java.util.*;
 public class PDGSorterDefault implements PDGSorter {
 
     @Override
-    public Statement sort(Collection<PDGNode<? extends BlockItem>> nodes) {
+    public CompoundStatement sort(Collection<PDGNode<? extends BlockItem>> nodes) {
         List<BlockItem> blockItems = new ArrayList<>();
         List<Declaration> emptyDeclarations = new ArrayList<>();
         List<PDGNode> emptyDeclarationNodes = new ArrayList<>();
@@ -36,11 +37,7 @@ public class PDGSorterDefault implements PDGSorter {
             removeNode(chosenNode, nodes);
             blockItems.add(processNode(chosenNode));
         }
-        if (blockItems.size() > 1) {
-            return new CompoundStatement(blockItems);
-        } else {
-            return ((Statement) blockItems.get(0));
-        }
+        return new CompoundStatement(blockItems);
     }
 
     private PDGNode<? extends BlockItem> pickNextNode(Collection<PDGNode<? extends BlockItem>> candidates) {
@@ -86,24 +83,32 @@ public class PDGSorterDefault implements PDGSorter {
                 propagateRequired(pdgNode, required);
             }
             if (pdgNode instanceof PDGNodeContainsStatementNode) {
-                for (PDGNode<? extends Statement> pdgNode1 : ((PDGNodeContainsStatementNode) pdgNode).getStatementNodes()) {
-                    if (pdgNode1 instanceof PDGNodeCompoundStatement) {
-                        for (String dependentVariable : node.getBlockItem().getDependantVariables()) {
-                            propagateRequiredCompoundStatement(dependentVariable, (PDGNodeCompoundStatement)pdgNode1, required);
-                        }
-                    }
-
-                }
+                propagateThroughStatementNodes(((PDGNodeContainsStatementNode<? extends Statement>) pdgNode), node.getBlockItem().getDependantVariables());
             }
         }
     }
 
-    private void propagateRequiredCompoundStatement(String dependVariable, PDGNodeCompoundStatement pdgNode, Set<PDGNode<? extends BlockItem>> required) {
-        for (PDGNode<? extends BlockItem> node : pdgNode.getLastAssigned().get(dependVariable)) {
-            if (!required.contains(node)) {
-                node.required = true;
-                required.add(node);
-                propagateRequired(node, required);
+    private void propagateThroughStatementNodes(PDGNodeContainsStatementNode<? extends Statement> node, Set<String> variablesToBeRequired) {
+        for (PDGNode<? extends Statement> pdgNode : node.getStatementNodes()) {
+            if (pdgNode instanceof PDGNodeCompoundStatement) {
+                propagateRequiredCompoundStatement(variablesToBeRequired, (PDGNodeCompoundStatement)pdgNode, new HashSet<>());
+            } else if (pdgNode instanceof PDGNodeContainsStatementNode) {
+                propagateThroughStatementNodes(((PDGNodeContainsStatementNode<? extends Statement>) pdgNode), variablesToBeRequired);
+            }
+        }
+    }
+
+    private void propagateRequiredCompoundStatement(Set<String> dependVariables, PDGNodeCompoundStatement pdgNode, Set<PDGNode<? extends BlockItem>> required) {
+        for (String dependVariable : dependVariables) {
+            for (PDGNode<? extends BlockItem> node : pdgNode.getLastAssigned().get(dependVariable)) {
+                if (!required.contains(node)) {
+                    node.required = true;
+                    required.add(node);
+                    propagateRequired(node, required);
+                }
+                if (node instanceof PDGNodeContainsStatementNode) {
+                    propagateThroughStatementNodes(((PDGNodeContainsStatementNode<? extends Statement>) node), Sets.newHashSet(dependVariable));
+                }
             }
         }
     }
@@ -112,7 +117,6 @@ public class PDGSorterDefault implements PDGSorter {
         Set<PDGNode<? extends BlockItem>> required = new HashSet<>();
         for (PDGNode<? extends BlockItem> node : nodes) {
             if (node.isRequired() && !required.contains(node)) {
-                System.out.println("Is required: " + node.blockItem.toCode());
                 required.add(node);
                 propagateRequired(node, required);
             }
@@ -124,7 +128,7 @@ public class PDGSorterDefault implements PDGSorter {
         Set<PDGNode<? extends BlockItem>> notRequired = new HashSet<>();
         for (PDGNode<? extends BlockItem> node : nodes) {
             if (node instanceof PDGNodeContainsStatementNode) {
-                for (PDGNode<? extends Statement> pdgNode : ((PDGNodeContainsStatementNode) node).getStatementNodes()) {
+                for (PDGNode<? extends Statement> pdgNode : ((PDGNodeContainsStatementNode<? extends Statement>) node).getStatementNodes()) {
                     if (pdgNode instanceof PDGNodeCompoundStatement) {
                         removeAllNonRequiredNodes(((PDGNodeCompoundStatement) pdgNode).getBody());
                     }

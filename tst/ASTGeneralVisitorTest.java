@@ -1,9 +1,6 @@
-package visitor;
+package tst;
 
-import ast.BlockItem;
-import ast.Function;
-import ast.Program;
-import ast.Statement;
+import ast.*;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Test;
@@ -11,6 +8,8 @@ import parser.CLexer;
 import parser.CParser;
 import pdg.PDGNode;
 import pdg.PDGSorterDefault;
+import visitor.PDGGenerationVisitor;
+import visitor.TreeToASTVisitor;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,9 +33,10 @@ public class ASTGeneralVisitorTest {
         for (Function function : program.getFunction()) {
             Collection<PDGNode<? extends BlockItem>> functionBody = pdgVisitor.visit(function);
             PDGSorterDefault sorter = new PDGSorterDefault();
-            Statement statement = sorter.sort(functionBody);
+            CompoundStatement statement = sorter.sort(functionBody);
+            function.setCompoundStatement(statement);
             System.out.println("Reprinted program");
-            System.out.println(statement.toCode());
+            System.out.println(function.toCode());
         }
 
 

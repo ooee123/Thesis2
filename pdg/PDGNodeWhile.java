@@ -15,7 +15,7 @@ import java.util.Collection;
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class PDGNodeWhile extends PDGNode<IterationStatementWhile> implements PDGNodeContainsStatementNode {
+public class PDGNodeWhile extends PDGNodeContainsStatementNode<IterationStatementWhile> {
     @NonNull private PDGNode<? extends Statement> body;
 
     public PDGNodeWhile(IterationStatementWhile statement, PDGNode<? extends Statement> body) {

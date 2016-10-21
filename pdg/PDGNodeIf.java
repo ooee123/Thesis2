@@ -14,7 +14,7 @@ import java.util.Collection;
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class PDGNodeIf extends PDGNode<SelectionStatementIf> implements PDGNodeContainsStatementNode {
+public class PDGNodeIf extends PDGNodeContainsStatementNode<SelectionStatementIf> {
     @NonNull private PDGNode<? extends Statement> thenNode;
     private PDGNode<? extends Statement> elseNode;
 

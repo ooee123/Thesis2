@@ -14,7 +14,7 @@ import java.util.Collection;
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class PDGNodeDoWhile extends PDGNode<IterationStatementDoWhile> implements PDGNodeContainsStatementNode {
+public class PDGNodeDoWhile extends PDGNodeContainsStatementNode<IterationStatementDoWhile> {
     private PDGNode<? extends Statement> body;
 
     public PDGNodeDoWhile(IterationStatementDoWhile statement, PDGNode<? extends Statement> body) {

@@ -16,6 +16,7 @@ public class TreeToASTVisitor {
 
     public static final boolean GROUP_EXPRESSIONS = true;
     public static final boolean LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS = true;
+    public static final boolean ELSE_IF_CHAIN_WITHOUT_COMPOUND_STATEMENTS = true;
 
     public Program visit(CParser.CompilationUnitContext ctx) {
         Collection<Function> functions = new ArrayList<>();
@@ -187,8 +188,10 @@ public class TreeToASTVisitor {
             Statement elseStatement = null;
             if (statementContexts.size() > 1) {
                 elseStatement = visit(statementContexts.get(1));
-                if (LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS && !(elseStatement instanceof CompoundStatement)) {
-                    elseStatement = containInCompoundStatement(elseStatement);
+                if (ELSE_IF_CHAIN_WITHOUT_COMPOUND_STATEMENTS && !(elseStatement instanceof SelectionStatementIf)) {
+                    if (LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS && !(elseStatement instanceof CompoundStatement)) {
+                        elseStatement = containInCompoundStatement(elseStatement);
+                    }
                 }
             }
 

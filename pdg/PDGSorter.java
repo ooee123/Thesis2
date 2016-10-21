@@ -1,6 +1,7 @@
 package pdg;
 
 import ast.BlockItem;
+import ast.CompoundStatement;
 import ast.Statement;
 import lombok.Value;
 
@@ -20,5 +21,5 @@ public interface PDGSorter {
      * @param nodes
      * @return
      */
-    public Statement sort(Collection<PDGNode<? extends BlockItem>> nodes);
+    public CompoundStatement sort(Collection<PDGNode<? extends BlockItem>> nodes);
 }

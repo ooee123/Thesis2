@@ -14,7 +14,7 @@ import java.util.Collection;
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class PDGNodeFor extends PDGNode<IterationStatementFor> implements PDGNodeContainsStatementNode {
+public class PDGNodeFor extends PDGNodeContainsStatementNode<IterationStatementFor> {
     private PDGNode<? extends Statement> body;
 
     public PDGNodeFor(IterationStatementFor statement, PDGNode<? extends Statement> body) {

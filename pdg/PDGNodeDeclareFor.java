@@ -13,7 +13,7 @@ import java.util.Collection;
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class PDGNodeDeclareFor extends PDGNode<IterationStatementDeclareFor> implements PDGNodeContainsStatementNode {
+public class PDGNodeDeclareFor extends PDGNodeContainsStatementNode<IterationStatementDeclareFor> {
     private PDGNode<? extends Statement> body;
 
     public PDGNodeDeclareFor(IterationStatementDeclareFor statement, PDGNode<? extends Statement> body) {
