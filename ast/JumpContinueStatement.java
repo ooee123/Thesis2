@@ -19,12 +19,12 @@ public class JumpContinueStatement implements JumpStatementStrict {
     public Set<String> getDependantVariables() {
         return Collections.emptySet();
     }
-
+/*
     @Override
     public Set<String> getChangedVariables() {
         return Collections.emptySet();
     }
-
+*/
     @Override
     public Set<String> getGuaranteedChangedVariables() {
         return Collections.emptySet();

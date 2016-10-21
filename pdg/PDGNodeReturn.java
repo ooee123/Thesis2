@@ -1,15 +1,14 @@
 package pdg;
 
-import ast.Expression;
-import ast.IterationStatementDoWhile;
 import ast.JumpReturnStatement;
-import ast.Statement;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 /**
  * Created by ooee on 10/9/16.
  */
 @Value
+@EqualsAndHashCode(callSuper = true)
 public class PDGNodeReturn extends PDGNode<JumpReturnStatement> {
 
     public PDGNodeReturn(JumpReturnStatement statement) {

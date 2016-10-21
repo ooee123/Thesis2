@@ -11,7 +11,7 @@ import java.util.Set;
  */
 @Data
 @AllArgsConstructor
-public class IterationStatementDoWhile implements IterationStatement {
+public class IterationStatementDoWhile implements IterationStatement, CanContainStatements {
     private Statement statement;
     private Expression condition;
 
@@ -27,7 +27,7 @@ public class IterationStatementDoWhile implements IterationStatement {
         dependentVariables.addAll(statement.getDependantVariables());
         return dependentVariables;
     }
-
+/*
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
@@ -35,7 +35,7 @@ public class IterationStatementDoWhile implements IterationStatement {
         changedVariables.addAll(statement.getChangedVariables());
         return changedVariables;
     }
-
+*/
     @Override
     public Set<String> getPotentiallyChangedVariables() {
         Set<String> potentiallyChangedVariables = new HashSet<>();

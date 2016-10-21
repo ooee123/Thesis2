@@ -12,7 +12,7 @@ import java.util.Set;
  */
 @Data
 @AllArgsConstructor
-public class IterationStatementFor implements IterationStatement {
+public class IterationStatementFor implements IterationStatement, CanContainStatements {
     private Expression initial;
     private Expression condition;
     private Expression iteration;
@@ -52,7 +52,7 @@ public class IterationStatementFor implements IterationStatement {
         dependantVariables.addAll(statement.getDependantVariables());
         return dependantVariables;
     }
-
+/*
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
@@ -68,7 +68,7 @@ public class IterationStatementFor implements IterationStatement {
         changedVariables.addAll(statement.getChangedVariables());
         return changedVariables;
     }
-
+*/
     @Override
     public Set<String> getGuaranteedChangedVariables() {
         Set<String> guaranteedChangedVariables = new HashSet<>();

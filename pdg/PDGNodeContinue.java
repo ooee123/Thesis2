@@ -3,12 +3,14 @@ package pdg;
 import ast.Expression;
 import ast.JumpContinueStatement;
 import ast.Statement;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 /**
  * Created by ooee on 10/9/16.
  */
 @Value
+@EqualsAndHashCode(callSuper = true)
 public class PDGNodeContinue extends PDGNode<JumpContinueStatement> {
 
     public PDGNodeContinue(JumpContinueStatement statement) {

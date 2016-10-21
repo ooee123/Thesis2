@@ -32,8 +32,7 @@ public class ASTGeneralVisitorTest {
         PDGGenerationVisitor pdgVisitor = new PDGGenerationVisitor();
         pdgVisitor.visit(program);
         for (Function function : program.getFunction()) {
-            Collection<PDGNode> functionBody = pdgVisitor.visit(function);
-            System.out.println(functionBody.size());
+            Collection<PDGNode<? extends BlockItem>> functionBody = pdgVisitor.visit(function);
             PDGSorterDefault sorter = new PDGSorterDefault();
             Statement statement = sorter.sort(functionBody);
             System.out.println("Reprinted program");

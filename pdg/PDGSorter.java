@@ -20,5 +20,5 @@ public interface PDGSorter {
      * @param nodes
      * @return
      */
-    public Statement sort(Collection<PDGNode> nodes);
+    public Statement sort(Collection<PDGNode<? extends BlockItem>> nodes);
 }

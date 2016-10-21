@@ -1,16 +1,19 @@
 package pdg;
 
-import ast.Expression;
 import ast.IterationStatementDeclareFor;
-import ast.IterationStatementFor;
 import ast.Statement;
+import com.google.common.collect.Lists;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
+
+import java.util.Collection;
 
 /**
  * Created by ooee on 10/9/16.
  */
 @Value
-public class PDGNodeDeclareFor extends PDGNode<IterationStatementDeclareFor> {
+@EqualsAndHashCode(callSuper = true)
+public class PDGNodeDeclareFor extends PDGNode<IterationStatementDeclareFor> implements PDGNodeContainsStatementNode {
     private PDGNode<? extends Statement> body;
 
     public PDGNodeDeclareFor(IterationStatementDeclareFor statement, PDGNode<? extends Statement> body) {
@@ -30,5 +33,10 @@ public class PDGNodeDeclareFor extends PDGNode<IterationStatementDeclareFor> {
 
     public String toCode(PDGSorterDefault sorter) {
         return "";
+    }
+
+    @Override
+    public Collection<PDGNode<? extends Statement>> getStatementNodes() {
+        return Lists.newArrayList(body);
     }
 }

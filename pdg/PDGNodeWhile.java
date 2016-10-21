@@ -1,19 +1,22 @@
 package pdg;
 
-import ast.BlockItem;
 import ast.Expression;
 import ast.IterationStatementWhile;
 import ast.Statement;
+import com.google.common.collect.Lists;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.Value;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Created by ooee on 10/9/16.
  */
 @Value
-public class PDGNodeWhile extends PDGNode<IterationStatementWhile> {
-    private PDGNode<? extends Statement> body;
+@EqualsAndHashCode(callSuper = true)
+public class PDGNodeWhile extends PDGNode<IterationStatementWhile> implements PDGNodeContainsStatementNode {
+    @NonNull private PDGNode<? extends Statement> body;
 
     public PDGNodeWhile(IterationStatementWhile statement, PDGNode<? extends Statement> body) {
         this(statement, body, false);
@@ -28,5 +31,10 @@ public class PDGNodeWhile extends PDGNode<IterationStatementWhile> {
         Expression condition = blockItem.getCondition();
         Statement statement = body.sort(sorter);
         return new IterationStatementWhile(condition, statement);
+    }
+
+    @Override
+    public Collection<PDGNode<? extends Statement>> getStatementNodes() {
+        return Lists.newArrayList(body);
     }
 }

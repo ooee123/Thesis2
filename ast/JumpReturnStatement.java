@@ -20,12 +20,12 @@ public class JumpReturnStatement implements JumpStatementStrict {
     public Set<String> getDependantVariables() {
         return returnExpression.getDependentVariables();
     }
-
+/*
     @Override
     public Set<String> getChangedVariables() {
         return returnExpression.getGuaranteedChangedVariables();
     }
-
+*/
     @Override
     public boolean isCritical() {
         return true;

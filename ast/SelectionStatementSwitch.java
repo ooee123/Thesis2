@@ -12,7 +12,7 @@ import java.util.Set;
  */
 @Data
 @AllArgsConstructor
-public class SelectionStatementSwitch implements SelectionStatement {
+public class SelectionStatementSwitch implements SelectionStatement, CanContainStatements {
     @NonNull private Expression expression;
     @NonNull private Statement statement;
 
@@ -28,7 +28,7 @@ public class SelectionStatementSwitch implements SelectionStatement {
         dependentVariables.addAll(statement.getDependantVariables());
         return dependentVariables;
     }
-
+/*
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
@@ -36,7 +36,7 @@ public class SelectionStatementSwitch implements SelectionStatement {
         changedVariables.addAll(statement.getChangedVariables());
         return changedVariables;
     }
-
+*/
     @Override
     public Set<String> getGuaranteedChangedVariables() {
         throw new UnsupportedOperationException();

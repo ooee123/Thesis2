@@ -87,11 +87,11 @@ public class PDGGenerationVisitor {
 
     public void visit(Program p) {
         for (Function function : p.getFunction()) {
-            Collection<PDGNode> visit = visit(function);
+            Collection<PDGNode<? extends BlockItem>> visit = visit(function);
         }
     }
 
-    public Collection<PDGNode> visit(Function function) {
+    public Collection<PDGNode<? extends BlockItem>> visit(Function function) {
         Returns<CompoundStatement> returns = visit(function.getCompoundStatement());
         for (Parameter parameter : function.getParameterList().getParameters()) {
             // If the type is a pointer, mark it as changed.
@@ -107,45 +107,49 @@ public class PDGGenerationVisitor {
         return ((PDGNodeCompoundStatement) returns.pdgNode).getBody();
     }
 
-    public Returns visit(JumpReturnStatement statement) {
-        return new Returns(visit(statement.getReturnExpression()), new PDGNodeReturn(statement));
+    public Returns<JumpReturnStatement> visit(JumpReturnStatement statement) {
+        return new Returns<>(visit(statement.getReturnExpression()), new PDGNodeReturn(statement, true));
     }
 
-    public Returns visit(JumpBreakStatement statement) {
-        return new Returns(new Dependencies(), new PDGNodeBreak(statement));
+    public Returns<JumpBreakStatement> visit(JumpBreakStatement statement) {
+        return new Returns<>(new Dependencies(), new PDGNodeBreak(statement, true));
     }
 
-    public Returns visit(JumpContinueStatement statement) {
-        return new Returns(new Dependencies(), new PDGNodeContinue(statement));
+    public Returns<JumpContinueStatement> visit(JumpContinueStatement statement) {
+        return new Returns<>(new Dependencies(), new PDGNodeContinue(statement, true));
     }
 
-    public Returns visit(BlockItem blockItem) {
-        if (blockItem instanceof CompoundStatement) {
-            return visit(((CompoundStatement) blockItem));
-        } else if (blockItem instanceof ExpressionStatement) {
-            return visit(((ExpressionStatement) blockItem));
-        } else if (blockItem instanceof SelectionStatementIf) {
-            return visit(((SelectionStatementIf) blockItem));
-        } else if (blockItem instanceof IterationStatementFor) {
-            return visit(((IterationStatementFor) blockItem));
-        } else if (blockItem instanceof IterationStatementDeclareFor) {
-            return visit(((IterationStatementDeclareFor) blockItem));
-        } else if (blockItem instanceof IterationStatementWhile) {
-            return visit(((IterationStatementWhile) blockItem));
-        } else if (blockItem instanceof IterationStatementDoWhile) {
-            return visit(((IterationStatementDoWhile) blockItem));
-        } else if (blockItem instanceof JumpReturnStatement) {
-            return visit(((JumpReturnStatement) blockItem));
-        } else if (blockItem instanceof JumpBreakStatement) {
-            return visit(((JumpBreakStatement) blockItem));
-        } else if (blockItem instanceof JumpContinueStatement) {
-            return visit(((JumpContinueStatement) blockItem));
-        } else if (blockItem instanceof Declaration) {
+    public Returns<? extends Statement> visit(Statement statement) {
+        if (statement instanceof CompoundStatement) {
+            return visit(((CompoundStatement) statement));
+        } else if (statement instanceof ExpressionStatement) {
+            return visit(((ExpressionStatement) statement));
+        } else if (statement instanceof SelectionStatementIf) {
+            return visit(((SelectionStatementIf) statement));
+        } else if (statement instanceof IterationStatementFor) {
+            return visit(((IterationStatementFor) statement));
+        } else if (statement instanceof IterationStatementDeclareFor) {
+            return visit(((IterationStatementDeclareFor) statement));
+        } else if (statement instanceof IterationStatementWhile) {
+            return visit(((IterationStatementWhile) statement));
+        } else if (statement instanceof IterationStatementDoWhile) {
+            return visit(((IterationStatementDoWhile) statement));
+        } else if (statement instanceof JumpReturnStatement) {
+            return visit(((JumpReturnStatement) statement));
+        } else if (statement instanceof JumpBreakStatement) {
+            return visit(((JumpBreakStatement) statement));
+        } else if (statement instanceof JumpContinueStatement) {
+            return visit(((JumpContinueStatement) statement));
+        } else {
+            return null;
+        }
+    }
+
+    private Returns<? extends BlockItem> visit(BlockItem blockItem) {
+         if (blockItem instanceof Declaration) {
             return visit(((Declaration) blockItem));
         } else {
-            Statement statement = ((Statement) blockItem);
-            return null;
-            //return new Dependencies(statement.getDependantVariables(), statement.getGuaranteedChangedVariables(), statement.getPotentiallyChangedVariables());
+            return visit((Statement) blockItem);
         }
     }
 
@@ -153,7 +157,7 @@ public class PDGGenerationVisitor {
         Dependencies dependencies = new Dependencies();
         nullableExpression(statement.getInitial(), dependencies);
         nullableExpression(statement.getCondition(), dependencies);
-        Returns returns = visit(statement.getStatement());
+        Returns<? extends Statement> returns = visit(statement.getStatement());
 
         Dependencies bodyDependencies = returns.dependencies;
         bodyDependencies.dependentVariables.removeAll(dependencies.getPotentiallyChangedVariables());
@@ -165,7 +169,7 @@ public class PDGGenerationVisitor {
         dependencies.dependentVariables.addAll(iterationDependencies.getDependentVariables());
         dependencies.potentiallyChangedVariables.addAll(iterationDependencies.getGuaranteedChangedVariables());
         dependencies.potentiallyChangedVariables.addAll(iterationDependencies.getPotentiallyChangedVariables());
-        return new Returns(dependencies, new PDGNodeFor(statement, returns.getPdgNode()));
+        return new Returns<>(dependencies, new PDGNodeFor(statement, returns.getPdgNode()));
     }
 
     private Returns<IterationStatementDeclareFor> visit(IterationStatementDeclareFor statement) {
@@ -178,7 +182,7 @@ public class PDGGenerationVisitor {
             }
         }
         nullableExpression(statement.getCondition(), dependencies);
-        Returns returns = visit(statement.getStatement());
+        Returns<? extends Statement> returns = visit(statement.getStatement());
         Dependencies bodyDependencies = returns.dependencies;
 
         bodyDependencies.dependentVariables.removeAll(dependencies.getPotentiallyChangedVariables());
@@ -194,30 +198,31 @@ public class PDGGenerationVisitor {
         dependencies.dependentVariables.removeAll(declaredVariables);
         dependencies.potentiallyChangedVariables.removeAll(declaredVariables);
         dependencies.guaranteedChangedVariables.removeAll(declaredVariables);
-        return new Returns(dependencies, new PDGNodeDeclareFor(statement, returns.pdgNode));
+        return new Returns<>(dependencies, new PDGNodeDeclareFor(statement, returns.pdgNode));
     }
 
     private Returns<IterationStatementWhile> visit(IterationStatementWhile statement) {
         Dependencies dependencies = visit(statement.getCondition());
-        Returns returns = visit(statement.getStatement());
+        Returns<? extends Statement> returns = visit(statement.getStatement());
         Dependencies bodyDependencies = returns.dependencies;
         bodyDependencies.dependentVariables.removeAll(dependencies.getGuaranteedChangedVariables());
         dependencies.potentiallyChangedVariables.addAll(bodyDependencies.getGuaranteedChangedVariables());
         dependencies.potentiallyChangedVariables.addAll(bodyDependencies.getPotentiallyChangedVariables());
         dependencies.dependentVariables.addAll(bodyDependencies.getDependentVariables());
-        return new Returns(dependencies, new PDGNodeWhile(statement, returns.getPdgNode()));
+        return new Returns<>(dependencies, new PDGNodeWhile(statement, returns.getPdgNode()));
     }
 
-    private Returns visit(IterationStatementDoWhile statement) {
+    private Returns<IterationStatementDoWhile> visit(IterationStatementDoWhile statement) {
         Dependencies dependencies = visit(statement.getCondition());
-        Returns returns = visit(statement.getStatement());
+        Returns<? extends Statement> returns = visit(statement.getStatement());
 
         dependencies.add(returns.dependencies);
-        return new Returns(dependencies, new PDGNodeDoWhile(statement, returns.getPdgNode()));
+        return new Returns<>(dependencies, new PDGNodeDoWhile(statement, returns.getPdgNode()));
     }
 
-    private Returns visit(ExpressionStatement statement) {
-        return new Returns(visit(statement.getExpression()), new PDGNodeExpressionStatement(statement));
+    private Returns<ExpressionStatement> visit(ExpressionStatement statement) {
+        boolean hasInvocations = !statement.getExpression().getInvocations().isEmpty();
+        return new Returns<>(visit(statement.getExpression()), new PDGNodeExpressionStatement(statement, hasInvocations));
     }
 
     private Dependencies visit(Expression expression) {
@@ -227,11 +232,7 @@ public class PDGGenerationVisitor {
         return new Dependencies(dependentVariables, changedVariables, potentialVariables);
     }
 
-    private Returns visit(JumpStatementStrict statement) {
-        return null;
-    }
-
-    private Returns visit(Declaration declaration) {
+    private Returns<Declaration> visit(Declaration declaration) {
         Set<String> declaredVariables = new HashSet<>();
         Set<String> dependentVariables = new HashSet<>();
         Set<String> guaranteedChangedVariables = new HashSet<>();
@@ -247,25 +248,25 @@ public class PDGGenerationVisitor {
                 guaranteedChangedVariables.add(declaredVariable.getIdentifier());
             }
         }
-
-        return new Returns(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeDeclaration(declaration));
+        return new Returns<>(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeDeclaration(declaration));
     }
 
     private Returns<CompoundStatement> visit(CompoundStatement statement) {
-        Map<BlockItem, PDGNode> allNodes = new IdentityHashMap<>();
-        Map<String, Collection<BlockItem>> lastAssigned = new HashMap<>();
+        Map<BlockItem, PDGNode<? extends BlockItem>> allNodes = new IdentityHashMap<>();
+        //Map<String, Collection<BlockItem>> lastAssigned = new HashMap<>();
+        Map<String, Collection<PDGNode<? extends BlockItem>>> lastAssigned = new HashMap<>();
         Set<String> dependentVariables = new HashSet<>();
         Set<String> locallyDeclaredVariables = new HashSet<>();
         for (BlockItem blockItem : statement.getBlockItems()) {
-            System.out.println(blockItem.toCode());
+            //System.out.println(blockItem.toCode());
             Returns returns = visit(blockItem);
             allNodes.put(blockItem, returns.getPdgNode());
-            System.out.println(returns.dependencies);
+            //System.out.println(returns.dependencies);
             for (String usedVariable : returns.dependencies.getDependentVariables()) {
                 if (!lastAssigned.containsKey(usedVariable)) {
                     dependentVariables.add(usedVariable);
                 } else {
-                    Collection<BlockItem> froms = lastAssigned.get(usedVariable);
+                    Collection<BlockItem> froms = lastAssigned.get(usedVariable).stream().map(blk -> blk.getBlockItem()).collect(Collectors.toList());
                     PDGNode toNode = allNodes.get(blockItem);
                     for (BlockItem from : froms) {
                         PDGNode fromNode = allNodes.get(from);
@@ -274,17 +275,17 @@ public class PDGGenerationVisitor {
                 }
             }
             for (String changedVariables : returns.dependencies.getGuaranteedChangedVariables()) {
-                lastAssigned.put(changedVariables, Sets.newHashSet(blockItem));
+                lastAssigned.put(changedVariables, Sets.newHashSet(returns.getPdgNode()));
             }
             for (String potentiallyChangedVariable : returns.dependencies.getPotentiallyChangedVariables()) {
                 if (!lastAssigned.containsKey(potentiallyChangedVariable)) {
                     lastAssigned.put(potentiallyChangedVariable, new ArrayList<>());
                 }
-                lastAssigned.get(potentiallyChangedVariable).add(blockItem);
+                lastAssigned.get(potentiallyChangedVariable).add(returns.getPdgNode());
             }
             if (blockItem instanceof Declaration) {
                 for (Declaration.DeclaredVariable declaredVariable : ((Declaration) blockItem).getDeclaredVariables()) {
-                    lastAssigned.put(declaredVariable.getIdentifier(), Sets.newHashSet(blockItem));
+                    lastAssigned.put(declaredVariable.getIdentifier(), Sets.newHashSet(returns.getPdgNode()));
                     locallyDeclaredVariables.add(declaredVariable.getIdentifier());
                 }
             }
@@ -297,25 +298,25 @@ public class PDGGenerationVisitor {
             System.err.println("Huh, doesn't add up");
         }
         //printAdjacencyMatrix(allNodes);
-        return new Returns(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeCompoundStatement(statement, allNodes.values()));
+        return new Returns<>(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeCompoundStatement(statement, allNodes.values(), lastAssigned));
     }
 
-    private Returns visit(SelectionStatementIf statement) {
+    private Returns<SelectionStatementIf> visit(SelectionStatementIf statement) {
         Dependencies conditionDependencies = visit(statement.getCondition());
         Set<String> dependentVariables = new HashSet<>(conditionDependencies.getDependentVariables());
         Set<String> guaranteedChangedVariables = new HashSet<>(conditionDependencies.getGuaranteedChangedVariables());
         Set<String> potentiallyChangedVariables = new HashSet<>(conditionDependencies.getPotentiallyChangedVariables());
 
         Statement thenStatement = statement.getThenStatement();
-        Returns thenReturns = visit(thenStatement);
+        Returns<? extends Statement> thenReturns = visit(thenStatement);
         Dependencies thenDependencies = thenReturns.dependencies;
         thenDependencies.dependentVariables.removeAll(guaranteedChangedVariables);
         dependentVariables.addAll(thenDependencies.dependentVariables);
         potentiallyChangedVariables.addAll(thenDependencies.getPotentiallyChangedVariables());
-        PDGNode elseNode = null;
+        PDGNode<? extends Statement> elseNode = null;
         if (statement.getElseStatement() != null) {
             Set<String> branchesChangedVariables = new HashSet<>();
-            Returns elseReturns = visit(statement.getElseStatement());
+            Returns<? extends Statement> elseReturns = visit(statement.getElseStatement());
             elseNode = elseReturns.pdgNode;
             Dependencies elseDependencies = elseReturns.dependencies;
             potentiallyChangedVariables.addAll(elseDependencies.getPotentiallyChangedVariables());
@@ -327,7 +328,7 @@ public class PDGGenerationVisitor {
         } else {
             potentiallyChangedVariables.addAll(thenDependencies.getGuaranteedChangedVariables());
         }
-        return new Returns(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeIf(statement, thenReturns.pdgNode, elseNode));
+        return new Returns<>(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeIf(statement, thenReturns.pdgNode, elseNode));
 
     }
 

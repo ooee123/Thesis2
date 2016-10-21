@@ -10,7 +10,7 @@ import java.util.Set;
  */
 //TODO: This is incorrect, need to consider for switch statements
 @Value
-public class LabeledCaseStatement implements LabeledStatement {
+public class LabeledCaseStatement implements LabeledStatement, CanContainStatements {
     private ConditionalExpression conditionalExpression;
     private Statement statement;
 
@@ -23,12 +23,12 @@ public class LabeledCaseStatement implements LabeledStatement {
     public Set<String> getDependantVariables() {
         return conditionalExpression.getDependentVariables();
     }
-
+/*
     @Override
     public Set<String> getChangedVariables() {
         return conditionalExpression.getGuaranteedChangedVariables();
     }
-
+*/
     @Override
     public boolean isCritical() {
         return true;

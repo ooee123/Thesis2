@@ -3,12 +3,14 @@ package pdg;
 import ast.Expression;
 import ast.JumpBreakStatement;
 import ast.Statement;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 /**
  * Created by ooee on 10/9/16.
  */
 @Value
+@EqualsAndHashCode(callSuper = true)
 public class PDGNodeBreak extends PDGNode<JumpBreakStatement> {
 
     public PDGNodeBreak(JumpBreakStatement statement) {

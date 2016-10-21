@@ -72,7 +72,7 @@ public class CompoundStatement implements Statement {
         }
         return incomingValues;
     }
-
+/*
     @Override
     public Set<String> getChangedVariables() {
         Set<String> declaredVariables = getDeclaredVariables();
@@ -85,7 +85,7 @@ public class CompoundStatement implements Statement {
         changedVariables.removeAll(declaredVariables);
         return changedVariables;
     }
-
+*/
     public Set<String> getDeclaredVariables() {
         Set<String> declaredVariables = new HashSet<>();
         for (BlockItem blockItem : blockItems) {
@@ -103,11 +103,19 @@ public class CompoundStatement implements Statement {
     public Set<String> getGuaranteedChangedVariables() {
         Set<String> guaranteedChangedVariables = new HashSet<>();
         for (BlockItem blockItem : blockItems) {
-            if (blockItem instanceof Statement) {
-                guaranteedChangedVariables.addAll(((Statement) blockItem).getGuaranteedChangedVariables());
-            }
+            guaranteedChangedVariables.addAll(blockItem.getGuaranteedChangedVariables());
         }
         return guaranteedChangedVariables;
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        Set<String> potentiallyChangedVariables = new HashSet<>();
+        for (BlockItem blockItem : blockItems) {
+            potentiallyChangedVariables.addAll(blockItem.getPotentiallyChangedVariables());
+            potentiallyChangedVariables.removeAll(blockItem.getGuaranteedChangedVariables());
+        }
+        return potentiallyChangedVariables;
     }
 
     /*

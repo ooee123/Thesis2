@@ -2,15 +2,13 @@ package ast;
 
 import lombok.Value;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by ooee on 10/6/16.
  */
 @Value
-public class LabeledDefaultStatement implements LabeledStatement {
+public class LabeledDefaultStatement implements LabeledStatement, CanContainStatements {
     private Statement statement;
 
     @Override
@@ -22,12 +20,12 @@ public class LabeledDefaultStatement implements LabeledStatement {
     public Set<String> getDependantVariables() {
         return statement.getDependantVariables();
     }
-
+/*
     @Override
     public Set<String> getChangedVariables() {
         return statement.getChangedVariables();
     }
-
+*/
     @Override
     public boolean isCritical() {
         return true;

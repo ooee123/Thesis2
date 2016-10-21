@@ -22,11 +22,6 @@ public class ExpressionStatement implements Statement {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        return expression.getGuaranteedChangedVariables();
-    }
-
-    @Override
     public boolean isCritical() {
         return !expression.getInvocations().isEmpty();
     }
@@ -34,5 +29,10 @@ public class ExpressionStatement implements Statement {
     @Override
     public Set<String> getGuaranteedChangedVariables() {
         return expression.getGuaranteedChangedVariables();
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        return expression.getPotentiallyChangedVariables();
     }
 }

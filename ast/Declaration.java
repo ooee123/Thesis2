@@ -6,9 +6,12 @@ import ast.type.Type;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
+import visitor.PDGGenerationVisitor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by ooee on 9/24/16.
@@ -36,6 +39,51 @@ public class Declaration implements BlockItem {
     }
 
     private List<DeclaredVariable> declaredVariables;
+
+    @Override
+    public Set<String> getDependantVariables() {
+        Set<String> declaredVariables = new HashSet<>();
+        Set<String> dependentVariables = new HashSet<>();
+        Set<String> guaranteedChangedVariables = new HashSet<>();
+        for (DeclaredVariable declaredVariable : this.declaredVariables) {
+            declaredVariables.add(declaredVariable.getIdentifier());
+            if (declaredVariable.getInitializer() != null) {
+                Set<String> requiredVars = declaredVariable.getInitializer().getDependentVariables();
+                requiredVars.removeAll(declaredVariables);
+                dependentVariables.addAll(requiredVars);
+            }
+        }
+        return dependentVariables;
+    }
+
+    //@Override
+    public Set<String> getChangedVariables() {
+        return null;
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        Set<String> guaranteedChangedVariables = new HashSet<>();
+        for (DeclaredVariable declaredVariable : declaredVariables) {
+            if (declaredVariable.getInitializer() != null) {
+                guaranteedChangedVariables.add(declaredVariable.getIdentifier());
+                guaranteedChangedVariables.addAll(declaredVariable.getInitializer().getGuaranteedChangedVariables());
+            }
+        }
+        return guaranteedChangedVariables;
+    }
+
+    @Override
+    public Set<String> getGuaranteedChangedVariables() {
+        Set<String> guaranteedChangedVariables = new HashSet<>();
+        for (DeclaredVariable declaredVariable : declaredVariables) {
+            if (declaredVariable.getInitializer() != null) {
+                guaranteedChangedVariables.add(declaredVariable.getIdentifier());
+                guaranteedChangedVariables.addAll(declaredVariable.getInitializer().getGuaranteedChangedVariables());
+            }
+        }
+        return guaranteedChangedVariables;
+    }
 
     @Override
     public String toCode() {

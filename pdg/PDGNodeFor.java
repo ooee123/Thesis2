@@ -2,15 +2,19 @@ package pdg;
 
 import ast.Expression;
 import ast.IterationStatementFor;
-import ast.IterationStatementWhile;
 import ast.Statement;
+import com.google.common.collect.Lists;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
+
+import java.util.Collection;
 
 /**
  * Created by ooee on 10/9/16.
  */
 @Value
-public class PDGNodeFor extends PDGNode<IterationStatementFor> {
+@EqualsAndHashCode(callSuper = true)
+public class PDGNodeFor extends PDGNode<IterationStatementFor> implements PDGNodeContainsStatementNode {
     private PDGNode<? extends Statement> body;
 
     public PDGNodeFor(IterationStatementFor statement, PDGNode<? extends Statement> body) {
@@ -31,5 +35,10 @@ public class PDGNodeFor extends PDGNode<IterationStatementFor> {
 
     public String toCode(PDGSorterDefault sorter) {
         return "";
+    }
+
+    @Override
+    public Collection<PDGNode<? extends Statement>> getStatementNodes() {
+        return Lists.newArrayList(body);
     }
 }

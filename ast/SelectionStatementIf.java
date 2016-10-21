@@ -10,7 +10,7 @@ import java.util.Set;
  * Created by ooee on 9/25/16.
  */
 @Data
-public class SelectionStatementIf implements SelectionStatement {
+public class SelectionStatementIf implements SelectionStatement, CanContainStatements {
     @NonNull private Expression condition;
     @NonNull private Statement thenStatement;
     private Statement elseStatement;
@@ -45,7 +45,7 @@ public class SelectionStatementIf implements SelectionStatement {
         }
         return dependentVariables;
     }
-
+/*
     @Override
     public Set<String> getChangedVariables() {
         Set<String> changedVariables = new HashSet<>();
@@ -56,17 +56,40 @@ public class SelectionStatementIf implements SelectionStatement {
         }
         return changedVariables;
     }
-
+*/
     @Override
     public Set<String> getGuaranteedChangedVariables() {
         if (elseStatement != null) {
-            Set<String> changedVariables = new HashSet<>(thenStatement.getChangedVariables());
-            changedVariables.retainAll(elseStatement.getChangedVariables());
+            Set<String> changedVariables = new HashSet<>(thenStatement.getGuaranteedChangedVariables());
+            changedVariables.retainAll(elseStatement.getGuaranteedChangedVariables());
             changedVariables.addAll(condition.getGuaranteedChangedVariables());
             return changedVariables;
         } else {
             return condition.getGuaranteedChangedVariables();
         }
+    }
+
+    @Override
+    public Set<String> getPotentiallyChangedVariables() {
+        Set<String> potentiallyChangedVariables = new HashSet<>();
+        if (elseStatement != null) {
+            Set<String> thenGuaranteed = new HashSet<>(thenStatement.getGuaranteedChangedVariables());
+            Set<String> elseGuaranteed = new HashSet<>(elseStatement.getGuaranteedChangedVariables());
+            Set<String> intersection = new HashSet<>(thenGuaranteed);
+            intersection.retainAll(elseGuaranteed);
+            potentiallyChangedVariables.addAll(thenGuaranteed);
+            potentiallyChangedVariables.addAll(elseGuaranteed);
+            potentiallyChangedVariables.removeAll(intersection);
+
+            potentiallyChangedVariables.addAll(thenStatement.getPotentiallyChangedVariables());
+            potentiallyChangedVariables.addAll(elseStatement.getPotentiallyChangedVariables());
+            potentiallyChangedVariables.addAll(condition.getGuaranteedChangedVariables());
+        } else {
+            potentiallyChangedVariables.addAll(condition.getPotentiallyChangedVariables());
+            potentiallyChangedVariables.addAll(thenStatement.getGuaranteedChangedVariables());
+            potentiallyChangedVariables.addAll(thenStatement.getPotentiallyChangedVariables());
+        }
+        return potentiallyChangedVariables;
     }
 
     @Override

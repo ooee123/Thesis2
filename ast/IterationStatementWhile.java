@@ -3,8 +3,6 @@ package ast;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
-import pdg.PDGNode;
-import pdg.PDGNodeWhile;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +12,7 @@ import java.util.Set;
  */
 @Data
 @AllArgsConstructor
-public class IterationStatementWhile implements IterationStatement {
+public class IterationStatementWhile implements IterationStatement, CanContainStatements {
     @NonNull private Expression condition;
     private Statement statement;
 
@@ -32,11 +30,12 @@ public class IterationStatementWhile implements IterationStatement {
     }
 
     @Override
-    public Set<String> getChangedVariables() {
-        Set<String> changedVariables = new HashSet<>();
-        changedVariables.addAll(condition.getGuaranteedChangedVariables());
-        changedVariables.addAll(statement.getChangedVariables());
-        return changedVariables;
+    public Set<String> getPotentiallyChangedVariables() {
+        Set<String> potentiallyChangedVariables = new HashSet<>();
+        potentiallyChangedVariables.addAll(condition.getPotentiallyChangedVariables());
+        potentiallyChangedVariables.addAll(statement.getPotentiallyChangedVariables());
+        potentiallyChangedVariables.addAll(statement.getGuaranteedChangedVariables());
+        return potentiallyChangedVariables;
     }
 
     @Override

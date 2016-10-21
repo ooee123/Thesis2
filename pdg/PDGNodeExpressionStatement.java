@@ -1,18 +1,14 @@
 package pdg;
 
-import ast.BlockItem;
-import ast.CompoundStatement;
 import ast.ExpressionStatement;
-import lombok.NonNull;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Created by ooee on 10/9/16.
  */
 @Value
+@EqualsAndHashCode(callSuper = true)
 public class PDGNodeExpressionStatement extends PDGNode<ExpressionStatement> {
 
     public PDGNodeExpressionStatement(ExpressionStatement expressionStatement) {

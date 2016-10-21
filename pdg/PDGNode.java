@@ -1,6 +1,8 @@
 package pdg;
 
 import ast.BlockItem;
+import ast.Statement;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
@@ -30,4 +32,15 @@ public abstract class PDGNode<T extends BlockItem> {
     }
 
     public abstract T sort(PDGSorter sorter);
+
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            return false;
+        }
+        if (o instanceof PDGNode) {
+            return blockItem == ((PDGNode) o).blockItem;
+        }
+        return false;
+    }
 }
