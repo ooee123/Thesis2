@@ -1,8 +1,12 @@
 package ast;
 
+import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.NonNull;
+import visitor.Visitor;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,25 +42,23 @@ public class SelectionStatementIf implements SelectionStatement, CanContainState
     @Override
     public Set<String> getDependantVariables() {
         Set<String> dependentVariables = new HashSet<>();
-        dependentVariables.addAll(condition.getVariables());
+        dependentVariables.addAll(condition.getDependentVariables());
         dependentVariables.addAll(thenStatement.getDependantVariables());
         if (elseStatement != null) {
             dependentVariables.addAll(elseStatement.getDependantVariables());
         }
         return dependentVariables;
     }
-/*
+
     @Override
-    public Set<String> getChangedVariables() {
-        Set<String> changedVariables = new HashSet<>();
-        changedVariables.addAll(condition.getGuaranteedChangedVariables());
-        changedVariables.addAll(thenStatement.getChangedVariables());
+    public Collection<Statement> getStatementNodes() {
+        Collection<Statement> statements = Lists.newArrayList(thenStatement);
         if (elseStatement != null) {
-            changedVariables.addAll(elseStatement.getChangedVariables());
+            statements.add(elseStatement);
         }
-        return changedVariables;
+        return statements;
     }
-*/
+
     @Override
     public Set<String> getGuaranteedChangedVariables() {
         if (elseStatement != null) {
@@ -96,5 +98,26 @@ public class SelectionStatementIf implements SelectionStatement, CanContainState
     public boolean isCritical() {
         //TODO
         return true;
+    }
+
+    @Override
+    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
+        Collection<T> collection = new ArrayList<>();
+        collection.addAll(visitor.visit(thenStatement));
+        if (elseStatement != null) {
+            collection.addAll(visitor.visit(elseStatement));
+        }
+        return collection;
+    }
+
+    @Override
+    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+        Collection<T> collection = new ArrayList<>();
+        collection.addAll(visitor.visit(condition));
+        collection.addAll(thenStatement.visitAllExpressions(visitor));
+        if (elseStatement != null) {
+            collection.addAll(elseStatement.visitAllExpressions(visitor));
+        }
+        return collection;
     }
 }

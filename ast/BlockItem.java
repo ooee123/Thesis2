@@ -1,5 +1,8 @@
 package ast;
 
+import visitor.Visitor;
+
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,11 +24,6 @@ public interface BlockItem extends BaseElement {
     Set<String> getGuaranteedChangedVariables();
 
     Set<String> getPotentiallyChangedVariables();
-    /*
-    default Set<String> getPotentiallyChangedVariables() {
-        Set<String> potentiallyChangedVariables = new HashSet<>(getChangedVariables());
-        potentiallyChangedVariables.removeAll(getGuaranteedChangedVariables());
-        return potentiallyChangedVariables;
-    }
-    */
+
+    <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor);
 }

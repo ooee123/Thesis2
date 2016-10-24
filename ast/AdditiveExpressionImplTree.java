@@ -1,7 +1,9 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,7 +35,13 @@ public class AdditiveExpressionImplTree implements AdditiveExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(additiveExpression, multiplicativeExpression);
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(additiveExpression);
+        visitor.visit(multiplicativeExpression);
     }
 }

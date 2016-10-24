@@ -1,11 +1,9 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -56,8 +54,8 @@ public class AdditiveExpressionImplGroups implements AdditiveExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
-        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
+        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
         for (MultiplicativeExpression addingTerm : addingTerms) {
             invocations.addAll(addingTerm.getInvocations());
         }
@@ -77,5 +75,15 @@ public class AdditiveExpressionImplGroups implements AdditiveExpression {
             variables.addAll(subtractingTerm.getVariables());
         }
         return variables;
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        for (MultiplicativeExpression addingTerm : addingTerms) {
+            visitor.visit(addingTerm);
+        }
+        for (MultiplicativeExpression subtractingTerm : subtractingTerms) {
+            visitor.visit(subtractingTerm);
+        }
     }
 }

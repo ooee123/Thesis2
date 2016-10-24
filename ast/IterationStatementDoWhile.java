@@ -1,8 +1,12 @@
 package ast;
 
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import visitor.Visitor;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,5 +59,23 @@ public class IterationStatementDoWhile implements IterationStatement, CanContain
     @Override
     public boolean isCritical() {
         return true;
+    }
+
+    @Override
+    public Collection<Statement> getStatementNodes() {
+        return Lists.newArrayList(statement);
+    }
+
+    @Override
+    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
+        return visitor.visit(statement);
+    }
+
+    @Override
+    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+        Collection<T> collection = new ArrayList<>();
+        collection.addAll(visitor.visit(condition));
+        collection.addAll(statement.visitAllExpressions(visitor));
+        return collection;
     }
 }

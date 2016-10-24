@@ -2,8 +2,11 @@ package ast;
 
 import lombok.NonNull;
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -75,8 +78,8 @@ public class ConditionalExpressionImpl implements ConditionalExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
-        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
+        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
         invocations.addAll(logicalOrExpression.getInvocations());
         if (trueExpression != null) {
             invocations.addAll(trueExpression.getInvocations());
@@ -98,5 +101,16 @@ public class ConditionalExpressionImpl implements ConditionalExpression {
             variables.addAll(falseExpression.getVariables());
         }
         return variables;
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(logicalOrExpression);
+        if (trueExpression != null) {
+            visitor.visit(trueExpression);
+        }
+        if (falseExpression != null) {
+            visitor.visit(falseExpression);
+        }
     }
 }

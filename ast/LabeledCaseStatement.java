@@ -1,9 +1,10 @@
 package ast;
 
+import com.google.common.collect.Lists;
 import lombok.Value;
+import visitor.Visitor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by ooee on 10/6/16.
@@ -23,12 +24,7 @@ public class LabeledCaseStatement implements LabeledStatement, CanContainStateme
     public Set<String> getDependantVariables() {
         return conditionalExpression.getDependentVariables();
     }
-/*
-    @Override
-    public Set<String> getChangedVariables() {
-        return conditionalExpression.getGuaranteedChangedVariables();
-    }
-*/
+
     @Override
     public boolean isCritical() {
         return true;
@@ -48,5 +44,23 @@ public class LabeledCaseStatement implements LabeledStatement, CanContainStateme
         potentiallyChangedVariables.addAll(conditionalExpression.getPotentiallyChangedVariables());
         potentiallyChangedVariables.addAll(statement.getPotentiallyChangedVariables());
         return potentiallyChangedVariables;
+    }
+
+    @Override
+    public Collection<Statement> getStatementNodes() {
+        return Lists.newArrayList(statement);
+    }
+
+    @Override
+    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
+        return visitor.visit(statement);
+    }
+
+    @Override
+    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+        Collection<T> collection = new ArrayList<>();
+        collection.addAll(visitor.visit(conditionalExpression));
+        collection.addAll(statement.visitAllExpressions(visitor));
+        return collection;
     }
 }

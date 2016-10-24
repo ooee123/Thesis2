@@ -9,6 +9,7 @@ import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Created by ooee on 10/9/16.
@@ -26,8 +27,8 @@ public abstract class PDGNode<T extends BlockItem> {
 
     public PDGNode(T blockItem, boolean required) {
         this.blockItem = blockItem;
-        this.isADependencyFor = new ArrayList<>();
-        this.dependsOn = new ArrayList<>();
+        this.isADependencyFor = new HashSet<>();
+        this.dependsOn = new HashSet<>();
         this.required = required;
     }
 

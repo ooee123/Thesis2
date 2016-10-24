@@ -1,6 +1,7 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,12 +21,7 @@ public class BitwiseAndExpressionImpl implements BitwiseAndExpression {
         List<String> equalityCodes = equalityExpressions.stream().map(exp -> exp.toCode()).collect(Collectors.toList());
         return String.join(BITWISE_AND, equalityCodes);
     }
-/*
-    @Override
-    public Set<String> getGuaranteedChangedVariables() {
-        return Collections.emptySet();
-    }
-*/
+
     @Override
     public Set<String> getVariables() {
         Set<String> variables = new HashSet<>();
@@ -54,11 +50,18 @@ public class BitwiseAndExpressionImpl implements BitwiseAndExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
-        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
+        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
         for (EqualityExpression equalityExpression : equalityExpressions) {
             invocations.addAll(equalityExpression.getInvocations());
         }
         return invocations;
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        for (EqualityExpression equalityExpression : equalityExpressions) {
+            visitor.visit(equalityExpression);
+        }
     }
 }

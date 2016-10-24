@@ -1,7 +1,10 @@
 package ast;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import visitor.Visitor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,7 +12,8 @@ import java.util.Set;
 /**
  * Created by ooee on 9/26/16.
  */
-@Value
+@Data
+@AllArgsConstructor
 public class PostfixExpressionInvocationImpl implements PostfixExpression {
     private PostfixExpression postfixExpression;
     private List<AssignmentExpression> arguments;
@@ -53,10 +57,18 @@ public class PostfixExpressionInvocationImpl implements PostfixExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
-        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
+        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
         invocations.add(this);
         invocations.addAll(multiGetInvocations(arguments.toArray(new Expression[0])));
         return invocations;
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(postfixExpression);
+        for (AssignmentExpression argument : arguments) {
+            visitor.visit(argument);
+        }
     }
 }

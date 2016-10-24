@@ -1,7 +1,9 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,12 +28,17 @@ public class PrimaryExpressionParentheses implements PrimaryExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         return expression.getInvocations();
     }
 
     @Override
     public Set<String> getVariables() {
         return expression.getVariables();
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(expression);
     }
 }

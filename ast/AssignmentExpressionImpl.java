@@ -1,8 +1,12 @@
 package ast;
 
+import lombok.NonNull;
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,7 +41,7 @@ public class AssignmentExpressionImpl implements AssignmentExpression {
                     return assignmentOperator;
                 }
             }
-            return null;
+            throw new IllegalArgumentException("Token " + token + " not recognized");
         }
 
         public String getToken() {
@@ -45,9 +49,9 @@ public class AssignmentExpressionImpl implements AssignmentExpression {
         }
     }
 
-    private UnaryExpression unaryExpression;
-    private AssignmentOperator assignmentOperator;
-    private AssignmentExpression assignmentExpression;
+    @NonNull private UnaryExpression unaryExpression;
+    @NonNull private AssignmentOperator assignmentOperator;
+    @NonNull private AssignmentExpression assignmentExpression;
 
     @Override
     public String toCode() {
@@ -87,8 +91,8 @@ public class AssignmentExpressionImpl implements AssignmentExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
-        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
+        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
         invocations.addAll(unaryExpression.getInvocations());
         invocations.addAll(assignmentExpression.getInvocations());
         return invocations;
@@ -100,5 +104,11 @@ public class AssignmentExpressionImpl implements AssignmentExpression {
         variables.addAll(unaryExpression.getVariables());
         variables.addAll(assignmentExpression.getVariables());
         return variables;
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(unaryExpression);
+        visitor.visit(assignmentExpression);
     }
 }

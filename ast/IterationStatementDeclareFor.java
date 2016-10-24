@@ -1,9 +1,13 @@
 package ast;
 
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import visitor.Visitor;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,25 +50,12 @@ public class IterationStatementDeclareFor implements IterationStatement, CanCont
         dependantVariables.addAll(statement.getDependantVariables());
         return dependantVariables;
     }
-/*
+
     @Override
-    public Set<String> getChangedVariables() {
-        Set<String> changedVariables = new HashSet<>();
-        for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
-            if (declaredVariable.getInitializer() != null) {
-                changedVariables.addAll(declaredVariable.getInitializer().getGuaranteedChangedVariables());
-            }
-        }
-        if (condition != null) {
-            changedVariables.addAll(condition.getGuaranteedChangedVariables());
-        }
-        if (iteration != null) {
-            changedVariables.addAll(iteration.getGuaranteedChangedVariables());
-        }
-        changedVariables.addAll(statement.getChangedVariables());
-        return changedVariables;
+    public Collection<Statement> getStatementNodes() {
+        return Lists.newArrayList(statement);
     }
-*/
+
     @Override
     public Set<String> getGuaranteedChangedVariables() {
         Set<String> guaranteedChangedVariables = new HashSet<>();
@@ -100,5 +91,28 @@ public class IterationStatementDeclareFor implements IterationStatement, CanCont
     @Override
     public boolean isCritical() {
         return true;
+    }
+
+    @Override
+    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
+        return visitor.visit(statement);
+    }
+
+    @Override
+    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+        Collection<T> collection = new ArrayList<>();
+        for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+            if (declaredVariable.getInitializer() != null) {
+                collection.addAll(visitor.visit(declaredVariable.getInitializer()));
+            }
+        }
+        if (condition != null) {
+            collection.addAll(visitor.visit(condition));
+        }
+        if (iteration != null) {
+            collection.addAll(visitor.visit(iteration));
+        }
+        collection.addAll(statement.visitAllExpressions(visitor));
+        return collection;
     }
 }

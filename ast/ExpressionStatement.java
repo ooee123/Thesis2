@@ -1,7 +1,10 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -34,5 +37,15 @@ public class ExpressionStatement implements Statement {
     @Override
     public Set<String> getPotentiallyChangedVariables() {
         return expression.getPotentiallyChangedVariables();
+    }
+
+    @Override
+    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+        return visitor.visit(expression);
     }
 }

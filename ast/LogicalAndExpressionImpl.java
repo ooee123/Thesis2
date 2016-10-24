@@ -1,6 +1,7 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
 import java.util.*;
 
@@ -39,7 +40,14 @@ public class LogicalAndExpressionImpl implements LogicalAndExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(inclusiveBitwiseOrExpressions.toArray(new Expression[0]));
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        for (InclusiveBitwiseOrExpression inclusiveBitwiseOrExpression : inclusiveBitwiseOrExpressions) {
+            visitor.visit(inclusiveBitwiseOrExpression);
+        }
     }
 }

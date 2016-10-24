@@ -1,18 +1,21 @@
 package ast;
 
 import com.google.common.collect.Lists;
-import lombok.Value;
-import pdg.PDGNode;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import visitor.Visitor;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by ooee on 9/24/16.
  */
-@Value
+@Data
+@AllArgsConstructor
 public class CompoundStatement implements Statement {
-    private List<BlockItem> blockItems;
+    @Getter @Setter private List<BlockItem> blockItems;
 
     @Override
     public boolean isCritical() {
@@ -72,20 +75,7 @@ public class CompoundStatement implements Statement {
         }
         return incomingValues;
     }
-/*
-    @Override
-    public Set<String> getChangedVariables() {
-        Set<String> declaredVariables = getDeclaredVariables();
-        Set<String> changedVariables = new HashSet<>();
-        for (BlockItem blockItem : blockItems) {
-            if (blockItem instanceof Statement) {
-                changedVariables.addAll(((Statement) blockItem).getChangedVariables());
-            }
-        }
-        changedVariables.removeAll(declaredVariables);
-        return changedVariables;
-    }
-*/
+
     public Set<String> getDeclaredVariables() {
         Set<String> declaredVariables = new HashSet<>();
         for (BlockItem blockItem : blockItems) {
@@ -105,6 +95,7 @@ public class CompoundStatement implements Statement {
         for (BlockItem blockItem : blockItems) {
             guaranteedChangedVariables.addAll(blockItem.getGuaranteedChangedVariables());
         }
+        guaranteedChangedVariables.removeAll(getDeclaredVariables());
         return guaranteedChangedVariables;
     }
 
@@ -115,11 +106,26 @@ public class CompoundStatement implements Statement {
             potentiallyChangedVariables.addAll(blockItem.getPotentiallyChangedVariables());
             potentiallyChangedVariables.removeAll(blockItem.getGuaranteedChangedVariables());
         }
+        potentiallyChangedVariables.removeAll(getDeclaredVariables());
         return potentiallyChangedVariables;
     }
 
+    @Override
+    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
+        return Lists.newArrayList();
+    }
+
+    @Override
+    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+        Collection<T> collection = new ArrayList<>();
+        for (BlockItem blockItem : blockItems) {
+            collection.addAll(blockItem.visitAllExpressions(visitor));
+        }
+        return collection;
+    }
+
     /*
-    public CompoundStatementGroups toCompoundStatementGroups() {
+    public CompoundStatementGroups toCompoundStatementGroups(DeclarationSplitterVisitor declarationSplitter) {
         List<Declaration> declarations = new ArrayList<>();
         List<Statement> statements = new ArrayList<>();
 

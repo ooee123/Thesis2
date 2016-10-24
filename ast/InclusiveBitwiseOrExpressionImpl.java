@@ -1,6 +1,7 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,7 +41,14 @@ public class InclusiveBitwiseOrExpressionImpl implements InclusiveBitwiseOrExpre
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(exclusiveBitwiseOrExpressions.toArray(new Expression[0]));
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        for (ExclusiveBitwiseOrExpression exclusiveBitwiseOrExpression : exclusiveBitwiseOrExpressions) {
+            visitor.visit(exclusiveBitwiseOrExpression);
+        }
     }
 }

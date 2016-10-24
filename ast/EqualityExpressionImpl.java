@@ -1,7 +1,9 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,7 +28,7 @@ public class EqualityExpressionImpl implements EqualityExpression {
                     return equalityOperator;
                 }
             }
-            return null;
+            throw new IllegalArgumentException("Token " + token + " not recognized");
         }
     }
 
@@ -41,12 +43,12 @@ public class EqualityExpressionImpl implements EqualityExpression {
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return multiGet(exp -> exp.getGuaranteedChangedVariables(), equalityExpression, relationalExpression);
+        return multiGetSet(exp -> exp.getGuaranteedChangedVariables(), equalityExpression, relationalExpression);
     }
 
     @Override
     public Set<String> getVariables() {
-        return multiGet(exp -> exp.getVariables(), equalityExpression, relationalExpression);
+        return multiGetSet(exp -> exp.getVariables(), equalityExpression, relationalExpression);
         /*
         Set<String> variables = new HashSet<>();
         variables.addAll(equalityExpression.getVariables());
@@ -57,11 +59,17 @@ public class EqualityExpressionImpl implements EqualityExpression {
 
     @Override
     public Set<String> getDependentVariables() {
-        return multiGet(exp -> exp.getDependentVariables(), equalityExpression, relationalExpression);
+        return multiGetSet(exp -> exp.getDependentVariables(), equalityExpression, relationalExpression);
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
-        return multiGet(exp -> exp.getInvocations(), equalityExpression, relationalExpression);
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
+        return multiGetList(exp -> exp.getInvocations(), equalityExpression, relationalExpression);
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(equalityExpression);
+        visitor.visit(relationalExpression);
     }
 }

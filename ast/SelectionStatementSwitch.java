@@ -1,9 +1,13 @@
 package ast;
 
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import visitor.Visitor;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,5 +54,23 @@ public class SelectionStatementSwitch implements SelectionStatement, CanContainS
     @Override
     public boolean isCritical() {
         return true;
+    }
+
+    @Override
+    public Collection<Statement> getStatementNodes() {
+        return Lists.newArrayList(statement);
+    }
+
+    @Override
+    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
+        return visitor.visit(statement);
+    }
+
+    @Override
+    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+        Collection<T> collection = new ArrayList<>();
+        collection.addAll(visitor.visit(expression));
+        collection.addAll(statement.visitAllExpressions(visitor));
+        return collection;
     }
 }

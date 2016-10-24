@@ -2,7 +2,9 @@ package ast;
 
 import ast.type.Type;
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,12 +30,17 @@ public class CastExpressionImpl implements CastExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         return castExpression.getInvocations();
     }
 
     @Override
     public Set<String> getVariables() {
         return castExpression.getVariables();
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(castExpression);
     }
 }

@@ -1,16 +1,19 @@
 package ast;
 
 import com.google.common.collect.Sets;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import visitor.Visitor;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Created by kly04 on 9/26/16.
  */
-@Value
+@Data
+@AllArgsConstructor
 public class PrimaryExpressionIdentifier implements PrimaryExpression {
     private String identifier;
 
@@ -30,11 +33,16 @@ public class PrimaryExpressionIdentifier implements PrimaryExpression {
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return Collections.emptySet();
+        return Sets.newHashSet();
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
-        return Collections.emptySet();
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        return;
     }
 }

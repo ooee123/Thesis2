@@ -1,6 +1,7 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +51,14 @@ public class InitializerList implements AssignmentExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(assignmentExpressions.toArray(new Expression[0]));
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        for (AssignmentExpression assignmentExpression : assignmentExpressions) {
+            visitor.visit(assignmentExpression);
+        }
     }
 }

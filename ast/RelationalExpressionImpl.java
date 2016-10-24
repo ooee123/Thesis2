@@ -1,7 +1,10 @@
 package ast;
 
+import lombok.NonNull;
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -27,13 +30,13 @@ public class RelationalExpressionImpl implements RelationalExpression {
                     return relationalOperator;
                 }
             }
-            return null;
+            throw new IllegalArgumentException("Token " + token + " not recognized");
         }
     }
 
-    private RelationalExpression relationalExpression;
-    private RelationalOperator relationalOperator;
-    private BitwiseShiftExpression bitwiseShiftExpression;
+    @NonNull private RelationalExpression relationalExpression;
+    @NonNull private RelationalOperator relationalOperator;
+    @NonNull private BitwiseShiftExpression bitwiseShiftExpression;
 
     @Override
     public String toCode() {
@@ -41,7 +44,7 @@ public class RelationalExpressionImpl implements RelationalExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(relationalExpression, bitwiseShiftExpression);
     }
 
@@ -58,5 +61,11 @@ public class RelationalExpressionImpl implements RelationalExpression {
     @Override
     public Set<String> getGuaranteedChangedVariables() {
         return multiGetGuaranteedChangedVariables(relationalExpression, bitwiseShiftExpression);
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(relationalExpression);
+        visitor.visit(bitwiseShiftExpression);
     }
 }

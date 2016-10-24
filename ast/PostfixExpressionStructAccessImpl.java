@@ -1,7 +1,9 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,7 +28,7 @@ public class PostfixExpressionStructAccessImpl implements PostfixExpression {
                     return accessOperator;
                 }
             }
-            return null;
+            throw new IllegalArgumentException("Token " + token + " not recognized");
         }
     }
 
@@ -54,7 +56,12 @@ public class PostfixExpressionStructAccessImpl implements PostfixExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         return postfixExpression.getInvocations();
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(postfixExpression);
     }
 }

@@ -1,8 +1,10 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -51,7 +53,12 @@ public class UnaryExpressionIncrementImpl implements UnaryExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         return unaryExpression.getInvocations();
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(unaryExpression);
     }
 }

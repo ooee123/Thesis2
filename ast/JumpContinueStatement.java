@@ -1,7 +1,10 @@
 package ast;
 
+import com.google.common.collect.Sets;
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
@@ -17,26 +20,31 @@ public class JumpContinueStatement implements JumpStatementStrict {
 
     @Override
     public Set<String> getDependantVariables() {
-        return Collections.emptySet();
+        return Sets.newHashSet();
     }
-/*
-    @Override
-    public Set<String> getChangedVariables() {
-        return Collections.emptySet();
-    }
-*/
+
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return Collections.emptySet();
+        return Sets.newHashSet();
     }
 
     @Override
     public Set<String> getPotentiallyChangedVariables() {
-        return Collections.emptySet();
+        return Sets.newHashSet();
     }
 
     @Override
     public boolean isCritical() {
         return true;
+    }
+
+    @Override
+    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+        return Collections.emptyList();
     }
 }

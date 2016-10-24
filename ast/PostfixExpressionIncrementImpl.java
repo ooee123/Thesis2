@@ -1,7 +1,9 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -45,7 +47,12 @@ public class PostfixExpressionIncrementImpl implements PostfixExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(postfixExpression);
     }
 }

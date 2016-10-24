@@ -1,7 +1,9 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,7 +28,7 @@ public class MultiplicativeExpressionImpl implements MultiplicativeExpression {
                     return multiplicativeOperator;
                 }
             }
-            return null;
+            throw new IllegalArgumentException("Token " + token + " not recognized");
         }
     }
 
@@ -50,7 +52,7 @@ public class MultiplicativeExpressionImpl implements MultiplicativeExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(multiplicativeExpression, castExpression);
     }
 
@@ -59,5 +61,11 @@ public class MultiplicativeExpressionImpl implements MultiplicativeExpression {
         Set<String> variables = multiplicativeExpression.getVariables();
         variables.addAll(castExpression.getVariables());
         return variables;
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(multiplicativeExpression);
+        visitor.visit(castExpression);
     }
 }

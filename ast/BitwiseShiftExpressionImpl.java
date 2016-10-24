@@ -1,10 +1,10 @@
 package ast;
 
+import com.google.common.collect.Sets;
 import lombok.Value;
+import visitor.Visitor;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by ooee on 9/26/16.
@@ -27,7 +27,7 @@ public class BitwiseShiftExpressionImpl implements BitwiseShiftExpression {
                     return shiftOperator;
                 }
             }
-            return null;
+            throw new IllegalArgumentException("Token " + token + " not recognized");
         }
     }
 
@@ -42,7 +42,7 @@ public class BitwiseShiftExpressionImpl implements BitwiseShiftExpression {
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return Collections.emptySet();
+        return Sets.newHashSet();
     }
 
     @Override
@@ -62,10 +62,16 @@ public class BitwiseShiftExpressionImpl implements BitwiseShiftExpression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
-        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
+        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
         invocations.addAll(bitwiseShiftExpression.getInvocations());
         invocations.addAll(additiveExpression.getInvocations());
         return invocations;
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        visitor.visit(bitwiseShiftExpression);
+        visitor.visit(additiveExpression);
     }
 }

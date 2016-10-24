@@ -1,7 +1,10 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -39,5 +42,15 @@ public class JumpReturnStatement implements JumpStatementStrict {
     @Override
     public Set<String> getGuaranteedChangedVariables() {
         return returnExpression.getGuaranteedChangedVariables();
+    }
+
+    @Override
+    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+        return visitor.visit(returnExpression);
     }
 }

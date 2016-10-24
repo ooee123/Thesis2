@@ -20,7 +20,7 @@ public interface AdditiveExpression extends BitwiseShiftExpression {
                     return additiveOperator;
                 }
             }
-            return null;
+            throw new IllegalArgumentException("Token " + token + " not recognized");
         }
     }
 }

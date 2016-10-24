@@ -1,11 +1,10 @@
 package ast;
 
+import com.google.common.collect.Sets;
 import lombok.Value;
+import visitor.Visitor;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -23,7 +22,7 @@ public class CommaExpression implements Expression {
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return Collections.emptySet();
+        return Sets.newHashSet();
     }
 
     @Override
@@ -45,11 +44,18 @@ public class CommaExpression implements Expression {
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
-        Set<PostfixExpressionInvocationImpl> invocations = new HashSet<>();
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
+        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
         for (AssignmentExpression assignmentExpression : assignmentExpressions) {
             invocations.addAll(assignmentExpression.getInvocations());
         }
         return invocations;
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        for (AssignmentExpression assignmentExpression : assignmentExpressions) {
+            visitor.visit(assignmentExpression);
+        }
     }
 }

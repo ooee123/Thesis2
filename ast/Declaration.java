@@ -7,11 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
 import visitor.PDGGenerationVisitor;
+import visitor.Visitor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by ooee on 9/24/16.
@@ -34,7 +32,7 @@ public class Declaration implements BlockItem {
 
         @Override
         public String toCode() {
-            return null;
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -54,11 +52,6 @@ public class Declaration implements BlockItem {
             }
         }
         return dependentVariables;
-    }
-
-    //@Override
-    public Set<String> getChangedVariables() {
-        return null;
     }
 
     @Override
@@ -117,5 +110,16 @@ public class Declaration implements BlockItem {
     @Override
     public boolean isCritical() {
         return true;
+    }
+
+    @Override
+    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+        Collection<T> collection = new ArrayList<>();
+        for (DeclaredVariable declaredVariable : declaredVariables) {
+            if (declaredVariable.getInitializer() != null) {
+                collection.addAll(visitor.visit(declaredVariable.getInitializer()));
+            }
+        }
+        return collection;
     }
 }

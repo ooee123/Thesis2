@@ -155,8 +155,7 @@ public class TreeToASTVisitor {
         } else if (ctx.jumpStatement() != null) {
             return visit(ctx.jumpStatement());
         }
-        System.err.println("Statement returning null");
-        return null;
+        throw new UnsupportedOperationException("What kind of statement is this?");
     }
 
     private LabeledStatement visit(CParser.LabeledStatementContext ctx) {
@@ -175,8 +174,7 @@ public class TreeToASTVisitor {
             Expression expression = visit(ctx.expression());
             return new ExpressionStatement(expression);
         }
-        System.err.println("ExpressionStatement returning null");
-        return null;
+        throw new IllegalArgumentException("ExpressionStatement returning null");
     }
 
     private SelectionStatement visit(CParser.SelectionStatementContext ctx) {
@@ -289,10 +287,9 @@ public class TreeToASTVisitor {
             case "break":
                 return new JumpBreakStatement();
             case "return":
-                Expression returnExpression = visit(ctx.expression());
-                return new JumpReturnStatement(returnExpression);
+                return new JumpReturnStatement(visit(ctx.expression()));
             default:
-                return null;
+                throw new UnsupportedOperationException("What kind of jump statement is this? " + ctx);
         }
     }
 
@@ -495,7 +492,7 @@ public class TreeToASTVisitor {
                         return new UnaryExpressionSizeofTypeImpl(type);
                     }
                 default:
-                    return null;
+                    throw new IllegalArgumentException("Token not recognized " + firstToken);
             }
         }
     }
@@ -529,7 +526,7 @@ public class TreeToASTVisitor {
                 case "--":
                     return new PostfixExpressionIncrementImpl(postfixExpression, PostfixExpressionIncrementImpl.PostfixOperator.POSTFIX_DECREMENT);
                 default:
-                    return null;
+                    throw new UnsupportedOperationException("What kind of postfix expression is this? " + ctx);
             }
         }
     }
@@ -562,15 +559,17 @@ public class TreeToASTVisitor {
             } catch (NumberFormatException e) {
 
             }
-        } else if (ctx.StringLiteral() != null) {
+        } else if (ctx.StringLiteral() != null && ctx.StringLiteral().size() > 0) {
             List<TerminalNode> terminalNodes = ctx.StringLiteral();
             for (TerminalNode terminalNode : terminalNodes) {
                 return new PrimaryExpressionConstant(terminalNode.getSymbol().getText());
             }
         } else if (ctx.expression() != null) {
             return new PrimaryExpressionParentheses(visit(ctx.expression()));
+        } else {
+            throw new IllegalArgumentException("What kind of primary expression is this? " + ctx.getText());
         }
-        return null;
+        throw new IllegalArgumentException("Fell through");
     }
 
     private Type visit(CParser.TypeNameContext ctx) {
@@ -619,9 +618,7 @@ public class TreeToASTVisitor {
         } else if (ctx.structOrUnionSpecifier() != null) {
             return new StructUnionType(ctx.structOrUnionSpecifier().Identifier().getSymbol().getText());
         } else if (ctx.enumSpecifier() != null) {
-            System.err.println("ENUM ENCOUNTERED. TO DO");
-            System.exit(0);
-            return null;
+            throw new UnsupportedOperationException("Enum has been visited. Please implement");
         } else if (ctx.typedefName() != null) {
             return new TypedefType(ctx.typedefName().Identifier().getSymbol().getText());
         } else {

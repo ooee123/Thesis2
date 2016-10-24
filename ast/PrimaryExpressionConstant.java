@@ -1,8 +1,12 @@
 package ast;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import lombok.Value;
+import visitor.Visitor;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -39,16 +43,21 @@ public class PrimaryExpressionConstant implements PrimaryExpression {
 
     @Override
     public Set<String> getDependentVariables() {
-        return Collections.emptySet();
+        return Sets.newHashSet();
     }
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return Collections.emptySet();
+        return Sets.newHashSet();
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
-        return Collections.emptySet();
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
+        return Lists.newArrayList();
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        return;
     }
 }

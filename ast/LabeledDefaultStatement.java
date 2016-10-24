@@ -1,7 +1,10 @@
 package ast;
 
+import com.google.common.collect.Lists;
 import lombok.Value;
+import visitor.Visitor;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -39,5 +42,20 @@ public class LabeledDefaultStatement implements LabeledStatement, CanContainStat
     @Override
     public Set<String> getPotentiallyChangedVariables() {
         return statement.getPotentiallyChangedVariables();
+    }
+
+    @Override
+    public Collection<Statement> getStatementNodes() {
+        return Lists.newArrayList(statement);
+    }
+
+    @Override
+    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
+        return visitor.visit(statement);
+    }
+
+    @Override
+    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+        return statement.visitAllExpressions(visitor);
     }
 }

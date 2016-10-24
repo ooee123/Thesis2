@@ -1,6 +1,7 @@
 package ast;
 
 import lombok.Value;
+import visitor.Visitor;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class ExclusiveBitwiseOrExpressionImpl implements ExclusiveBitwiseOrExpre
     }
 
     @Override
-    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+    public List<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(bitwiseAndExpressions.toArray(new Expression[0]));
     }
 
@@ -42,5 +43,12 @@ public class ExclusiveBitwiseOrExpressionImpl implements ExclusiveBitwiseOrExpre
             variables.addAll(bitwiseAndExpression.getVariables());
         }
         return variables;
+    }
+
+    @Override
+    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+        for (BitwiseAndExpression bitwiseAndExpression : bitwiseAndExpressions) {
+            visitor.visit(bitwiseAndExpression);
+        }
     }
 }
