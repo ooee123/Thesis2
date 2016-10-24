@@ -51,6 +51,15 @@ public class IdentifierNormalizerVisitor {
                 return Lists.newArrayList();
             }
         };
+
+        Visitor<Void, Expression> shadowingVariables = new Visitor<Void, Statement>() {
+            @Override
+            public Collection<Void> visit(Statement statement) {
+               if (statement instanceof CompoundStatement) {
+                  Set<String> declaredVariables = ((CompoundStatement)statement).getDeclaredVariables();
+               }
+            }
+        };
         f.getCompoundStatement().visitAllExpressions(touchy);
         System.out.println("Identifiers");
         for (Map.Entry<String, Collection<PrimaryExpressionIdentifier>> stringCollectionEntry : identifiers.entrySet()) {
