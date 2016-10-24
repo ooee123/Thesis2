@@ -8,6 +8,7 @@ import parser.CParser;
 import pdg.PDGNode;
 import pdg.PDGSorter;
 import pdg.PDGSorterDefault;
+import pdg.PDGUselessCodeRemover;
 import visitor.FunctionArgumentOrderVisitor;
 import visitor.IdentifierNormalizerVisitor;
 import visitor.PDGGenerationVisitor;
@@ -36,17 +37,19 @@ public class Main {
             pdgVisitor.visit(program);
             for (Function function : program.getFunction()) {
                 Collection<PDGNode<? extends BlockItem>> functionBody = pdgVisitor.visit(function);
-                PDGSorter sorter = new PDGSorterDefault();
+                PDGUselessCodeRemover pdgUselessCodeRemover = new PDGUselessCodeRemover();
+                pdgUselessCodeRemover.removeUselessCode(functionBody);
 
+                PDGSorter sorter = new PDGSorterDefault();
                 CompoundStatement statement = sorter.sort(functionBody);
                 function.setCompoundStatement(statement);
                 System.out.println(function.toCode());
 
                 IdentifierNormalizerVisitor identifierNormalizerVisitor = new IdentifierNormalizerVisitor();
-                identifierNormalizerVisitor.visit(function);
+                //identifierNormalizerVisitor.visit(function);
             }
             FunctionArgumentOrderVisitor functionArgumentOrderVisitor = new FunctionArgumentOrderVisitor();
-            functionArgumentOrderVisitor.visit(program);
+            //functionArgumentOrderVisitor.visit(program);
         } catch (IOException e) {
             System.err.println(e);
         }

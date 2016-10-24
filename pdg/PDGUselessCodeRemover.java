@@ -18,7 +18,12 @@ public class PDGUselessCodeRemover {
         removeAllNonRequiredNodes(nodes);
     }
 
-    private void propagateRequired(PDGNode<? extends BlockItem> node, Set<PDGNode<? extends BlockItem>> required) {
+    /**
+     *
+     * @param node
+     * @param required
+     */
+    private static void propagateRequired(PDGNode<? extends BlockItem> node, Set<PDGNode<? extends BlockItem>> required) {
         for (PDGNode<? extends BlockItem> pdgNode : node.getDependsOn()) {
             if (!required.contains(pdgNode)) {
                 required.add(pdgNode);
@@ -31,7 +36,7 @@ public class PDGUselessCodeRemover {
         }
     }
 
-    private void propagateThroughStatementNodes(PDGNodeContainsStatementNode<? extends Statement> node, Set<String> variablesToBeRequired) {
+    private static void propagateThroughStatementNodes(PDGNodeContainsStatementNode<? extends Statement> node, Set<String> variablesToBeRequired) {
         for (PDGNode<? extends Statement> pdgNode : node.getStatementNodes()) {
             if (pdgNode instanceof PDGNodeCompoundStatement) {
                 propagateRequiredCompoundStatement(variablesToBeRequired, (PDGNodeCompoundStatement)pdgNode, new HashSet<>());
@@ -41,22 +46,34 @@ public class PDGUselessCodeRemover {
         }
     }
 
-    private void propagateRequiredCompoundStatement(Set<String> dependVariables, PDGNodeCompoundStatement pdgNode, Set<PDGNode<? extends BlockItem>> required) {
+    /**
+     * Takes every String in dependVariables and marks the BlockItem inside pdgNode (A compound statement), as critical.
+     * @param dependVariables
+     * @param pdgNode
+     * @param required
+     */
+    public static void propagateRequiredCompoundStatement(Set<String> dependVariables, PDGNodeCompoundStatement pdgNode, Set<PDGNode<? extends BlockItem>> required) {
         for (String dependVariable : dependVariables) {
-            for (PDGNode<? extends BlockItem> node : pdgNode.getLastAssigned().get(dependVariable)) {
-                if (!required.contains(node)) {
-                    node.required = true;
-                    required.add(node);
-                    propagateRequired(node, required);
-                }
-                if (node instanceof PDGNodeContainsStatementNode) {
-                    propagateThroughStatementNodes(((PDGNodeContainsStatementNode<? extends Statement>) node), Sets.newHashSet(dependVariable));
+            if (pdgNode.getLastAssigned().containsKey(dependVariable)) {
+                for (PDGNode<? extends BlockItem> node : pdgNode.getLastAssigned().get(dependVariable)) {
+                    if (!required.contains(node)) {
+                        node.required = true;
+                        required.add(node);
+                        propagateRequired(node, required);
+                    }
+                    if (node instanceof PDGNodeContainsStatementNode) {
+                        propagateThroughStatementNodes(((PDGNodeContainsStatementNode<? extends Statement>) node), Sets.newHashSet(dependVariable));
+                    }
                 }
             }
         }
     }
 
-    private Collection<PDGNode<? extends BlockItem>> markRequiredNodes(Collection<PDGNode<? extends BlockItem>> nodes) {
+    /**
+     * Starting point
+     * @param nodes
+     */
+    private static void markRequiredNodes(Collection<PDGNode<? extends BlockItem>> nodes) {
         Set<PDGNode<? extends BlockItem>> required = new HashSet<>();
         for (PDGNode<? extends BlockItem> node : nodes) {
             if (node.isRequired() && !required.contains(node)) {
@@ -64,10 +81,9 @@ public class PDGUselessCodeRemover {
                 propagateRequired(node, required);
             }
         }
-        return nodes;
     }
 
-    private void removeAllNonRequiredNodes(Collection<PDGNode<? extends BlockItem>> nodes) {
+    private static void removeAllNonRequiredNodes(Collection<PDGNode<? extends BlockItem>> nodes) {
         Set<PDGNode<? extends BlockItem>> notRequired = new HashSet<>();
         for (PDGNode<? extends BlockItem> node : nodes) {
             if (node instanceof PDGNodeContainsStatementNode) {

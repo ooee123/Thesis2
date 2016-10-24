@@ -48,7 +48,7 @@ public class PostfixExpressionIncrementImpl implements PostfixExpression {
 
     @Override
     public List<PostfixExpressionInvocationImpl> getInvocations() {
-        throw new UnsupportedOperationException();
+        return postfixExpression.getInvocations();
     }
 
     @Override

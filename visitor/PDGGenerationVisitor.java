@@ -170,6 +170,11 @@ public class PDGGenerationVisitor {
         dependencies.dependentVariables.addAll(iterationDependencies.getDependentVariables());
         dependencies.potentiallyChangedVariables.addAll(iterationDependencies.getGuaranteedChangedVariables());
         dependencies.potentiallyChangedVariables.addAll(iterationDependencies.getPotentiallyChangedVariables());
+
+        // Brings dependencies back to the top of the loop
+        if (returns.getPdgNode() instanceof PDGNodeCompoundStatement) {
+            PDGUselessCodeRemover.propagateRequiredCompoundStatement(dependencies.dependentVariables, ((PDGNodeCompoundStatement) returns.getPdgNode()), new HashSet<>());
+        }
         return new Returns<>(dependencies, new PDGNodeFor(statement, returns.getPdgNode()));
     }
 
@@ -199,6 +204,11 @@ public class PDGGenerationVisitor {
         dependencies.dependentVariables.removeAll(declaredVariables);
         dependencies.potentiallyChangedVariables.removeAll(declaredVariables);
         dependencies.guaranteedChangedVariables.removeAll(declaredVariables);
+
+        // Brings dependencies back to the top of the loop
+        if (returns.getPdgNode() instanceof PDGNodeCompoundStatement) {
+            PDGUselessCodeRemover.propagateRequiredCompoundStatement(dependencies.dependentVariables, ((PDGNodeCompoundStatement) returns.getPdgNode()), new HashSet<>());
+        }
         return new Returns<>(dependencies, new PDGNodeDeclareFor(statement, returns.pdgNode));
     }
 
@@ -210,14 +220,21 @@ public class PDGGenerationVisitor {
         dependencies.potentiallyChangedVariables.addAll(bodyDependencies.getGuaranteedChangedVariables());
         dependencies.potentiallyChangedVariables.addAll(bodyDependencies.getPotentiallyChangedVariables());
         dependencies.dependentVariables.addAll(bodyDependencies.getDependentVariables());
+        // Brings dependencies back to the top of the loop
+        if (returns.getPdgNode() instanceof PDGNodeCompoundStatement) {
+            PDGUselessCodeRemover.propagateRequiredCompoundStatement(dependencies.dependentVariables, ((PDGNodeCompoundStatement) returns.getPdgNode()), new HashSet<>());
+        }
         return new Returns<>(dependencies, new PDGNodeWhile(statement, returns.getPdgNode()));
     }
 
     private Returns<IterationStatementDoWhile> visit(IterationStatementDoWhile statement) {
         Dependencies dependencies = visit(statement.getCondition());
         Returns<? extends Statement> returns = visit(statement.getStatement());
-
         dependencies.add(returns.dependencies);
+        // Brings dependencies back to the top of the loop
+        if (returns.getPdgNode() instanceof PDGNodeCompoundStatement) {
+            PDGUselessCodeRemover.propagateRequiredCompoundStatement(dependencies.dependentVariables, ((PDGNodeCompoundStatement) returns.getPdgNode()), new HashSet<>());
+        }
         return new Returns<>(dependencies, new PDGNodeDoWhile(statement, returns.getPdgNode()));
     }
 
@@ -322,8 +339,7 @@ public class PDGGenerationVisitor {
         Set<String> guaranteedChangedVariables = new HashSet<>(conditionDependencies.getGuaranteedChangedVariables());
         Set<String> potentiallyChangedVariables = new HashSet<>(conditionDependencies.getPotentiallyChangedVariables());
 
-        Statement thenStatement = statement.getThenStatement();
-        Returns<? extends Statement> thenReturns = visit(thenStatement);
+        Returns<? extends Statement> thenReturns = visit(statement.getThenStatement());
         Dependencies thenDependencies = thenReturns.dependencies;
         thenDependencies.dependentVariables.removeAll(guaranteedChangedVariables);
         dependentVariables.addAll(thenDependencies.dependentVariables);
@@ -340,6 +356,11 @@ public class PDGGenerationVisitor {
             branchesChangedVariables.addAll(elseDependencies.getGuaranteedChangedVariables());
             branchesChangedVariables.retainAll(thenDependencies.getGuaranteedChangedVariables());
             guaranteedChangedVariables.addAll(branchesChangedVariables);
+            Set<String> nonIntersectingGuarantees = new HashSet<>();
+            nonIntersectingGuarantees.addAll(thenDependencies.getGuaranteedChangedVariables());
+            nonIntersectingGuarantees.addAll(elseDependencies.getGuaranteedChangedVariables());
+            nonIntersectingGuarantees.removeAll(branchesChangedVariables);
+            potentiallyChangedVariables.addAll(nonIntersectingGuarantees);
         } else {
             potentiallyChangedVariables.addAll(thenDependencies.getGuaranteedChangedVariables());
             potentiallyChangedVariables.addAll(thenDependencies.getPotentiallyChangedVariables());
