@@ -3,6 +3,7 @@ package pdg;
 import ast.BlockItem;
 import ast.Statement;
 import com.google.common.collect.Sets;
+import visitor.PDGGenerationVisitor;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -97,6 +98,8 @@ public class PDGUselessCodeRemover {
                 notRequired.add(node);
             }
         }
-        nodes.removeAll(notRequired);
+        for (PDGNode<? extends BlockItem> pdgNode : notRequired) {
+            PDGNode.removeNode(pdgNode, nodes);
+        }
     }
 }

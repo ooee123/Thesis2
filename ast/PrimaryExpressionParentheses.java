@@ -41,4 +41,9 @@ public class PrimaryExpressionParentheses implements PrimaryExpression {
     public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
         visitor.visit(expression);
     }
+
+    @Override
+    public int pointValue() {
+        return expression.pointValue();
+    }
 }

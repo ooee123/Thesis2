@@ -23,6 +23,12 @@ public interface Expression extends BaseElement {
 
     void visitNestedExpressions(Visitor<Void, Expression> visitor);
 
+    //int pointValue();
+
+    default int pointValue() {
+        return 0;
+    }
+
     default <T> Set<T> multiGetSet(java.util.function.Function<Expression, Set<T>> f, Expression... expressions) {
         return multiGetCollection(new HashSet<>(), f, expressions);
     }
@@ -57,6 +63,4 @@ public interface Expression extends BaseElement {
     default List<PostfixExpressionInvocationImpl> multiGetInvocations(Expression... expressions) {
         return multiGetList(exp -> exp.getInvocations(), expressions);
     }
-
-
 }

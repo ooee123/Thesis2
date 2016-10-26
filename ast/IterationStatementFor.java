@@ -105,4 +105,20 @@ public class IterationStatementFor implements IterationStatement, CanContainStat
         collection.addAll(statement.visitAllExpressions(visitor));
         return collection;
     }
+
+    @Override
+    public int pointValue() {
+        int points = 0;
+        if (initial != null) {
+            points += initial.pointValue() * 100;
+        }
+        if (condition != null) {
+            points += condition.pointValue() * 100;
+        }
+        if (iteration != null) {
+            points += iteration.pointValue() * 100;
+        }
+        points += statement.pointValue();
+        return points;
+    }
 }

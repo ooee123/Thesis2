@@ -2,6 +2,7 @@ package ast;
 
 import ast.type.ActualType;
 import ast.type.PointerType;
+import ast.type.PrimitiveType;
 import ast.type.Type;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -121,5 +122,22 @@ public class Declaration implements BlockItem {
             }
         }
         return collection;
+    }
+
+    @Override
+    public int pointValue() {
+        int points = 0;
+        for (DeclaredVariable declaredVariable : declaredVariables) {
+            if (declaredVariable.getType() instanceof PrimitiveType) {
+                points += ((PrimitiveType) declaredVariable.getType()).getTypeName().length();
+            } else {
+                points += 1;
+            }
+            if (declaredVariable.getInitializer() != null) {
+                points += declaredVariable.getInitializer().pointValue();
+            }
+        }
+        points *= declaredVariables.size();
+        return points;
     }
 }

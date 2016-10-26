@@ -48,4 +48,9 @@ public class ExpressionStatement implements Statement {
     public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
         return visitor.visit(expression);
     }
+
+    @Override
+    public int pointValue() {
+        return expression.pointValue();
+    }
 }

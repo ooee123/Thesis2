@@ -10,7 +10,7 @@ int main() {
    a = 11;
    func3(c);
    e = a;
-   a = 12;
+   a = 13;
    e = func4(b);
    c = 0;
    return a + b + c;

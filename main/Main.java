@@ -5,10 +5,7 @@ import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import parser.CLexer;
 import parser.CParser;
-import pdg.PDGNode;
-import pdg.PDGSorter;
-import pdg.PDGSorterDefault;
-import pdg.PDGUselessCodeRemover;
+import pdg.*;
 import visitor.FunctionArgumentOrderVisitor;
 import visitor.IdentifierNormalizerVisitor;
 import visitor.PDGGenerationVisitor;
@@ -39,6 +36,9 @@ public class Main {
                 Collection<PDGNode<? extends BlockItem>> functionBody = pdgVisitor.visit(function);
                 PDGUselessCodeRemover pdgUselessCodeRemover = new PDGUselessCodeRemover();
                 pdgUselessCodeRemover.removeUselessCode(functionBody);
+
+                PDGNodeTransitiveReducer pdgNodeTransitiveReducer = new PDGNodeTransitiveReducer();
+                pdgNodeTransitiveReducer.reduce(functionBody);
 
                 PDGSorter sorter = new PDGSorterDefault();
                 CompoundStatement statement = sorter.sort(functionBody);

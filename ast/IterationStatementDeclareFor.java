@@ -115,4 +115,18 @@ public class IterationStatementDeclareFor implements IterationStatement, CanCont
         collection.addAll(statement.visitAllExpressions(visitor));
         return collection;
     }
+
+    @Override
+    public int pointValue() {
+        int points = 0;
+        points += declaration.pointValue() * 100;
+        if (condition != null) {
+            points += condition.pointValue() * 100;
+        }
+        if (iteration != null) {
+            points += iteration.pointValue() * 100;
+        }
+        points += statement.pointValue();
+        return points;
+    }
 }

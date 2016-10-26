@@ -22,7 +22,11 @@ public class CommaExpression implements Expression {
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return Sets.newHashSet();
+        Set<String> guaranteedChangedVariables = new HashSet<>();
+        for (AssignmentExpression assignmentExpression : assignmentExpressions) {
+            guaranteedChangedVariables.addAll(assignmentExpression.getGuaranteedChangedVariables());
+        }
+        return guaranteedChangedVariables;
     }
 
     @Override
@@ -57,5 +61,14 @@ public class CommaExpression implements Expression {
         for (AssignmentExpression assignmentExpression : assignmentExpressions) {
             visitor.visit(assignmentExpression);
         }
+    }
+
+    @Override
+    public int pointValue() {
+        int sum = 0;
+        for (AssignmentExpression assignmentExpression : assignmentExpressions) {
+            sum += assignmentExpression.pointValue();
+        }
+        return sum;
     }
 }

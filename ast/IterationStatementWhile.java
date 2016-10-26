@@ -18,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class IterationStatementWhile implements IterationStatement, CanContainStatements {
     @NonNull private Expression condition;
-    private Statement statement;
+    @NonNull private Statement statement;
 
     @Override
     public String toCode() {
@@ -72,5 +72,13 @@ public class IterationStatementWhile implements IterationStatement, CanContainSt
         collection.addAll(visitor.visit(condition));
         collection.addAll(statement.visitAllExpressions(visitor));
         return collection;
+    }
+
+    @Override
+    public int pointValue() {
+        int points = 0;
+        points += condition.pointValue();
+        points += statement.pointValue();
+        return points;
     }
 }

@@ -96,8 +96,11 @@ public class SelectionStatementIf implements SelectionStatement, CanContainState
 
     @Override
     public boolean isCritical() {
-        //TODO
-        return true;
+        boolean elseCritical = false;
+        if (elseStatement != null) {
+            elseCritical = elseStatement.isCritical();
+        }
+        return condition.getInvocations().size() > 0 || thenStatement.isCritical() || elseCritical;
     }
 
     @Override
@@ -119,5 +122,16 @@ public class SelectionStatementIf implements SelectionStatement, CanContainState
             collection.addAll(elseStatement.visitAllExpressions(visitor));
         }
         return collection;
+    }
+
+    @Override
+    public int pointValue() {
+        int points = 0;
+        points += condition.pointValue();
+        points += thenStatement.pointValue();
+        if (elseStatement != null) {
+            points += elseStatement.pointValue() * 100;
+        }
+        return points;
     }
 }

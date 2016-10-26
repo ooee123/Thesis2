@@ -3,6 +3,7 @@ package ast;
 import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NonNull;
 import visitor.Visitor;
 
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 public class IterationStatementDoWhile implements IterationStatement, CanContainStatements {
-    private Statement statement;
-    private Expression condition;
+    @NonNull private Statement statement;
+    @NonNull private Expression condition;
 
     @Override
     public String toCode() {
@@ -77,5 +78,13 @@ public class IterationStatementDoWhile implements IterationStatement, CanContain
         collection.addAll(visitor.visit(condition));
         collection.addAll(statement.visitAllExpressions(visitor));
         return collection;
+    }
+
+    @Override
+    public int pointValue() {
+        int points = 0;
+        points += statement.pointValue();
+        points += condition.pointValue();
+        return points;
     }
 }

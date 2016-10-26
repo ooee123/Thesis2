@@ -63,4 +63,9 @@ public class LabeledCaseStatement implements LabeledStatement, CanContainStateme
         collection.addAll(statement.visitAllExpressions(visitor));
         return collection;
     }
+
+    @Override
+    public int pointValue() {
+        return statement.pointValue();
+    }
 }

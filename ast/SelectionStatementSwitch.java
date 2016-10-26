@@ -73,4 +73,9 @@ public class SelectionStatementSwitch implements SelectionStatement, CanContainS
         collection.addAll(statement.visitAllExpressions(visitor));
         return collection;
     }
+
+    @Override
+    public int pointValue() {
+        return expression.pointValue() + statement.pointValue();
+    }
 }

@@ -124,6 +124,15 @@ public class CompoundStatement implements Statement {
         return collection;
     }
 
+    @Override
+    public int pointValue() {
+        int points = 0;
+        for (BlockItem blockItem : blockItems) {
+            points += blockItem.pointValue();
+        }
+        return points;
+    }
+
     /*
     public CompoundStatementGroups toCompoundStatementGroups(DeclarationSplitterVisitor declarationSplitter) {
         List<Declaration> declarations = new ArrayList<>();

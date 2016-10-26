@@ -1,6 +1,7 @@
 package pdg;
 
 import ast.*;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Value;
 
@@ -27,13 +28,13 @@ public class PDGSorterDefault implements PDGSorter {
         }
         blockItems.addAll(emptyDeclarations);
         for (PDGNode emptyDeclarationNode : emptyDeclarationNodes) {
-            removeNode(emptyDeclarationNode, nodes);
+            PDGNode.removeNode(emptyDeclarationNode, nodes);
         }
 
         while (nodes.size() > 0) {
             Collection<PDGNode<? extends BlockItem>> candidateNextNodes = getReadyNodes(nodes);
             PDGNode chosenNode = pickNextNode(candidateNextNodes);
-            removeNode(chosenNode, nodes);
+            PDGNode.removeNode(chosenNode, nodes);
             blockItems.add(processNode(chosenNode));
         }
         return new CompoundStatement(blockItems);
@@ -41,22 +42,20 @@ public class PDGSorterDefault implements PDGSorter {
 
     private PDGNode<? extends BlockItem> pickNextNode(Collection<PDGNode<? extends BlockItem>> candidates) {
         int mostDependsOn = -1;
-        PDGNode best;
-        best = candidates.stream().findFirst().get();
+        Collection<PDGNode<? extends BlockItem>> bests = new ArrayList<>();
+        bests.add(candidates.stream().findFirst().get());
         for (PDGNode candidate : candidates) {
             if (!(candidate.blockItem instanceof JumpStatementStrict) && candidate.getIsADependencyFor().size() > mostDependsOn) {
-                best = candidate;
+                bests = Lists.newArrayList(candidate);
                 mostDependsOn = candidate.getIsADependencyFor().size();
+            } else if (!(candidate.blockItem instanceof JumpStatementStrict) && candidate.getIsADependencyFor().size() == mostDependsOn) {
+                bests.add(candidate);
             }
         }
-        return best;
-    }
-
-    private void removeNode(PDGNode<? extends BlockItem> node, Collection<PDGNode<? extends BlockItem>> nodes) {
-        nodes.remove(node);
-        Collection<PDGNode<? extends BlockItem>> dependents = node.getIsADependencyFor();
-        for (PDGNode dependent : dependents) {
-            dependent.getDependsOn().remove(node);
+        if (bests.size() == 1) {
+            return bests.stream().findAny().get();
+        } else {
+            return Collections.max(bests, new BlockItemComparator());
         }
     }
 
@@ -67,7 +66,7 @@ public class PDGSorterDefault implements PDGSorter {
     private Collection<PDGNode<? extends BlockItem>> getReadyNodes(Collection<PDGNode<? extends BlockItem>> nodes) {
         Collection<PDGNode<? extends BlockItem>> readyNodes = new ArrayList<>();
         for (PDGNode<? extends BlockItem> node : nodes) {
-            if (node.getDependsOn().isEmpty()) {
+            if (node.getDependsOn().isEmpty() && node.getIsBehindOfMe().isEmpty()) {
                 readyNodes.add(node);
             }
         }

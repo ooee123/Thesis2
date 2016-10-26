@@ -1,14 +1,9 @@
 package visitor;
 
-import ast.Expression;
-import ast.Function;
-import ast.PrimaryExpressionIdentifier;
+import ast.*;
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by ooee on 10/21/16.
@@ -52,12 +47,13 @@ public class IdentifierNormalizerVisitor {
             }
         };
 
-        Visitor<Void, Expression> shadowingVariables = new Visitor<Void, Statement>() {
+        Visitor<Void, Statement> shadowingVariables = new Visitor<Void, Statement>() {
             @Override
             public Collection<Void> visit(Statement statement) {
                if (statement instanceof CompoundStatement) {
                   Set<String> declaredVariables = ((CompoundStatement)statement).getDeclaredVariables();
                }
+               return null;
             }
         };
         f.getCompoundStatement().visitAllExpressions(touchy);
