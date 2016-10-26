@@ -274,6 +274,11 @@ public class PDGGenerationVisitor {
             PDGNode<? extends BlockItem> pdgNode = returns.getPdgNode();
             allNodes.put(blockItem, pdgNode);
             for (String usedVariable : returns.dependencies.getDependentVariables()) {
+                if (variableDeclarations.containsKey(usedVariable)) {
+                    PDGNode<Declaration> declarationPDGNode = variableDeclarations.get(usedVariable);
+                    declarationPDGNode.linkVariableDependency(pdgNode);
+                    //variableDeclarations.remove(guaranteedChangedVariables);
+                }
                 if (!lastAssigned.containsKey(usedVariable)) {
                     dependentVariables.add(usedVariable);
                 } else {
@@ -290,7 +295,7 @@ public class PDGGenerationVisitor {
                 if (variableDeclarations.containsKey(guaranteedChangedVariables)) {
                     PDGNode<Declaration> declarationPDGNode = variableDeclarations.get(guaranteedChangedVariables);
                     declarationPDGNode.linkVariableDependency(pdgNode);
-                    variableDeclarations.remove(guaranteedChangedVariables);
+                    //variableDeclarations.remove(guaranteedChangedVariables);
                 }
                 if (lastAssigned.containsKey(guaranteedChangedVariables)) {
                     for (PDGNode<? extends BlockItem> node : lastAssigned.get(guaranteedChangedVariables)) {
@@ -309,7 +314,7 @@ public class PDGGenerationVisitor {
                 if (variableDeclarations.containsKey(potentiallyChangedVariable)) {
                     PDGNode<Declaration> declarationPDGNode = variableDeclarations.get(potentiallyChangedVariable);
                     declarationPDGNode.linkVariableDependency(pdgNode);
-                    variableDeclarations.remove(potentiallyChangedVariable);
+                    //variableDeclarations.remove(potentiallyChangedVariable);
                 }
                 if (!lastAssigned.containsKey(potentiallyChangedVariable)) {
                     lastAssigned.put(potentiallyChangedVariable, new ArrayList<>());

@@ -102,4 +102,11 @@ public class PDGUselessCodeRemover {
             PDGNode.removeNode(pdgNode, nodes);
         }
     }
+/*
+    private static void removeEmptyCompoundStatements(Collection<PDGNode<? extends BlockItem>> nodes) {
+        for (PDGNode<? extends BlockItem> node : nodes) {
+            node instanceof
+        }
+    }
+    */
 }

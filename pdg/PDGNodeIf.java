@@ -50,4 +50,13 @@ public class PDGNodeIf extends PDGNodeContainsStatementNode<SelectionStatementIf
         }
         return statementNodes;
     }
+/*
+    public void removeEmptyCompoundStatement() {
+        if (elseNode instanceof PDGNodeCompoundStatement) {
+            if (((PDGNodeCompoundStatement) elseNode).getBody().isEmpty()) {
+                elseNode = null;
+            }
+        }
+    }
+    */
 }
