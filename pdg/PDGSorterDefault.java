@@ -55,7 +55,8 @@ public class PDGSorterDefault implements PDGSorter {
         if (bests.size() == 1) {
             return bests.stream().findAny().get();
         } else {
-            return Collections.max(bests, new BlockItemComparator());
+            return bests.stream().findAny().get();
+            //return Collections.max(bests, new BlockItemComparator());
         }
     }
 

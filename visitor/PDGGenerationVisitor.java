@@ -292,6 +292,11 @@ public class PDGGenerationVisitor {
                     declarationPDGNode.linkVariableDependency(pdgNode);
                     variableDeclarations.remove(guaranteedChangedVariables);
                 }
+                if (lastAssigned.containsKey(guaranteedChangedVariables)) {
+                    for (PDGNode<? extends BlockItem> node : lastAssigned.get(guaranteedChangedVariables)) {
+                        node.linkOrderDependency(pdgNode);
+                    }
+                }
                 lastAssigned.put(guaranteedChangedVariables, Sets.newHashSet(pdgNode));
                 if (usedSinceLastAssignment.containsKey(guaranteedChangedVariables)) {
                     for (PDGNode<? extends BlockItem> usedSinceLastAssignmentNode : usedSinceLastAssignment.get(guaranteedChangedVariables)) {
@@ -310,7 +315,8 @@ public class PDGGenerationVisitor {
                     lastAssigned.put(potentiallyChangedVariable, new ArrayList<>());
                 } else {
                     for (PDGNode<? extends BlockItem> previouslyPotentiallyAssigned : lastAssigned.get(potentiallyChangedVariable)) {
-                        previouslyPotentiallyAssigned.linkVariableDependency(pdgNode);
+                        //previouslyPotentiallyAssigned.linkVariableDependency(pdgNode);
+                        previouslyPotentiallyAssigned.linkOrderDependency(pdgNode);
                     }
                 }
                 lastAssigned.get(potentiallyChangedVariable).add(pdgNode);

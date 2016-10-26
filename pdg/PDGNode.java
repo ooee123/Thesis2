@@ -70,22 +70,52 @@ public abstract class PDGNode<T extends BlockItem> {
 
     public static void removeNode(PDGNode<? extends BlockItem> node, Collection<PDGNode<? extends BlockItem>> nodes) {
         nodes.remove(node);
-        for (PDGNode dependent : node.getIsADependencyFor()) {
-            dependent.getDependsOn().remove(node);
-        }
-        for (PDGNode<? extends BlockItem> pdgNode : node.getIsBehindOfMe()) {
-            for (PDGNode<? extends BlockItem> pdgNode1 : node.getIsAheadOfMe()) {
+        for (PDGNode<? extends BlockItem> pdgNode : node.getDependsOn()) {
+            pdgNode.getIsADependencyFor().remove(node);
+            for (PDGNode<? extends BlockItem> pdgNode1 : node.getIsADependencyFor()) {
                 pdgNode.linkOrderDependency(pdgNode1);
             }
-            for (PDGNode<? extends BlockItem> pdgNode1 : node.getIsADependencyFor()) {
+        }
+        for (PDGNode dependent : node.getIsADependencyFor()) {
+            dependent.getDependsOn().remove(node);
+            /*
+            for (PDGNode<? extends BlockItem> pdgNode : node.getDependsOn()) {
+                pdgNode.linkOrderDependency(dependent);
+            }
+            */
+        }
+        for (PDGNode<? extends BlockItem> pdgNode : node.getIsBehindOfMe()) {
+            pdgNode.getIsAheadOfMe().remove(node);
+            for (PDGNode<? extends BlockItem> pdgNode1 : node.getIsAheadOfMe()) {
                 pdgNode.linkOrderDependency(pdgNode1);
             }
         }
         for (PDGNode aheadOfMe : node.getIsAheadOfMe()) {
             aheadOfMe.getIsBehindOfMe().remove(node);
+            /*
+            for (PDGNode<? extends BlockItem> pdgNode : node.getDependsOn()) {
+                pdgNode.linkOrderDependency(aheadOfMe);
+            }
+            */
         }
     }
-
+/*
+    public static void removeNode(PDGNode<? extends BlockItem> node, Collection<PDGNode<? extends BlockItem>> nodes) {
+        nodes.remove(node);
+        for (PDGNode<? extends BlockItem> pdgNode : node.getDependsOn()) {
+            pdgNode.getIsADependencyFor().remove(node);
+        }
+        for (PDGNode<? extends BlockItem> pdgNode : node.getIsBehindOfMe()) {
+            pdgNode.getIsAheadOfMe().remove(node);
+        }
+        for (PDGNode dependent : node.getIsADependencyFor()) {
+            dependent.getDependsOn().remove(node);
+        }
+        for (PDGNode aheadOfMe : node.getIsAheadOfMe()) {
+            aheadOfMe.getDependsOn().remove(node);
+        }
+    }
+*/
     public int pointValue() {
         return blockItem.pointValue();
     }
