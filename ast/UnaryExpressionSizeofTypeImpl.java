@@ -42,7 +42,7 @@ public class UnaryExpressionSizeofTypeImpl implements UnaryExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         return;
     }
 }

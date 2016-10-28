@@ -57,24 +57,7 @@ public class PrimaryExpressionConstant implements PrimaryExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         return;
-    }
-
-    @Override
-    public int pointValue() {
-        if (value instanceof Long) {
-            return ((Long) value).intValue();
-        }
-        if (value instanceof Double) {
-            return ((Double) value).intValue();
-        }
-        if (value instanceof Character) {
-            return (int)((Character) value).charValue();
-        }
-        if (value instanceof String) {
-            return ((String) value).length();
-        }
-        throw new IllegalArgumentException();
     }
 }

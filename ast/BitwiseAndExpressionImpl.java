@@ -59,7 +59,7 @@ public class BitwiseAndExpressionImpl implements BitwiseAndExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         for (EqualityExpression equalityExpression : equalityExpressions) {
             visitor.visit(equalityExpression);
         }

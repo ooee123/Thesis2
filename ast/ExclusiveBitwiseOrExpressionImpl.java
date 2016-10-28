@@ -46,7 +46,7 @@ public class ExclusiveBitwiseOrExpressionImpl implements ExclusiveBitwiseOrExpre
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         for (BitwiseAndExpression bitwiseAndExpression : bitwiseAndExpressions) {
             visitor.visit(bitwiseAndExpression);
         }

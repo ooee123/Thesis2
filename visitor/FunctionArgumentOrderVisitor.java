@@ -20,30 +20,27 @@ public class FunctionArgumentOrderVisitor {
 
         Collection<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
 
-        Visitor<PostfixExpressionInvocationImpl, Expression> visitor = new Visitor<PostfixExpressionInvocationImpl, Expression>() {
+        Visitor<Expression> visitor = new Visitor<Expression>() {
             @Override
-            public Collection<PostfixExpressionInvocationImpl> visit(Expression expression) {
+            public void visit(Expression expression) {
                 invocations.addAll(expression.getInvocations());
-                return Collections.emptyList();
             }
         };
 
-        Visitor<Void, Expression> visitor2 = new Visitor<Void, Expression>() {
+        Visitor<Expression> visitor2 = new Visitor<Expression>() {
             @Override
-            public Collection<Void> visit(Expression expression) {
+            public void visit(Expression expression) {
                 if (expression instanceof PostfixExpressionInvocationImpl) {
                     invocations.add(((PostfixExpressionInvocationImpl) expression));
                 }
                 expression.visitNestedExpressions(this);
-                return Collections.emptyList();
             }
         };
 
-        Visitor<PostfixExpressionInvocationImpl, Expression> functionNameDigger = new Visitor<PostfixExpressionInvocationImpl, Expression>() {
+        Visitor<Expression> functionNameDigger = new Visitor<Expression>() {
             @Override
-            public Collection<PostfixExpressionInvocationImpl> visit(Expression expression) {
+            public void visit(Expression expression) {
                 invocations.addAll(expression.getInvocations());
-                return Collections.emptyList();
             }
         };
 

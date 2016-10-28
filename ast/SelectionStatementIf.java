@@ -104,34 +104,19 @@ public class SelectionStatementIf implements SelectionStatement, CanContainState
     }
 
     @Override
-    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
-        Collection<T> collection = new ArrayList<>();
-        collection.addAll(visitor.visit(thenStatement));
+    public void visitEachStatement(Visitor<Statement> visitor) {
+        visitor.visit(thenStatement);
         if (elseStatement != null) {
-            collection.addAll(visitor.visit(elseStatement));
+            visitor.visit(elseStatement);
         }
-        return collection;
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
-        Collection<T> collection = new ArrayList<>();
-        collection.addAll(visitor.visit(condition));
-        collection.addAll(thenStatement.visitAllExpressions(visitor));
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        visitor.visit(condition);
+        thenStatement.visitAllExpressions(visitor);
         if (elseStatement != null) {
-            collection.addAll(elseStatement.visitAllExpressions(visitor));
+            elseStatement.visitAllExpressions(visitor);
         }
-        return collection;
-    }
-
-    @Override
-    public int pointValue() {
-        int points = 0;
-        points += condition.pointValue();
-        points += thenStatement.pointValue();
-        if (elseStatement != null) {
-            points += elseStatement.pointValue() * 100;
-        }
-        return points;
     }
 }

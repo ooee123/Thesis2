@@ -39,17 +39,12 @@ public class JumpBreakStatement implements JumpStatementStrict {
     }
 
     @Override
-    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
-        return Collections.emptyList();
+    public void visitEachStatement(Visitor<Statement> visitor) {
+        return;
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public int pointValue() {
-        return 0;
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        return;
     }
 }

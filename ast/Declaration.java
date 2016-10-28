@@ -114,30 +114,11 @@ public class Declaration implements BlockItem {
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
-        Collection<T> collection = new ArrayList<>();
+    public void visitAllExpressions(Visitor<Expression> visitor) {
         for (DeclaredVariable declaredVariable : declaredVariables) {
             if (declaredVariable.getInitializer() != null) {
-                collection.addAll(visitor.visit(declaredVariable.getInitializer()));
+                visitor.visit(declaredVariable.getInitializer());
             }
         }
-        return collection;
-    }
-
-    @Override
-    public int pointValue() {
-        int points = 0;
-        for (DeclaredVariable declaredVariable : declaredVariables) {
-            if (declaredVariable.getType() instanceof PrimitiveType) {
-                points += ((PrimitiveType) declaredVariable.getType()).getTypeName().length();
-            } else {
-                points += 1;
-            }
-            if (declaredVariable.getInitializer() != null) {
-                points += declaredVariable.getInitializer().pointValue();
-            }
-        }
-        points *= declaredVariables.size();
-        return points;
     }
 }

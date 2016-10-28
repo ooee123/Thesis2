@@ -42,12 +42,7 @@ public class PrimaryExpressionIdentifier implements PrimaryExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         return;
-    }
-
-    @Override
-    public int pointValue() {
-        return 11;
     }
 }

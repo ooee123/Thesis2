@@ -1,7 +1,7 @@
 int main() {
    int a, b;
    a = 0;
-   foo(a);
+   print(a);
    a = 12;
    b = a;
    a = 13;
@@ -28,7 +28,7 @@ int main() {
       e = 2;
       f = 8;
    }
-   foo(e);
+   print(e);
 
    return a + d + e;
 }

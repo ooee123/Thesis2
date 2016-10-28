@@ -45,7 +45,7 @@ public class LogicalAndExpressionImpl implements LogicalAndExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         for (InclusiveBitwiseOrExpression inclusiveBitwiseOrExpression : inclusiveBitwiseOrExpressions) {
             visitor.visit(inclusiveBitwiseOrExpression);
         }

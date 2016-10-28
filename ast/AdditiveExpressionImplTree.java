@@ -16,7 +16,7 @@ public class AdditiveExpressionImplTree implements AdditiveExpression {
     private MultiplicativeExpression multiplicativeExpression;
 
     public String toCode() {
-        return additiveExpression.toCode() + additiveOperator.token + "(" + multiplicativeExpression.toCode() + ")";
+        return additiveExpression.toCode() + additiveOperator.token + multiplicativeExpression.toCode();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class AdditiveExpressionImplTree implements AdditiveExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         visitor.visit(additiveExpression);
         visitor.visit(multiplicativeExpression);
     }

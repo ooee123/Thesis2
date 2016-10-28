@@ -25,7 +25,5 @@ public interface BlockItem extends BaseElement {
 
     Set<String> getPotentiallyChangedVariables();
 
-    <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor);
-
-    int pointValue();
+    void visitAllExpressions(Visitor<Expression> visitor);
 }

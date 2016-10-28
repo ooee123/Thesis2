@@ -421,27 +421,25 @@ public class TreeToASTVisitor {
     }
 
     private AdditiveExpressionImplGroups visitAddGroups(CParser.AdditiveExpressionContext ctx) {
-        Collection<MultiplicativeExpression> addingTerms = new ArrayList<>();
-        Collection<MultiplicativeExpression> subtractingTerms = new ArrayList<>();
+        List<MultiplicativeExpression> addingTerms = new ArrayList<>();
+        List<MultiplicativeExpression> subtractingTerms = new ArrayList<>();
 
         while (ctx.additiveExpression() != null) {
             MultiplicativeExpression multiplicativeExpression = visit(ctx.multiplicativeExpression());
             AdditiveExpression.AdditiveOperator additiveOperator = AdditiveExpression.AdditiveOperator.toAdditiveOperator(ctx.getChild(1).getText());
             switch (additiveOperator) {
                 case PLUS:
-                    addingTerms.add(multiplicativeExpression);
+                    addingTerms.add(0, multiplicativeExpression);
                     break;
                 case MINUS:
-                    subtractingTerms.add(multiplicativeExpression);
+                    subtractingTerms.add(0, multiplicativeExpression);
                     break;
                 default:
-                    System.err.println(ctx.getChild(1).getText());
-                    System.err.println("NOT PLUS OR MINUS?");
-                    System.exit(0);
+                    throw new IllegalArgumentException("NOT PLUS OR MINUS?" + ctx.getChild(1).getText());
             }
             ctx = ctx.additiveExpression();
         }
-        addingTerms.add(visit(ctx.multiplicativeExpression()));
+        addingTerms.add(0, visit(ctx.multiplicativeExpression()));
         return new AdditiveExpressionImplGroups(addingTerms, subtractingTerms);
     }
 

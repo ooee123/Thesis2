@@ -62,20 +62,13 @@ public class SelectionStatementSwitch implements SelectionStatement, CanContainS
     }
 
     @Override
-    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
-        return visitor.visit(statement);
+    public void visitEachStatement(Visitor<Statement> visitor) {
+        visitor.visit(statement);
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
-        Collection<T> collection = new ArrayList<>();
-        collection.addAll(visitor.visit(expression));
-        collection.addAll(statement.visitAllExpressions(visitor));
-        return collection;
-    }
-
-    @Override
-    public int pointValue() {
-        return expression.pointValue() + statement.pointValue();
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        visitor.visit(expression);
+        statement.visitAllExpressions(visitor);
     }
 }

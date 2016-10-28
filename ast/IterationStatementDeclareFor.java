@@ -94,39 +94,23 @@ public class IterationStatementDeclareFor implements IterationStatement, CanCont
     }
 
     @Override
-    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
-        return visitor.visit(statement);
+    public void visitEachStatement(Visitor<Statement> visitor) {
+        visitor.visit(statement);
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
-        Collection<T> collection = new ArrayList<>();
+    public void visitAllExpressions(Visitor<Expression> visitor) {
         for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
             if (declaredVariable.getInitializer() != null) {
-                collection.addAll(visitor.visit(declaredVariable.getInitializer()));
+                visitor.visit(declaredVariable.getInitializer());
             }
         }
         if (condition != null) {
-            collection.addAll(visitor.visit(condition));
+            visitor.visit(condition);
         }
         if (iteration != null) {
-            collection.addAll(visitor.visit(iteration));
+            visitor.visit(iteration);
         }
-        collection.addAll(statement.visitAllExpressions(visitor));
-        return collection;
-    }
-
-    @Override
-    public int pointValue() {
-        int points = 0;
-        points += declaration.pointValue() * 100;
-        if (condition != null) {
-            points += condition.pointValue() * 100;
-        }
-        if (iteration != null) {
-            points += iteration.pointValue() * 100;
-        }
-        points += statement.pointValue();
-        return points;
+        statement.visitAllExpressions(visitor);
     }
 }

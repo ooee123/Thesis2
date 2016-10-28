@@ -29,31 +29,28 @@ public class IdentifierNormalizerVisitor {
 
     public void visit(Function f) {
         identifiers = new HashMap<>();
-        Visitor<Void, Expression> digger = new Visitor<Void, Expression>() {
+        Visitor<Expression> digger = new Visitor<Expression>() {
             @Override
-            public Collection<Void> visit(Expression expression) {
+            public void visit(Expression expression) {
                 checkExpression(expression);
                 expression.visitNestedExpressions(this);
-                return Lists.newArrayList();
             }
         };
 
-        Visitor<Void, Expression> touchy = new Visitor<Void, Expression>() {
+        Visitor<Expression> touchy = new Visitor<Expression>() {
             @Override
-            public Collection<Void> visit(Expression expression) {
+            public void visit(Expression expression) {
                 checkExpression(expression);
                 expression.visitNestedExpressions(digger);
-                return Lists.newArrayList();
             }
         };
 
-        Visitor<Void, Statement> shadowingVariables = new Visitor<Void, Statement>() {
+        Visitor<Statement> shadowingVariables = new Visitor<Statement>() {
             @Override
-            public Collection<Void> visit(Statement statement) {
+            public void visit(Statement statement) {
                if (statement instanceof CompoundStatement) {
                   Set<String> declaredVariables = ((CompoundStatement)statement).getDeclaredVariables();
                }
-               return null;
             }
         };
         f.getCompoundStatement().visitAllExpressions(touchy);

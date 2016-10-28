@@ -65,7 +65,7 @@ public class PostfixExpressionInvocationImpl implements PostfixExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         visitor.visit(postfixExpression);
         for (AssignmentExpression argument : arguments) {
             visitor.visit(argument);

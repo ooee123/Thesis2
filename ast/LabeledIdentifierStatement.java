@@ -51,17 +51,12 @@ public class LabeledIdentifierStatement implements LabeledStatement, CanContainS
     }
 
     @Override
-    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
-        return visitor.visit(statement);
+    public void visitEachStatement(Visitor<Statement> visitor) {
+        visitor.visit(statement);
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
-        return statement.visitAllExpressions(visitor);
-    }
-
-    @Override
-    public int pointValue() {
-        return statement.pointValue();
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        statement.visitAllExpressions(visitor);
     }
 }

@@ -78,7 +78,7 @@ public class AdditiveExpressionImplGroups implements AdditiveExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         for (MultiplicativeExpression addingTerm : addingTerms) {
             visitor.visit(addingTerm);
         }

@@ -58,7 +58,7 @@ public class UnaryExpressionIncrementImpl implements UnaryExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         visitor.visit(unaryExpression);
     }
 }

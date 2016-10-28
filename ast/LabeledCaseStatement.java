@@ -52,20 +52,13 @@ public class LabeledCaseStatement implements LabeledStatement, CanContainStateme
     }
 
     @Override
-    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
-        return visitor.visit(statement);
+    public void visitEachStatement(Visitor<Statement> visitor) {
+        visitor.visit(statement);
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
-        Collection<T> collection = new ArrayList<>();
-        collection.addAll(visitor.visit(conditionalExpression));
-        collection.addAll(statement.visitAllExpressions(visitor));
-        return collection;
-    }
-
-    @Override
-    public int pointValue() {
-        return statement.pointValue();
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        visitor.visit(conditionalExpression);
+        statement.visitAllExpressions(visitor);
     }
 }

@@ -38,7 +38,7 @@ public class MultiplicativeExpressionImpl implements MultiplicativeExpression {
 
     @Override
     public String toCode() {
-        return multiplicativeExpression.toCode() + multiplicativeOperator.token + castExpression.toCode();
+        return multiplicativeExpression.toCode() + " " + multiplicativeOperator.token + " " + castExpression.toCode();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class MultiplicativeExpressionImpl implements MultiplicativeExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         visitor.visit(multiplicativeExpression);
         visitor.visit(castExpression);
     }

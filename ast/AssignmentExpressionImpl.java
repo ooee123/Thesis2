@@ -55,7 +55,7 @@ public class AssignmentExpressionImpl implements AssignmentExpression {
 
     @Override
     public String toCode() {
-        return unaryExpression.toCode() + assignmentOperator.token + assignmentExpression.toCode();
+        return unaryExpression.toCode() + " " + assignmentOperator.token + " " + assignmentExpression.toCode();
     }
 
     @Override
@@ -107,7 +107,7 @@ public class AssignmentExpressionImpl implements AssignmentExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         visitor.visit(unaryExpression);
         visitor.visit(assignmentExpression);
     }

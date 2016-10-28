@@ -11,5 +11,5 @@ import java.util.Set;
  * Created by ooee on 9/24/16.
  */
 public interface Statement extends BlockItem {
-    <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor);
+    void visitEachStatement(Visitor<Statement> visitor);
 }

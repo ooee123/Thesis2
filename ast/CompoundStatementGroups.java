@@ -109,31 +109,17 @@ public class CompoundStatementGroups implements Statement {
     }
 
     @Override
-    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
-        //TODO
-        return Lists.newArrayList();
+    public void visitEachStatement(Visitor<Statement> visitor) {
+        return;
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
+    public void visitAllExpressions(Visitor<Expression> visitor) {
         for (Declaration declaration : declarations) {
             declaration.visitAllExpressions(visitor);
         }
         for (Statement statement : statements) {
             statement.visitAllExpressions(visitor);
         }
-        return Lists.newArrayList();
-    }
-
-    @Override
-    public int pointValue() {
-        int points = 0;
-        for (Declaration declaration : declarations) {
-            points += declaration.pointValue();
-        }
-        for (Statement statement : statements) {
-            points += statement.pointValue();
-        }
-        return points;
     }
 }

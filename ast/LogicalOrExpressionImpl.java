@@ -45,7 +45,7 @@ public class LogicalOrExpressionImpl implements LogicalOrExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         for (LogicalAndExpression logicalAndExpression : logicalAndExpressions) {
             visitor.visit(logicalAndExpression);
         }

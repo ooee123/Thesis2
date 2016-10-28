@@ -104,7 +104,7 @@ public class ConditionalExpressionImpl implements ConditionalExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         visitor.visit(logicalOrExpression);
         if (trueExpression != null) {
             visitor.visit(trueExpression);

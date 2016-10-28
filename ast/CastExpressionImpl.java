@@ -40,7 +40,7 @@ public class CastExpressionImpl implements CastExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         visitor.visit(castExpression);
     }
 }

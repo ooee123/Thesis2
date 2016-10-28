@@ -116,7 +116,4 @@ public abstract class PDGNode<T extends BlockItem> {
         }
     }
 */
-    public int pointValue() {
-        return blockItem.pointValue();
-    }
 }

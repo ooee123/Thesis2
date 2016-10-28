@@ -21,13 +21,7 @@ public interface Expression extends BaseElement {
 
     List<PostfixExpressionInvocationImpl> getInvocations();
 
-    void visitNestedExpressions(Visitor<Void, Expression> visitor);
-
-    //int pointValue();
-
-    default int pointValue() {
-        return 0;
-    }
+    void visitNestedExpressions(Visitor<Expression> visitor);
 
     default <T> Set<T> multiGetSet(java.util.function.Function<Expression, Set<T>> f, Expression... expressions) {
         return multiGetCollection(new HashSet<>(), f, expressions);

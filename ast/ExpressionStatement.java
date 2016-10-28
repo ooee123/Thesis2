@@ -40,17 +40,12 @@ public class ExpressionStatement implements Statement {
     }
 
     @Override
-    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
-        return Collections.emptyList();
+    public void visitEachStatement(Visitor<Statement> visitor) {
+        return;
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
-        return visitor.visit(expression);
-    }
-
-    @Override
-    public int pointValue() {
-        return expression.pointValue();
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        visitor.visit(expression);
     }
 }

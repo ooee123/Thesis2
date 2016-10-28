@@ -381,8 +381,7 @@ public class PDGGenerationVisitor {
             potentiallyChangedVariables.addAll(thenDependencies.getGuaranteedChangedVariables());
             potentiallyChangedVariables.addAll(thenDependencies.getPotentiallyChangedVariables());
         }
-        return new Returns<>(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeIf(statement, thenReturns.pdgNode, elseNode));
-
+        return new Returns<>(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeIf(statement, thenReturns.pdgNode, elseNode, statement.isCritical()));
     }
 
     private void printLastAssigned(Map<String, BlockItem> map) {

@@ -62,23 +62,13 @@ public class IterationStatementWhile implements IterationStatement, CanContainSt
     }
 
     @Override
-    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
-        return visitor.visit(statement);
+    public void visitEachStatement(Visitor<Statement> visitor) {
+        visitor.visit(statement);
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
-        Collection<T> collection = new ArrayList<>();
-        collection.addAll(visitor.visit(condition));
-        collection.addAll(statement.visitAllExpressions(visitor));
-        return collection;
-    }
-
-    @Override
-    public int pointValue() {
-        int points = 0;
-        points += condition.pointValue();
-        points += statement.pointValue();
-        return points;
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        visitor.visit(condition);
+        statement.visitAllExpressions(visitor);
     }
 }

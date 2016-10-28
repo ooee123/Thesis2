@@ -45,17 +45,12 @@ public class JumpReturnStatement implements JumpStatementStrict {
     }
 
     @Override
-    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
-        return Collections.emptyList();
+    public void visitEachStatement(Visitor<Statement> visitor) {
+        return;
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
-        return visitor.visit(returnExpression);
-    }
-
-    @Override
-    public int pointValue() {
-        return returnExpression.pointValue();
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        visitor.visit(returnExpression);
     }
 }

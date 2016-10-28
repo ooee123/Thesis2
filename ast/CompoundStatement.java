@@ -111,28 +111,16 @@ public class CompoundStatement implements Statement {
     }
 
     @Override
-    public <T> Collection<T> visitEachStatement(Visitor<T, Statement> visitor) {
-        return Lists.newArrayList();
+    public void visitEachStatement(Visitor<Statement> visitor) {
+        return;
     }
 
     @Override
-    public <T> Collection<T> visitAllExpressions(Visitor<T, Expression> visitor) {
-        Collection<T> collection = new ArrayList<>();
+    public void visitAllExpressions(Visitor<Expression> visitor) {
         for (BlockItem blockItem : blockItems) {
-            collection.addAll(blockItem.visitAllExpressions(visitor));
+            blockItem.visitAllExpressions(visitor);
         }
-        return collection;
     }
-
-    @Override
-    public int pointValue() {
-        int points = 0;
-        for (BlockItem blockItem : blockItems) {
-            points += blockItem.pointValue();
-        }
-        return points;
-    }
-
     /*
     public CompoundStatementGroups toCompoundStatementGroups(DeclarationSplitterVisitor declarationSplitter) {
         List<Declaration> declarations = new ArrayList<>();

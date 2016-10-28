@@ -56,7 +56,7 @@ public class InitializerList implements AssignmentExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         for (AssignmentExpression assignmentExpression : assignmentExpressions) {
             visitor.visit(assignmentExpression);
         }

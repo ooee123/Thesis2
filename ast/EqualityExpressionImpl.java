@@ -68,7 +68,7 @@ public class EqualityExpressionImpl implements EqualityExpression {
     }
 
     @Override
-    public void visitNestedExpressions(Visitor<Void, Expression> visitor) {
+    public void visitNestedExpressions(Visitor<Expression> visitor) {
         visitor.visit(equalityExpression);
         visitor.visit(relationalExpression);
     }
