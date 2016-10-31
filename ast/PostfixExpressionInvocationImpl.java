@@ -1,13 +1,11 @@
 package ast;
 
+import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import visitor.Visitor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by ooee on 9/26/16.
@@ -57,8 +55,8 @@ public class PostfixExpressionInvocationImpl implements PostfixExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
-        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        Set<PostfixExpressionInvocationImpl> invocations = Sets.newIdentityHashSet();
         invocations.add(this);
         invocations.addAll(multiGetInvocations(arguments.toArray(new Expression[0])));
         return invocations;

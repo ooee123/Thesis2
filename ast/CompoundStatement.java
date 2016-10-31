@@ -82,7 +82,7 @@ public class CompoundStatement implements Statement {
             if (blockItem instanceof Declaration) {
                 List<Declaration.DeclaredVariable> declaredVariablesList = ((Declaration) blockItem).getDeclaredVariables();
                 for (Declaration.DeclaredVariable declaredVariable : declaredVariablesList) {
-                    declaredVariables.add(declaredVariable.getIdentifier());
+                    declaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
                 }
             }
         }

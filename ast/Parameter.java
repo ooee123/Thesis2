@@ -10,7 +10,7 @@ import lombok.Value;
 @Value
 public class Parameter implements BaseElement {
     @NonNull private Type type;
-    @NonNull private String formalParameterName;
+    @NonNull private PrimaryExpressionIdentifier formalParameterName;
 
     @Override
     public String toCode() {

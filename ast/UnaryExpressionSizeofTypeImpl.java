@@ -7,7 +7,6 @@ import lombok.Value;
 import visitor.Visitor;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,8 +36,8 @@ public class UnaryExpressionSizeofTypeImpl implements UnaryExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
-        return Lists.newArrayList();
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return Sets.newIdentityHashSet();
     }
 
     @Override

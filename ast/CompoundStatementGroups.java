@@ -86,7 +86,7 @@ public class CompoundStatementGroups implements Statement {
         for (Declaration declaration : declarations) {
             List<Declaration.DeclaredVariable> declaredVariablesList = declaration.getDeclaredVariables();
             for (Declaration.DeclaredVariable declaredVariable : declaredVariablesList) {
-                declaredVariables.add(declaredVariable.getIdentifier());
+                declaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
             }
         }
         return declaredVariables;

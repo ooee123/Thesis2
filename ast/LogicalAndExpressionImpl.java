@@ -40,7 +40,7 @@ public class LogicalAndExpressionImpl implements LogicalAndExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(inclusiveBitwiseOrExpressions.toArray(new Expression[0]));
     }
 

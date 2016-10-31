@@ -22,10 +22,10 @@ public class Declaration implements BlockItem {
     @AllArgsConstructor
     public static class DeclaredVariable implements BaseElement {
         @NonNull private Type type;
-        @NonNull private String identifier;
+        @NonNull private PrimaryExpressionIdentifier identifier;
         private AssignmentExpression initializer;
 
-        public DeclaredVariable(Type type, String identifier) {
+        public DeclaredVariable(Type type, PrimaryExpressionIdentifier identifier) {
             this.type = type;
             this.identifier = identifier;
             this.initializer = null;
@@ -45,7 +45,7 @@ public class Declaration implements BlockItem {
         Set<String> dependentVariables = new HashSet<>();
         Set<String> guaranteedChangedVariables = new HashSet<>();
         for (DeclaredVariable declaredVariable : this.declaredVariables) {
-            declaredVariables.add(declaredVariable.getIdentifier());
+            declaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
             if (declaredVariable.getInitializer() != null) {
                 Set<String> requiredVars = declaredVariable.getInitializer().getDependentVariables();
                 requiredVars.removeAll(declaredVariables);
@@ -60,7 +60,7 @@ public class Declaration implements BlockItem {
         Set<String> guaranteedChangedVariables = new HashSet<>();
         for (DeclaredVariable declaredVariable : declaredVariables) {
             if (declaredVariable.getInitializer() != null) {
-                guaranteedChangedVariables.add(declaredVariable.getIdentifier());
+                guaranteedChangedVariables.add(declaredVariable.getIdentifier().getIdentifier());
                 guaranteedChangedVariables.addAll(declaredVariable.getInitializer().getGuaranteedChangedVariables());
             }
         }
@@ -72,7 +72,7 @@ public class Declaration implements BlockItem {
         Set<String> guaranteedChangedVariables = new HashSet<>();
         for (DeclaredVariable declaredVariable : declaredVariables) {
             if (declaredVariable.getInitializer() != null) {
-                guaranteedChangedVariables.add(declaredVariable.getIdentifier());
+                guaranteedChangedVariables.add(declaredVariable.getIdentifier().getIdentifier());
                 guaranteedChangedVariables.addAll(declaredVariable.getInitializer().getGuaranteedChangedVariables());
             }
         }
@@ -89,7 +89,6 @@ public class Declaration implements BlockItem {
             actualType = (ActualType)declaredVariable.type;
         }
 
-
         List<String> declaredVariableCode = new ArrayList<>();
         for (DeclaredVariable variable : declaredVariables) {
             StringBuilder builder = new StringBuilder();
@@ -99,7 +98,7 @@ public class Declaration implements BlockItem {
                     builder.append("*");
                 }
             }
-            builder.append(variable.identifier);
+            builder.append(variable.identifier.toCode());
             if (variable.initializer != null) {
                 builder.append(" = " + variable.initializer.toCode());
             }

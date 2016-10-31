@@ -3,7 +3,6 @@ package ast;
 import lombok.Value;
 import visitor.Visitor;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -38,7 +37,7 @@ public class EqualityExpressionImpl implements EqualityExpression {
 
     @Override
     public String toCode() {
-        return equalityExpression.toCode() + equalityOperator.token + relationalExpression.toCode();
+        return equalityExpression.toCode() + " " + equalityOperator.token + " " + relationalExpression.toCode();
     }
 
     @Override
@@ -63,8 +62,8 @@ public class EqualityExpressionImpl implements EqualityExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
-        return multiGetList(exp -> exp.getInvocations(), equalityExpression, relationalExpression);
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return multiGetIdentitySet(exp -> exp.getInvocations(), equalityExpression, relationalExpression);
     }
 
     @Override

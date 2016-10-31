@@ -29,7 +29,7 @@ public class DeclarationSplitterVisitor {
                 for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
                     declaredVariables.add(new Declaration.DeclaredVariable(declaredVariable.getType(), declaredVariable.getIdentifier()));
                     if (declaredVariable.getInitializer() != null) {
-                        String variableName = declaredVariable.getIdentifier();
+                        String variableName = declaredVariable.getIdentifier().getIdentifier();
                         Statement assignmentStatement = new ExpressionStatement(new AssignmentExpressionImpl(new PrimaryExpressionIdentifier(variableName), AssignmentExpressionImpl.AssignmentOperator.ASSIGNMENT, declaredVariable.getInitializer()));
                         statements.add(assignmentStatement);
                     }

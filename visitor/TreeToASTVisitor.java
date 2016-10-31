@@ -71,7 +71,7 @@ public class TreeToASTVisitor {
 
     private Parameter visit(CParser.ParameterDeclarationContext ctx) {
         Type type = getType(ctx.declarationSpecifiers(), ctx.declarator());
-        String identifier = visit(ctx.declarator());
+        PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(visit(ctx.declarator()));
         return new Parameter(type, identifier);
     }
 
@@ -113,7 +113,7 @@ public class TreeToASTVisitor {
     }
 
     private Declaration.DeclaredVariable visit(CParser.InitDeclaratorContext ctx, Type type) {
-        String identifier = visit(ctx.declarator());
+        PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(visit(ctx.declarator()));
         if (ctx.declarator().pointer() != null) {
             int nestedPointers = visit(ctx.declarator().pointer());
             type = new PointerType(nestedPointers, (ActualType)type);

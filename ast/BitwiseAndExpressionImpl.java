@@ -1,5 +1,6 @@
 package ast;
 
+import com.google.common.collect.Sets;
 import lombok.Value;
 import visitor.Visitor;
 
@@ -50,8 +51,8 @@ public class BitwiseAndExpressionImpl implements BitwiseAndExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
-        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        Set<PostfixExpressionInvocationImpl> invocations = Sets.newIdentityHashSet();
         for (EqualityExpression equalityExpression : equalityExpressions) {
             invocations.addAll(equalityExpression.getInvocations());
         }

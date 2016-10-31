@@ -32,10 +32,12 @@ public class Main {
             Program program = visitor.visit(compilationUnit);
             PDGGenerationVisitor pdgVisitor = new PDGGenerationVisitor();
             pdgVisitor.visit(program);
+            FunctionArgumentOrderVisitor functionArgumentOrderVisitor = new FunctionArgumentOrderVisitor();
+            //functionArgumentOrderVisitor.visit(program);
             for (Function function : program.getFunction()) {
                 Collection<PDGNode<? extends BlockItem>> functionBody = pdgVisitor.visit(function);
                 PDGUselessCodeRemover pdgUselessCodeRemover = new PDGUselessCodeRemover();
-                pdgUselessCodeRemover.removeUselessCode(functionBody);
+                //pdgUselessCodeRemover.removeUselessCode(functionBody);
 
                 PDGNodeTransitiveReducer pdgNodeTransitiveReducer = new PDGNodeTransitiveReducer();
                 pdgNodeTransitiveReducer.reduce(functionBody);
@@ -43,13 +45,13 @@ public class Main {
                 PDGSorter sorter = new PDGSorterDefault();
                 CompoundStatement statement = sorter.sort(functionBody);
                 function.setCompoundStatement(statement);
-                System.out.println(function.toCode());
 
                 IdentifierNormalizerVisitor identifierNormalizerVisitor = new IdentifierNormalizerVisitor();
-                //identifierNormalizerVisitor.visit(function);
+                identifierNormalizerVisitor.visit(function);
+
+                System.out.println(function.toCode());
             }
-            FunctionArgumentOrderVisitor functionArgumentOrderVisitor = new FunctionArgumentOrderVisitor();
-            //functionArgumentOrderVisitor.visit(program);
+
         } catch (IOException e) {
             System.err.println(e);
         }

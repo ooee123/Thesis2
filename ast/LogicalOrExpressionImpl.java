@@ -17,7 +17,7 @@ public class LogicalOrExpressionImpl implements LogicalOrExpression {
     @Override
     public String toCode() {
         List<String> codes = collectionToCode(logicalAndExpressions);
-        return String.join(OR, codes);
+        return String.join(" " + OR + " ", codes);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class LogicalOrExpressionImpl implements LogicalOrExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(logicalAndExpressions.toArray(new Expression[0]));
     }
 

@@ -2,6 +2,7 @@ package pdg;
 
 import ast.*;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import lombok.Value;
 
 import java.util.*;
@@ -15,8 +16,8 @@ public class PDGSorterDefault implements PDGSorter {
     @Override
     public CompoundStatement sort(Collection<PDGNode<? extends BlockItem>> nodes) {
         List<BlockItem> blockItems = new ArrayList<>();
-        List<Declaration> emptyDeclarations = new ArrayList<>();
-        List<PDGNode> emptyDeclarationNodes = new ArrayList<>();
+        Collection<Declaration> emptyDeclarations = Sets.newIdentityHashSet();
+        Collection<PDGNode> emptyDeclarationNodes = Sets.newIdentityHashSet();
         for (PDGNode node : nodes) {
             if (node.blockItem instanceof Declaration) {
                 if (node.blockItem.getDependantVariables().isEmpty()) {
@@ -48,7 +49,7 @@ public class PDGSorterDefault implements PDGSorter {
     }
 
     private Collection<PDGNode<? extends BlockItem>> getReadyNodes(Collection<PDGNode<? extends BlockItem>> nodes) {
-        Collection<PDGNode<? extends BlockItem>> readyNodes = new ArrayList<>();
+        Collection<PDGNode<? extends BlockItem>> readyNodes = Sets.newIdentityHashSet();
         for (PDGNode<? extends BlockItem> node : nodes) {
             if (node.getDependsOn().isEmpty() && node.getIsBehindOfMe().isEmpty()) {
                 if (!(node.getBlockItem() instanceof JumpStatementStrict) || nodes.size() <= 1) {

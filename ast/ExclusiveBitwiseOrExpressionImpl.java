@@ -18,7 +18,7 @@ public class ExclusiveBitwiseOrExpressionImpl implements ExclusiveBitwiseOrExpre
     @Override
     public String toCode() {
         List<String> codes = bitwiseAndExpressions.stream().map(exp -> exp.toCode()).collect(Collectors.toList());
-        return String.join(BITWISE_OR, codes);
+        return String.join(" " + BITWISE_OR + " ", codes);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class ExclusiveBitwiseOrExpressionImpl implements ExclusiveBitwiseOrExpre
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(bitwiseAndExpressions.toArray(new Expression[0]));
     }
 

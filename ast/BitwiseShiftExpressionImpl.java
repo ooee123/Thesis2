@@ -37,7 +37,7 @@ public class BitwiseShiftExpressionImpl implements BitwiseShiftExpression {
 
     @Override
     public String toCode() {
-        return bitwiseShiftExpression.toCode() + shiftOperator.token + additiveExpression.toCode();
+        return bitwiseShiftExpression.toCode() + " " + shiftOperator.token + " " + additiveExpression.toCode();
     }
 
     @Override
@@ -62,8 +62,8 @@ public class BitwiseShiftExpressionImpl implements BitwiseShiftExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
-        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        Set<PostfixExpressionInvocationImpl> invocations = Sets.newIdentityHashSet();
         invocations.addAll(bitwiseShiftExpression.getInvocations());
         invocations.addAll(additiveExpression.getInvocations());
         return invocations;

@@ -1,5 +1,6 @@
 package ast;
 
+import com.google.common.collect.Sets;
 import lombok.Value;
 import visitor.Visitor;
 
@@ -54,8 +55,8 @@ public class AdditiveExpressionImplGroups implements AdditiveExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
-        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        Set<PostfixExpressionInvocationImpl> invocations = Sets.newIdentityHashSet();
         for (MultiplicativeExpression addingTerm : addingTerms) {
             invocations.addAll(addingTerm.getInvocations());
         }

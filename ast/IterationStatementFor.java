@@ -101,6 +101,6 @@ public class IterationStatementFor implements IterationStatement, CanContainStat
         if (iteration != null) {
             visitor.visit(iteration);
         }
-        statement.visitAllExpressions(visitor);
+        //statement.visitAllExpressions(visitor);
     }
 }

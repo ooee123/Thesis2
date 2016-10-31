@@ -19,7 +19,7 @@ public interface Expression extends BaseElement {
         return Sets.newHashSet();
     }
 
-    List<PostfixExpressionInvocationImpl> getInvocations();
+    Set<PostfixExpressionInvocationImpl> getInvocations();
 
     void visitNestedExpressions(Visitor<Expression> visitor);
 
@@ -27,8 +27,8 @@ public interface Expression extends BaseElement {
         return multiGetCollection(new HashSet<>(), f, expressions);
     }
 
-    default <T> List<T> multiGetList(java.util.function.Function<Expression, List<T>> f, Expression... expressions) {
-        return multiGetCollection(new ArrayList<>(), f, expressions);
+    default <T> Set<T> multiGetIdentitySet(java.util.function.Function<Expression, Set<T>> f, Expression... expressions) {
+        return multiGetCollection(Sets.newIdentityHashSet(), f, expressions);
     }
 
     default <T, C extends Collection<T>> C multiGetCollection(C collection, java.util.function.Function<Expression, C> f, Expression... expressions) {
@@ -54,7 +54,7 @@ public interface Expression extends BaseElement {
         return multiGetSet(exp -> exp.getPotentiallyChangedVariables(), expressions);
     }
 
-    default List<PostfixExpressionInvocationImpl> multiGetInvocations(Expression... expressions) {
-        return multiGetList(exp -> exp.getInvocations(), expressions);
+    default Set<PostfixExpressionInvocationImpl> multiGetInvocations(Expression... expressions) {
+        return multiGetIdentitySet(exp -> exp.getInvocations(), expressions);
     }
 }

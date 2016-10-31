@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.Value;
 import visitor.Visitor;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,7 +43,7 @@ public class RelationalExpressionImpl implements RelationalExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(relationalExpression, bitwiseShiftExpression);
     }
 

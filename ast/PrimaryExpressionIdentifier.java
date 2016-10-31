@@ -6,7 +6,6 @@ import lombok.Data;
 import visitor.Visitor;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,8 +36,8 @@ public class PrimaryExpressionIdentifier implements PrimaryExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
-        return Collections.emptyList();
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        return Collections.emptySet();
     }
 
     @Override

@@ -51,7 +51,7 @@ public class InitializerList implements AssignmentExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(assignmentExpressions.toArray(new Expression[0]));
     }
 

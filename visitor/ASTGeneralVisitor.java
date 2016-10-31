@@ -30,7 +30,7 @@ public class ASTGeneralVisitor {
             functionTypes.put(functionId, functionReturnType);
             TypeScope functionScope = getDeclarations(f.getCompoundStatement(), globalScope);
             for (Parameter parameter : f.getParameterList().getParameters()) {
-                functionScope.put(parameter.getFormalParameterName(), parameter.getType());
+                functionScope.put(parameter.getFormalParameterName().getIdentifier(), parameter.getType());
             }
         }
     }
@@ -94,7 +94,7 @@ public class ASTGeneralVisitor {
         Map<String, Type> declarationsMap = new HashMap<>();
         for (Declaration declaration : declarations) {
             for (DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
-                String id = declaredVariable.getIdentifier();
+                String id = declaredVariable.getIdentifier().getIdentifier();
                 Type type = declaredVariable.getType();
                 declarationsMap.put(id, type);
             }

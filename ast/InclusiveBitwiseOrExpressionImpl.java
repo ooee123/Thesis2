@@ -41,7 +41,7 @@ public class InclusiveBitwiseOrExpressionImpl implements InclusiveBitwiseOrExpre
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(exclusiveBitwiseOrExpressions.toArray(new Expression[0]));
     }
 

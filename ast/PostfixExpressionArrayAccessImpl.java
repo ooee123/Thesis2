@@ -3,7 +3,6 @@ package ast;
 import lombok.Value;
 import visitor.Visitor;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,7 +33,7 @@ public class PostfixExpressionArrayAccessImpl implements PostfixExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
         return multiGetInvocations(postfixExpression, arrayIndex);
     }
 

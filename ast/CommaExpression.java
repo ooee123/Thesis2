@@ -48,8 +48,8 @@ public class CommaExpression implements Expression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
-        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        Set<PostfixExpressionInvocationImpl> invocations = Sets.newIdentityHashSet();
         for (AssignmentExpression assignmentExpression : assignmentExpressions) {
             invocations.addAll(assignmentExpression.getInvocations());
         }

@@ -177,7 +177,7 @@ public class PDGGenerationVisitor {
         for (Declaration.DeclaredVariable declaredVariable : statement.getDeclaration().getDeclaredVariables()) {
             if (declaredVariable.getInitializer() != null) {
                 nullableExpression(declaredVariable.getInitializer(), dependencies);
-                declaredVariables.add(declaredVariable.getIdentifier());
+                declaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
             }
         }
         nullableExpression(statement.getCondition(), dependencies);
@@ -249,14 +249,14 @@ public class PDGGenerationVisitor {
         Set<String> guaranteedChangedVariables = new HashSet<>();
         Set<String> potentiallyChangedVariables = new HashSet<>();
         for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
-            declaredVariables.add(declaredVariable.getIdentifier());
+            declaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
             if (declaredVariable.getInitializer() != null) {
                 Dependencies dependencies = visit(declaredVariable.getInitializer());
                 dependencies.dependentVariables.removeAll(declaredVariables);
                 dependentVariables.addAll(dependencies.dependentVariables);
                 guaranteedChangedVariables.addAll(dependencies.getGuaranteedChangedVariables());
                 potentiallyChangedVariables.addAll(dependencies.getPotentiallyChangedVariables());
-                guaranteedChangedVariables.add(declaredVariable.getIdentifier());
+                guaranteedChangedVariables.add(declaredVariable.getIdentifier().getIdentifier());
             }
         }
         return new Returns<>(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeDeclaration(declaration));
@@ -332,9 +332,9 @@ public class PDGGenerationVisitor {
             }
             if (blockItem instanceof Declaration) {
                 for (Declaration.DeclaredVariable declaredVariable : ((Declaration) blockItem).getDeclaredVariables()) {
-                    variableDeclarations.put(declaredVariable.getIdentifier(), ((PDGNode<Declaration>) pdgNode));
+                    variableDeclarations.put(declaredVariable.getIdentifier().getIdentifier(), ((PDGNode<Declaration>) pdgNode));
                     //lastAssigned.put(declaredVariable.getIdentifier(), Sets.newHashSet(pdgNode));
-                    locallyDeclaredVariables.add(declaredVariable.getIdentifier());
+                    locallyDeclaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
                 }
             }
         }

@@ -1,13 +1,11 @@
 package ast;
 
+import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.Value;
 import visitor.Visitor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by ooee on 9/26/16.
@@ -91,8 +89,8 @@ public class AssignmentExpressionImpl implements AssignmentExpression {
     }
 
     @Override
-    public List<PostfixExpressionInvocationImpl> getInvocations() {
-        List<PostfixExpressionInvocationImpl> invocations = new ArrayList<>();
+    public Set<PostfixExpressionInvocationImpl> getInvocations() {
+        Set<PostfixExpressionInvocationImpl> invocations = Sets.newIdentityHashSet();
         invocations.addAll(unaryExpression.getInvocations());
         invocations.addAll(assignmentExpression.getInvocations());
         return invocations;
