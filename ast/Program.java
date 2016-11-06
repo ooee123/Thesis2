@@ -1,9 +1,13 @@
 package ast;
 
+import ast.type.StructUnionType;
 import lombok.Value;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Value
 public class Program implements BaseElement {
@@ -16,5 +20,25 @@ public class Program implements BaseElement {
         List<String> declarationCodes = collectionToCode(declarations);
 
         return String.join("\n", declarationCodes) + "\n\n" + String.join("\n", functionCodes);
+    }
+
+    public Collection<VariableDeclaration> getVariableDeclarations() {
+        Collection<VariableDeclaration> variableDeclarations = new ArrayList<>();
+        for (Declaration declaration : declarations) {
+            if (declaration instanceof VariableDeclaration) {
+                variableDeclarations.add(((VariableDeclaration) declaration));
+            }
+        }
+        return variableDeclarations;
+    }
+
+    public Collection<TypedefDeclaration> getTypedefDeclarations() {
+        Collection<TypedefDeclaration> typedefDeclarations = new ArrayList<>();
+        for (Declaration declaration : declarations) {
+            if (declaration instanceof TypedefDeclaration) {
+                typedefDeclarations.add(((TypedefDeclaration) declaration));
+            }
+        }
+        return typedefDeclarations;
     }
 }

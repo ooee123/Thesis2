@@ -12,18 +12,18 @@ import java.util.*;
 @Value
 public class CompoundStatementGroups implements Statement {
 
-    private List<Declaration> declarations;
+    private List<VariableDeclaration> variableDeclarations;
     private List<Statement> statements;
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         int number = 1;
-        for (Declaration declaration : declarations) {
+        for (VariableDeclaration variableDeclaration : variableDeclarations) {
             builder.append("\n");
             builder.append(number);
             builder.append(": ");
-            builder.append(declaration.toString());
+            builder.append(variableDeclaration.toString());
             number++;
         }
         for (Statement statement : statements) {
@@ -39,7 +39,7 @@ public class CompoundStatementGroups implements Statement {
 
     @Override
     public String toCode() {
-        List<String> declarationCodes = collectionToCode(declarations);
+        List<String> declarationCodes = collectionToCode(variableDeclarations);
         List<String> statementCodes = collectionToCode(statements);
         return "{\n" + String.join("\n", declarationCodes) + "\n" + String.join("\n", statementCodes) + "\n}";
     }
@@ -83,9 +83,9 @@ public class CompoundStatementGroups implements Statement {
 
     public Set<String> getDeclaredVariables() {
         Set<String> declaredVariables = new HashSet<>();
-        for (Declaration declaration : declarations) {
-            List<Declaration.DeclaredVariable> declaredVariablesList = declaration.getDeclaredVariables();
-            for (Declaration.DeclaredVariable declaredVariable : declaredVariablesList) {
+        for (VariableDeclaration variableDeclaration : variableDeclarations) {
+            List<VariableDeclaration.DeclaredVariable> declaredVariablesList = variableDeclaration.getDeclaredVariables();
+            for (VariableDeclaration.DeclaredVariable declaredVariable : declaredVariablesList) {
                 declaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
             }
         }
@@ -115,8 +115,8 @@ public class CompoundStatementGroups implements Statement {
 
     @Override
     public void visitAllExpressions(Visitor<Expression> visitor) {
-        for (Declaration declaration : declarations) {
-            declaration.visitAllExpressions(visitor);
+        for (VariableDeclaration variableDeclaration : variableDeclarations) {
+            variableDeclaration.visitAllExpressions(visitor);
         }
         for (Statement statement : statements) {
             statement.visitAllExpressions(visitor);

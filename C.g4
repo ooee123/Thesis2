@@ -166,6 +166,10 @@ constantExpression
     :   conditionalExpression
     ;
 
+typeDefinition
+    :   storageClassSpecifier* structOrUnionSpecifier
+    ;
+
 declaration
     :   declarationSpecifiers initDeclaratorList? ';'
     |   staticAssertDeclaration
@@ -238,8 +242,7 @@ structOrUnion
     ;
 
 structDeclarationList
-    :   structDeclaration
-    |   structDeclarationList structDeclaration
+    :   structDeclaration+
     ;
 
 structDeclaration
@@ -248,13 +251,11 @@ structDeclaration
     ;
 
 specifierQualifierList
-    :   typeSpecifier specifierQualifierList?
-    |   typeQualifier specifierQualifierList?
+    :   (typeSpecifier | typeQualifier)+
     ;
 
 structDeclaratorList
-    :   structDeclarator
-    |   structDeclaratorList ',' structDeclarator
+    :   structDeclarator (',' structDeclarator)*
     ;
 
 structDeclarator
@@ -531,6 +532,7 @@ translationUnit
 externalDeclaration
     :   functionDefinition
     |   declaration
+    |   typeDefinition
     |   ';' // stray ;
     ;
 

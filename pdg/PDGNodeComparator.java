@@ -50,7 +50,7 @@ public class PDGNodeComparator implements Comparator<PDGNode<? extends BlockItem
     }
 
     public enum BlockItemStrictOrdering {
-        DECLARATION(Declaration.class),
+        DECLARATION(VariableDeclaration.class),
         EXPRESSION_STATEMENT(ExpressionStatement.class),
         SELECTION_STATEMENT_IF(SelectionStatementIf.class),
         SELECTION_STATEMENT_SWITCH(SelectionStatementSwitch.class),
@@ -193,16 +193,16 @@ public class PDGNodeComparator implements Comparator<PDGNode<? extends BlockItem
         if (b1.getClass() != b2.getClass()) {
             return Integer.compare(BlockItemStrictOrdering.getIndex(b1), BlockItemStrictOrdering.getIndex(b2));
         } else {
-            if (b1 instanceof Declaration) {
+            if (b1 instanceof VariableDeclaration) {
                 Score s1 = new Score(), s2 = new Score();
-                for (Declaration.DeclaredVariable declaredVariable : ((Declaration) b1).getDeclaredVariables()) {
+                for (VariableDeclaration.DeclaredVariable declaredVariable : ((VariableDeclaration) b1).getDeclaredVariables()) {
                     if (declaredVariable.getInitializer() != null) {
                         s1.addScore(ShallowExpressionVisitor.distanceToObject(declaredVariable.getInitializer().getClass()));
                     } else {
                         s1.addScore(0);
                     }
                 }
-                for (Declaration.DeclaredVariable declaredVariable : ((Declaration) b2).getDeclaredVariables()) {
+                for (VariableDeclaration.DeclaredVariable declaredVariable : ((VariableDeclaration) b2).getDeclaredVariables()) {
                     if (declaredVariable.getInitializer() != null) {
                         s2.addScore(ShallowExpressionVisitor.distanceToObject(declaredVariable.getInitializer().getClass()));
                     } else {

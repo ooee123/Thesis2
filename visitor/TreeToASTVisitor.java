@@ -6,6 +6,7 @@ import ast.type.*;
 import org.antlr.v4.runtime.tree.*;
 import parser.CParser;
 
+import java.sql.Struct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,9 +19,12 @@ public class TreeToASTVisitor {
     public static final boolean LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS = true;
     public static final boolean ELSE_IF_CHAIN_WITHOUT_COMPOUND_STATEMENTS = true;
 
+    private Map<String, StructUnionType> tagMapper = new HashMap<>();
+    private Map<String, StructUnionType> typedefMapper = new HashMap<>();
+
     public Program visit(CParser.CompilationUnitContext ctx) {
         Collection<Function> functions = new ArrayList<>();
-        Collection<Declaration> declarations = new ArrayList<>();
+        Collection<Declaration> variableDeclarations = new ArrayList<>();
         CParser.TranslationUnitContext translationUnitContext = ctx.translationUnit();
         List<CParser.ExternalDeclarationContext> externalDeclarationContexts = translationUnitContext.externalDeclaration();
         for (CParser.ExternalDeclarationContext externalDeclarationContext : externalDeclarationContexts) {
@@ -29,10 +33,10 @@ public class TreeToASTVisitor {
                 functions.add(function);
             } else if (externalDeclarationContext.declaration() != null) {
                 Declaration declaration = visit(externalDeclarationContext.declaration());
-                declarations.add(declaration);
+                variableDeclarations.add(declaration);
             }
         }
-        return new Program(functions, declarations);
+        return new Program(functions, variableDeclarations);
     }
 
     private String visit(CParser.DeclaratorContext ctx) {
@@ -105,14 +109,35 @@ public class TreeToASTVisitor {
     }
 
     private Declaration visit(CParser.DeclarationContext ctx) {
+        boolean isTypeDef = false;
+        for (CParser.DeclarationSpecifierContext declarationSpecifierContext : ctx.declarationSpecifiers().declarationSpecifier()) {
+            if (declarationSpecifierContext.storageClassSpecifier() != null) {
+                if (declarationSpecifierContext.storageClassSpecifier().getText().equals("typedef")) {
+                    isTypeDef = true;
+                }
+            }
+        }
+
         Type type = visit(ctx.declarationSpecifiers());
-        CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
-        List<CParser.InitDeclaratorContext> initDeclaratorContexts = initDeclaratorListContext.initDeclarator();
-        List<Declaration.DeclaredVariable> declaredVariables = initDeclaratorContexts.stream().map(init -> visit(init, type)).collect(Collectors.toList());
-        return new Declaration(declaredVariables);
+        if (ctx.initDeclaratorList() != null) {
+            CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
+            List<CParser.InitDeclaratorContext> initDeclaratorContexts = initDeclaratorListContext.initDeclarator();
+            List<VariableDeclaration.DeclaredVariable> declaredVariables = initDeclaratorContexts.stream().map(init -> visit(init, type)).collect(Collectors.toList());
+            if (isTypeDef) {
+                if (declaredVariables.size() != 1) {
+                    throw new IllegalArgumentException("Too many declared variables for Struct typedef");
+                }
+                String typedefName = declaredVariables.stream().findAny().get().getIdentifier().getIdentifier();
+                typedefMapper.put(typedefName, (StructUnionType) type);
+                return new TypedefDeclaration((StructUnionType) type, typedefName);
+            }
+            return new VariableDeclaration(declaredVariables);
+        } else {
+            return new StructDeclaration(((StructUnionType) type));
+        }
     }
 
-    private Declaration.DeclaredVariable visit(CParser.InitDeclaratorContext ctx, Type type) {
+    private VariableDeclaration.DeclaredVariable visit(CParser.InitDeclaratorContext ctx, Type type) {
         PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(visit(ctx.declarator()));
         if (ctx.declarator().pointer() != null) {
             int nestedPointers = visit(ctx.declarator().pointer());
@@ -121,9 +146,9 @@ public class TreeToASTVisitor {
         if (ctx.initializer() != null) {
             CParser.InitializerContext initializerContext = ctx.initializer();
             AssignmentExpression assignmentExpression = visit(initializerContext);
-            return new Declaration.DeclaredVariable(type, identifier, assignmentExpression);
+            return new VariableDeclaration.DeclaredVariable(type, identifier, assignmentExpression);
         } else {
-            return new Declaration.DeclaredVariable(type, identifier);
+            return new VariableDeclaration.DeclaredVariable(type, identifier);
         }
     }
 
@@ -264,7 +289,7 @@ public class TreeToASTVisitor {
     }
 
     private IterationStatementDeclareFor visit(CParser.DeclareForLoopStatementContext ctx) {
-        Declaration declaration = visit(ctx.declaration());
+        VariableDeclaration variableDeclaration = (VariableDeclaration)visit(ctx.declaration());
         Expression expression = null, iteration = null;
         if (ctx.condExpression() != null) {
             expression = visit(ctx.condExpression().expression());
@@ -276,7 +301,7 @@ public class TreeToASTVisitor {
         if (LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS && !(statement instanceof CompoundStatement)) {
             statement = containInCompoundStatement(statement);
         }
-        return new IterationStatementDeclareFor(declaration, expression, iteration, statement);
+        return new IterationStatementDeclareFor(variableDeclaration, expression, iteration, statement);
     }
 
     private JumpStatement visit(CParser.JumpStatementContext ctx) {
@@ -573,16 +598,11 @@ public class TreeToASTVisitor {
     private Type visit(CParser.TypeNameContext ctx) {
         CParser.SpecifierQualifierListContext specifierQualifierListContext = ctx.specifierQualifierList();
         Type type = null;
-        while (specifierQualifierListContext != null) {
-            if (specifierQualifierListContext.typeSpecifier() != null) {
-                CParser.TypeSpecifierContext typeSpecifierContext = specifierQualifierListContext.typeSpecifier();
-                type = visit(typeSpecifierContext);
-                System.out.println(type);
-                break;
-            }
-            specifierQualifierListContext = specifierQualifierListContext.specifierQualifierList();
+        for (CParser.TypeSpecifierContext typeSpecifierContext : specifierQualifierListContext.typeSpecifier()) {
+            type = visit(typeSpecifierContext);
+            System.out.println(type);
+            break;
         }
-
         if (ctx.abstractDeclarator() != null) {
             int nestedPointers = visit(ctx.abstractDeclarator().pointer());
             return new PointerType(nestedPointers, (ActualType)type);
@@ -614,13 +634,73 @@ public class TreeToASTVisitor {
         if (ctx.atomicTypeSpecifier() != null) {
             return visit(ctx.atomicTypeSpecifier().typeName());
         } else if (ctx.structOrUnionSpecifier() != null) {
-            return new StructUnionType(ctx.structOrUnionSpecifier().Identifier().getSymbol().getText());
+            return visit(ctx.structOrUnionSpecifier());
         } else if (ctx.enumSpecifier() != null) {
             throw new UnsupportedOperationException("Enum has been visited. Please implement");
         } else if (ctx.typedefName() != null) {
-            return new TypedefType(ctx.typedefName().Identifier().getSymbol().getText());
+            return typedefMapper.get(ctx.typedefName().getText());
         } else {
             return new PrimitiveType(ctx.getChild(0).getText());
         }
+    }
+
+    private StructUnionType visit(CParser.StructOrUnionSpecifierContext ctx) {
+        StructUnionType.StructUnion structUnion = StructUnionType.StructUnion.toStructUnion(ctx.structOrUnion().getText());
+        List<VariableDeclaration> structVariableDeclarations = new ArrayList<>();
+
+        String tag = null;
+        if (ctx.Identifier() != null) {
+            tag = ctx.Identifier().getSymbol().getText();
+        }
+        if (ctx.structDeclarationList() != null) {
+            StructUnionType structUnionType = new StructUnionType(tag, structUnion, structVariableDeclarations);
+            tagMapper.put(tag, structUnionType);
+            for (CParser.StructDeclarationContext structDeclarationContext : ctx.structDeclarationList().structDeclaration()) {
+                List<VariableDeclaration.DeclaredVariable> structMembers = new ArrayList<>();
+                Type visit = visit(structDeclarationContext.specifierQualifierList());
+                if (structDeclarationContext.specifierQualifierList().typeSpecifier().size() == 2) {
+                    // If there's 2 things, then the second one is an identifier name
+                    CParser.TypeSpecifierContext typeSpecifierContext = structDeclarationContext.specifierQualifierList().typeSpecifier().get(1);
+                    String identifier = typeSpecifierContext.typedefName().Identifier().getSymbol().getText();
+                    structMembers.add(new VariableDeclaration.DeclaredVariable(visit, new PrimaryExpressionIdentifier(identifier)));
+                }
+                if (structDeclarationContext.structDeclaratorList() != null) {
+                    for (CParser.StructDeclaratorContext structDeclaratorContext : structDeclarationContext.structDeclaratorList().structDeclarator()) {
+                        CParser.DeclaratorContext declarator = structDeclaratorContext.declarator();
+                        String id = visit(structDeclaratorContext.declarator());
+                        if (declarator.pointer() != null) {
+                            int nestedPointers = visit(declarator.pointer());
+                            visit = new PointerType(nestedPointers, (ActualType)visit);
+                        }
+                        VariableDeclaration.DeclaredVariable declaredVariable = new VariableDeclaration.DeclaredVariable(visit, new PrimaryExpressionIdentifier(id));
+                        structMembers.add(declaredVariable);
+                    }
+                }
+                VariableDeclaration variableDeclaration = new VariableDeclaration(structMembers);
+                structVariableDeclarations.add(variableDeclaration);
+            }
+            return structUnionType;
+        } else {
+            StructUnionType structUnionType = tagMapper.get(tag);
+            return structUnionType;
+        }
+    }
+
+    // Gets the type! and the type only!
+    private Type visit(CParser.SpecifierQualifierListContext ctx) {
+        Type visit = null;
+        for (CParser.TypeSpecifierContext typeSpecifierContext : ctx.typeSpecifier()) {
+            if (typeSpecifierContext.typedefName() != null) {
+                if (typedefMapper.containsKey(typeSpecifierContext.typedefName().getText())) {
+                    return typedefMapper.get(typeSpecifierContext.typedefName().getText());
+                }
+            } else {
+                visit = visit(typeSpecifierContext);
+            }
+        }
+        if (visit == null) {
+            throw new IllegalArgumentException();
+        }
+        return visit;
     }
 }

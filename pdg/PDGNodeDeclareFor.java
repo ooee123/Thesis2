@@ -28,7 +28,7 @@ public class PDGNodeDeclareFor extends PDGNodeContainsStatementNode<IterationSta
     @Override
     public IterationStatementDeclareFor sort(PDGSorter sorter) {
         Statement statement = body.sort(sorter);
-        return new IterationStatementDeclareFor(blockItem.getDeclaration(), blockItem.getCondition(), blockItem.getIteration(), statement);
+        return new IterationStatementDeclareFor(blockItem.getVariableDeclaration(), blockItem.getCondition(), blockItem.getIteration(), statement);
     }
 
     public String toCode(PDGSorterDefault sorter) {

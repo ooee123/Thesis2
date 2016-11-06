@@ -48,10 +48,8 @@ public class Main {
 
                 IdentifierNormalizerVisitor identifierNormalizerVisitor = new IdentifierNormalizerVisitor();
                 identifierNormalizerVisitor.visit(function);
-
-                System.out.println(function.toCode());
             }
-
+            System.out.println(program.toCode());
         } catch (IOException e) {
             System.err.println(e);
         }

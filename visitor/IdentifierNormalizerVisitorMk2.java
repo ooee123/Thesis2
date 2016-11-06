@@ -40,8 +40,8 @@ public class IdentifierNormalizerVisitorMk2 {
         }
     }
 
-    public void process(Declaration declaration, IdentifierScoper identifierScoper) {
-        for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+    public void process(VariableDeclaration variableDeclaration, IdentifierScoper identifierScoper) {
+        for (VariableDeclaration.DeclaredVariable declaredVariable : variableDeclaration.getDeclaredVariables()) {
             PrimaryExpressionIdentifier primaryExpressionIdentifier = declaredVariable.getIdentifier();
             String identifier = primaryExpressionIdentifier.getIdentifier();
             identifierScoper.put(identifier, getNewIdentifier());
@@ -63,7 +63,9 @@ public class IdentifierNormalizerVisitorMk2 {
     public void visit(Program p) {
         IdentifierScoper globalScope = new IdentifierScoper();
         for (Declaration declaration : p.getDeclarations()) {
-            process(declaration, globalScope);
+            if (declaration instanceof VariableDeclaration) {
+                process(((VariableDeclaration) declaration), globalScope);
+            }
         }
         for (Function function : p.getFunction()) {
             visit(function, new IdentifierScoper(globalScope));
@@ -130,8 +132,8 @@ public class IdentifierNormalizerVisitorMk2 {
             Set<String> declaredVariables = new HashSet<>();
             Map<String, String> variableMapping = new HashMap<>();
             for (BlockItem blockItem : statement.getBlockItems()) {
-                if (blockItem instanceof Declaration) {
-                    for (Declaration.DeclaredVariable declaredVariable : ((Declaration) blockItem).getDeclaredVariables()) {
+                if (blockItem instanceof VariableDeclaration) {
+                    for (VariableDeclaration.DeclaredVariable declaredVariable : ((VariableDeclaration) blockItem).getDeclaredVariables()) {
                         PrimaryExpressionIdentifier identifier = declaredVariable.getIdentifier();
                         if (!declaredVariables.contains(identifier.getIdentifier())) {
                             variableMapping.put(identifier.getIdentifier(), getNewIdentifier());
@@ -145,7 +147,7 @@ public class IdentifierNormalizerVisitorMk2 {
         }
 
         public void visit(IterationStatementDeclareFor statement, IdentifierScoper identifierScoper) {
-            process(statement.getDeclaration(), identifierScoper);
+            process(statement.getVariableDeclaration(), identifierScoper);
             IdentifierReplacer identifierReplacer = new IdentifierReplacer(identifierScoper);
             statement.visitAllExpressions(identifierReplacer);
 

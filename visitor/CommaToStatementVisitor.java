@@ -134,7 +134,7 @@ public class CommaToStatementVisitor {
             CompoundStatement.addToEnd(blockItem, body);
         }
 
-        newBlockItems.add(new IterationStatementDeclareFor(iterationStatementDeclareFor.getDeclaration(), condition, iteration, body));
+        newBlockItems.add(new IterationStatementDeclareFor(iterationStatementDeclareFor.getVariableDeclaration(), condition, iteration, body));
         return newBlockItems;
     }
 

@@ -140,8 +140,12 @@ public class PDGGenerationVisitor {
     }
 
     private Returns<? extends BlockItem> visit(BlockItem blockItem) {
-         if (blockItem instanceof Declaration) {
-            return visit(((Declaration) blockItem));
+        if (blockItem instanceof VariableDeclaration) {
+            return visit(((VariableDeclaration) blockItem));
+        } else if (blockItem instanceof TypedefDeclaration) {
+            throw new IllegalArgumentException("Typedefs should not be in a function");
+        } else if (blockItem instanceof StructDeclaration) {
+            throw new IllegalArgumentException("Struct declarations... could be in a function");
         } else {
             return visit((Statement) blockItem);
         }
@@ -152,7 +156,6 @@ public class PDGGenerationVisitor {
         nullableExpression(statement.getInitial(), dependencies);
         nullableExpression(statement.getCondition(), dependencies);
         Returns<? extends Statement> returns = visit(statement.getStatement());
-
         Dependencies bodyDependencies = returns.dependencies;
         bodyDependencies.dependentVariables.removeAll(dependencies.getPotentiallyChangedVariables());
         dependencies.potentiallyChangedVariables.addAll(bodyDependencies.getGuaranteedChangedVariables());
@@ -174,7 +177,7 @@ public class PDGGenerationVisitor {
     private Returns<IterationStatementDeclareFor> visit(IterationStatementDeclareFor statement) {
         Set<String> declaredVariables = new HashSet<>();
         Dependencies dependencies = new Dependencies();
-        for (Declaration.DeclaredVariable declaredVariable : statement.getDeclaration().getDeclaredVariables()) {
+        for (VariableDeclaration.DeclaredVariable declaredVariable : statement.getVariableDeclaration().getDeclaredVariables()) {
             if (declaredVariable.getInitializer() != null) {
                 nullableExpression(declaredVariable.getInitializer(), dependencies);
                 declaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
@@ -243,12 +246,12 @@ public class PDGGenerationVisitor {
         return new Dependencies(dependentVariables, changedVariables, potentialVariables);
     }
 
-    private Returns<Declaration> visit(Declaration declaration) {
+    private Returns<VariableDeclaration> visit(VariableDeclaration variableDeclaration) {
         Set<String> declaredVariables = new HashSet<>();
         Set<String> dependentVariables = new HashSet<>();
         Set<String> guaranteedChangedVariables = new HashSet<>();
         Set<String> potentiallyChangedVariables = new HashSet<>();
-        for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+        for (VariableDeclaration.DeclaredVariable declaredVariable : variableDeclaration.getDeclaredVariables()) {
             declaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
             if (declaredVariable.getInitializer() != null) {
                 Dependencies dependencies = visit(declaredVariable.getInitializer());
@@ -259,14 +262,14 @@ public class PDGGenerationVisitor {
                 guaranteedChangedVariables.add(declaredVariable.getIdentifier().getIdentifier());
             }
         }
-        return new Returns<>(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeDeclaration(declaration));
+        return new Returns<>(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeDeclaration(variableDeclaration));
     }
 
     private Returns<CompoundStatement> visit(CompoundStatement statement) {
         Map<String, Collection<PDGNode<? extends BlockItem>>> usedSinceLastAssignment = new HashMap<>();
         Map<BlockItem, PDGNode<? extends BlockItem>> allNodes = new IdentityHashMap<>();
         Map<String, Collection<PDGNode<? extends BlockItem>>> lastAssigned = new HashMap<>();
-        Map<String, PDGNode<Declaration>> variableDeclarations = new HashMap<>();
+        Map<String, PDGNode<VariableDeclaration>> variableDeclarations = new HashMap<>();
         Set<String> dependentVariables = new HashSet<>();
         Set<String> locallyDeclaredVariables = new HashSet<>();
         for (BlockItem blockItem : statement.getBlockItems()) {
@@ -275,7 +278,7 @@ public class PDGGenerationVisitor {
             allNodes.put(blockItem, pdgNode);
             for (String usedVariable : returns.dependencies.getDependentVariables()) {
                 if (variableDeclarations.containsKey(usedVariable)) {
-                    PDGNode<Declaration> declarationPDGNode = variableDeclarations.get(usedVariable);
+                    PDGNode<VariableDeclaration> declarationPDGNode = variableDeclarations.get(usedVariable);
                     declarationPDGNode.linkVariableDependency(pdgNode);
                     //variableDeclarations.remove(guaranteedChangedVariables);
                 }
@@ -293,7 +296,7 @@ public class PDGGenerationVisitor {
             }
             for (String guaranteedChangedVariables : returns.dependencies.getGuaranteedChangedVariables()) {
                 if (variableDeclarations.containsKey(guaranteedChangedVariables)) {
-                    PDGNode<Declaration> declarationPDGNode = variableDeclarations.get(guaranteedChangedVariables);
+                    PDGNode<VariableDeclaration> declarationPDGNode = variableDeclarations.get(guaranteedChangedVariables);
                     declarationPDGNode.linkVariableDependency(pdgNode);
                     //variableDeclarations.remove(guaranteedChangedVariables);
                 }
@@ -312,7 +315,7 @@ public class PDGGenerationVisitor {
             }
             for (String potentiallyChangedVariable : returns.dependencies.getPotentiallyChangedVariables()) {
                 if (variableDeclarations.containsKey(potentiallyChangedVariable)) {
-                    PDGNode<Declaration> declarationPDGNode = variableDeclarations.get(potentiallyChangedVariable);
+                    PDGNode<VariableDeclaration> declarationPDGNode = variableDeclarations.get(potentiallyChangedVariable);
                     declarationPDGNode.linkVariableDependency(pdgNode);
                     //variableDeclarations.remove(potentiallyChangedVariable);
                 }
@@ -330,9 +333,9 @@ public class PDGGenerationVisitor {
                     usedSinceLastAssignmentNode.linkOrderDependency(pdgNode);
                 }
             }
-            if (blockItem instanceof Declaration) {
-                for (Declaration.DeclaredVariable declaredVariable : ((Declaration) blockItem).getDeclaredVariables()) {
-                    variableDeclarations.put(declaredVariable.getIdentifier().getIdentifier(), ((PDGNode<Declaration>) pdgNode));
+            if (blockItem instanceof VariableDeclaration) {
+                for (VariableDeclaration.DeclaredVariable declaredVariable : ((VariableDeclaration) blockItem).getDeclaredVariables()) {
+                    variableDeclarations.put(declaredVariable.getIdentifier().getIdentifier(), ((PDGNode<VariableDeclaration>) pdgNode));
                     //lastAssigned.put(declaredVariable.getIdentifier(), Sets.newHashSet(pdgNode));
                     locallyDeclaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
                 }

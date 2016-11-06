@@ -13,10 +13,11 @@ public class PointerType implements Type {
     @Override
     public String toCode() {
         StringBuilder builder = new StringBuilder();
+        builder.append(actualType.toCode() + " ");
+
         for (int i = 0; i < pointerLevel; i++) {
             builder.append("*");
         }
-        builder.append(actualType.toCode());
         return builder.toString();
     }
 }

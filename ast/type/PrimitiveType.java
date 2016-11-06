@@ -1,5 +1,6 @@
 package ast.type;
 
+import lombok.NonNull;
 import lombok.Value;
 
 /**
@@ -7,7 +8,7 @@ import lombok.Value;
  */
 @Value
 public class PrimitiveType implements ActualType {
-    private String typeName;
+    @NonNull private String typeName;
 
     @Override
     public String toCode() {

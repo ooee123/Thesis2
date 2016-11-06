@@ -1,7 +1,8 @@
 package pdg;
 
-import ast.Declaration;
+import ast.VariableDeclaration;
 import ast.ExpressionStatement;
+import ast.VariableDeclaration;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
@@ -10,18 +11,18 @@ import lombok.Value;
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class PDGNodeDeclaration extends PDGNode<Declaration> {
+public class PDGNodeDeclaration extends PDGNode<VariableDeclaration> {
 
-    public PDGNodeDeclaration(Declaration declaration) {
-        this(declaration, false);
+    public PDGNodeDeclaration(VariableDeclaration variableDeclaration) {
+        this(variableDeclaration, false);
     }
 
-    public PDGNodeDeclaration(Declaration declaration, boolean required) {
-        super(declaration, required);
+    public PDGNodeDeclaration(VariableDeclaration variableDeclaration, boolean required) {
+        super(variableDeclaration, required);
     }
 
     @Override
-    public Declaration sort(PDGSorter sorter) {
+    public VariableDeclaration sort(PDGSorter sorter) {
         return blockItem;
     }
 }

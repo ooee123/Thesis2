@@ -248,6 +248,16 @@ public interface CListener extends ParseTreeListener {
 	 */
 	void exitConstantExpression(CParser.ConstantExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CParser#typeDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeDefinition(CParser.TypeDefinitionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#typeDefinition}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeDefinition(CParser.TypeDefinitionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CParser#declaration}.
 	 * @param ctx the parse tree
 	 */

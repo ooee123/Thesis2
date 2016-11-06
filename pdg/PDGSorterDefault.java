@@ -16,17 +16,17 @@ public class PDGSorterDefault implements PDGSorter {
     @Override
     public CompoundStatement sort(Collection<PDGNode<? extends BlockItem>> nodes) {
         List<BlockItem> blockItems = new ArrayList<>();
-        Collection<Declaration> emptyDeclarations = Sets.newIdentityHashSet();
+        Collection<VariableDeclaration> emptyVariableDeclarations = Sets.newIdentityHashSet();
         Collection<PDGNode> emptyDeclarationNodes = Sets.newIdentityHashSet();
         for (PDGNode node : nodes) {
-            if (node.blockItem instanceof Declaration) {
+            if (node.blockItem instanceof VariableDeclaration) {
                 if (node.blockItem.getDependantVariables().isEmpty()) {
-                    emptyDeclarations.add(((Declaration) node.blockItem));
+                    emptyVariableDeclarations.add(((VariableDeclaration) node.blockItem));
                     emptyDeclarationNodes.add(node);
                 }
             }
         }
-        blockItems.addAll(emptyDeclarations);
+        blockItems.addAll(emptyVariableDeclarations);
         for (PDGNode emptyDeclarationNode : emptyDeclarationNodes) {
             PDGNode.removeNode(emptyDeclarationNode, nodes);
         }

@@ -79,9 +79,9 @@ public class CompoundStatement implements Statement {
     public Set<String> getDeclaredVariables() {
         Set<String> declaredVariables = new HashSet<>();
         for (BlockItem blockItem : blockItems) {
-            if (blockItem instanceof Declaration) {
-                List<Declaration.DeclaredVariable> declaredVariablesList = ((Declaration) blockItem).getDeclaredVariables();
-                for (Declaration.DeclaredVariable declaredVariable : declaredVariablesList) {
+            if (blockItem instanceof VariableDeclaration) {
+                List<VariableDeclaration.DeclaredVariable> declaredVariablesList = ((VariableDeclaration) blockItem).getDeclaredVariables();
+                for (VariableDeclaration.DeclaredVariable declaredVariable : declaredVariablesList) {
                     declaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
                 }
             }

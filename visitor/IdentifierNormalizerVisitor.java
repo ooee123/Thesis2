@@ -21,7 +21,11 @@ public class IdentifierNormalizerVisitor {
 
     public void visit(Program p) {
         for (Declaration declaration : p.getDeclarations()) {
-            List<Declaration.DeclaredVariable> declaredVariables = declaration.getDeclaredVariables();
+            if (declaration instanceof VariableDeclaration) {
+                List<VariableDeclaration.DeclaredVariable> declaredVariables = ((VariableDeclaration) declaration).getDeclaredVariables();
+            } else {
+
+            }
         }
         for (Function function : p.getFunction()) {
             IdentifierFetcher identifierFetcher = new IdentifierFetcher();
@@ -81,8 +85,8 @@ public class IdentifierNormalizerVisitor {
             declaredVariables = new HashSet<>();
         }
 
-        public void process(List<Declaration.DeclaredVariable> declaredVariables) {
-            for (Declaration.DeclaredVariable declaredVariable : declaredVariables) {
+        public void process(List<VariableDeclaration.DeclaredVariable> declaredVariables) {
+            for (VariableDeclaration.DeclaredVariable declaredVariable : declaredVariables) {
                 PrimaryExpressionIdentifier primaryExpressionIdentifier = declaredVariable.getIdentifier();
                 String identifier = primaryExpressionIdentifier.getIdentifier();
                 if (!this.identifiers.containsKey(identifier)) {
@@ -107,7 +111,7 @@ public class IdentifierNormalizerVisitor {
         @Override
         public void visit(Statement statement) {
             if (statement instanceof IterationStatementDeclareFor) {
-                process(((IterationStatementDeclareFor) statement).getDeclaration().getDeclaredVariables());
+                process(((IterationStatementDeclareFor) statement).getVariableDeclaration().getDeclaredVariables());
                 Touchy touchy = new Touchy();
                 statement.visitAllExpressions(touchy);
                 Map<String, Collection<PrimaryExpressionIdentifier>> identifiers = touchy.getIdentifiers();
@@ -143,8 +147,8 @@ public class IdentifierNormalizerVisitor {
                                 identifiers.remove(string);
                             }
                         }
-                    } else if (blockItem instanceof Declaration) {
-                        process(((Declaration) blockItem).getDeclaredVariables());
+                    } else if (blockItem instanceof VariableDeclaration) {
+                        process(((VariableDeclaration) blockItem).getDeclaredVariables());
                     }
                 }
                 identifierScopes.put(((CompoundStatement) statement), identifiers);

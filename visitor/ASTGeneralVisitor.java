@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.*;
 
-import static ast.Declaration.DeclaredVariable;
+import static ast.VariableDeclaration.DeclaredVariable;
 
 @Data
 public class ASTGeneralVisitor {
@@ -21,7 +21,8 @@ public class ASTGeneralVisitor {
         this.program = p;
         functionScopes = new IdentityHashMap<>();
         functionTypes = new HashMap<>();
-        Map<String, Type> variableDeclarations = getVariableDeclarations(p.getDeclarations().toArray(new Declaration[0]));
+        Map<String, Type> variableDeclarations = getVariableDeclarations(p.getVariableDeclarations().toArray(new VariableDeclaration[0]));
+        Collection<TypedefDeclaration> typedefDeclarations = p.getTypedefDeclarations();
         globalScope = new TypeScope(variableDeclarations, null);
         Collection<Function> functions = p.getFunction();
         for (Function f : functions) {
@@ -56,7 +57,7 @@ public class ASTGeneralVisitor {
         } else if (stm instanceof IterationStatementDeclareFor) {
             IterationStatementDeclareFor iterationStatementDeclareFor = (IterationStatementDeclareFor) stm;
             Statement forBody = iterationStatementDeclareFor.getStatement();
-            Map<String, Type> variableDeclarations = getVariableDeclarations(iterationStatementDeclareFor.getDeclaration());
+            Map<String, Type> variableDeclarations = getVariableDeclarations(iterationStatementDeclareFor.getVariableDeclaration());
             TypeScope forBodyScope = getDeclarations(forBody, parent);
             forBodyScope.putAll(variableDeclarations);
             functionScopes.put(forBody, forBodyScope);
@@ -77,8 +78,8 @@ public class ASTGeneralVisitor {
             TypeScope newScope = new TypeScope(parent);
             Collection<BlockItem> blockItems = compoundStatement.getBlockItems();
             for (BlockItem blockItem : blockItems) {
-                if (blockItem instanceof Declaration) {
-                    newScope.putAll(getVariableDeclarations(((Declaration) blockItem)));
+                if (blockItem instanceof VariableDeclaration) {
+                    newScope.putAll(getVariableDeclarations(((VariableDeclaration) blockItem)));
                 } else if (blockItem instanceof Statement) {
                     getDeclarations(((Statement) blockItem), newScope);
                 }
@@ -90,10 +91,10 @@ public class ASTGeneralVisitor {
         }
     }
 
-    private Map<String, Type> getVariableDeclarations(Declaration... declarations) {
+    private Map<String, Type> getVariableDeclarations(VariableDeclaration... variableDeclarations) {
         Map<String, Type> declarationsMap = new HashMap<>();
-        for (Declaration declaration : declarations) {
-            for (DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+        for (VariableDeclaration variableDeclaration : variableDeclarations) {
+            for (DeclaredVariable declaredVariable : variableDeclaration.getDeclaredVariables()) {
                 String id = declaredVariable.getIdentifier().getIdentifier();
                 Type type = declaredVariable.getType();
                 declarationsMap.put(id, type);
@@ -138,7 +139,7 @@ public class ASTGeneralVisitor {
             }
         } else if (statement instanceof IterationStatementDeclareFor) {
             IterationStatementDeclareFor iterationStatementDeclareFor = (IterationStatementDeclareFor) statement;
-            walk(iterationStatementDeclareFor.getDeclaration());
+            walk(iterationStatementDeclareFor.getVariableDeclaration());
             if (iterationStatementDeclareFor.getCondition() != null) {
                 System.out.println(iterationStatementDeclareFor.getCondition().getGuaranteedChangedVariables());
             }
@@ -160,8 +161,8 @@ public class ASTGeneralVisitor {
         for (BlockItem blockItem : statement.getBlockItems()) {
             if (blockItem instanceof Statement) {
                 walk((Statement) blockItem);
-            } else if (blockItem instanceof Declaration) {
-                walk(((Declaration) blockItem));
+            } else if (blockItem instanceof VariableDeclaration) {
+                walk(((VariableDeclaration) blockItem));
             }
         }
     }
@@ -193,8 +194,8 @@ public class ASTGeneralVisitor {
         }
     }
 
-    public void walk(Declaration declaration) {
-        for (DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+    public void walk(VariableDeclaration variableDeclaration) {
+        for (DeclaredVariable declaredVariable : variableDeclaration.getDeclaredVariables()) {
             if (declaredVariable.getInitializer() != null) {
                 AssignmentExpression initializer = declaredVariable.getInitializer();
                 if (initializer instanceof AssignmentExpressionImpl) {

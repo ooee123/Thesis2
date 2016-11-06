@@ -17,7 +17,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 public class IterationStatementDeclareFor implements IterationStatement, CanContainStatements {
-    @NonNull private Declaration declaration;
+    @NonNull private VariableDeclaration variableDeclaration;
     private Expression condition;
     private Expression iteration;
     @NonNull private Statement statement;
@@ -30,13 +30,13 @@ public class IterationStatementDeclareFor implements IterationStatement, CanCont
         if (iteration != null) {
             iterationString = iteration.toCode();
         }
-        return String.format("for (%s %s; %s) %s", declaration.toCode(), conditionString, iterationString, statement.toCode());
+        return String.format("for (%s %s; %s) %s", variableDeclaration.toCode(), conditionString, iterationString, statement.toCode());
     }
 
     @Override
     public Set<String> getDependantVariables() {
         Set<String> dependantVariables = new HashSet<>();
-        for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+        for (VariableDeclaration.DeclaredVariable declaredVariable : variableDeclaration.getDeclaredVariables()) {
             if (declaredVariable.getInitializer() != null) {
                 dependantVariables.addAll(declaredVariable.getInitializer().getVariables());
             }
@@ -59,7 +59,7 @@ public class IterationStatementDeclareFor implements IterationStatement, CanCont
     @Override
     public Set<String> getGuaranteedChangedVariables() {
         Set<String> guaranteedChangedVariables = new HashSet<>();
-        for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+        for (VariableDeclaration.DeclaredVariable declaredVariable : variableDeclaration.getDeclaredVariables()) {
             if (declaredVariable.getInitializer() != null) {
                 guaranteedChangedVariables.addAll(declaredVariable.getInitializer().getGuaranteedChangedVariables());
             }
@@ -73,7 +73,7 @@ public class IterationStatementDeclareFor implements IterationStatement, CanCont
     @Override
     public Set<String> getPotentiallyChangedVariables() {
         Set<String> potentiallyChangedVariables = new HashSet<>();
-        for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+        for (VariableDeclaration.DeclaredVariable declaredVariable : variableDeclaration.getDeclaredVariables()) {
             if (declaredVariable.getInitializer() != null) {
                 potentiallyChangedVariables.addAll(declaredVariable.getInitializer().getPotentiallyChangedVariables());
             }
@@ -100,7 +100,7 @@ public class IterationStatementDeclareFor implements IterationStatement, CanCont
 
     @Override
     public void visitAllExpressions(Visitor<Expression> visitor) {
-        for (Declaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+        for (VariableDeclaration.DeclaredVariable declaredVariable : variableDeclaration.getDeclaredVariables()) {
             if (declaredVariable.getInitializer() != null) {
                 visitor.visit(declaredVariable.getInitializer());
             }

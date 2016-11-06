@@ -49,7 +49,7 @@ public class Main {
         }
 
         ASTGeneralVisitor astGeneralVisitor = new ASTGeneralVisitor(program);
-        System.out.println(astGeneralVisitor.diagnose());
+        //System.out.println(astGeneralVisitor.diagnose());
         astGeneralVisitor.walk();
 
         if (loopsToWhileVisitorFlag) {
