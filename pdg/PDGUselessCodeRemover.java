@@ -1,8 +1,10 @@
 package pdg;
 
 import ast.BlockItem;
+import ast.CompoundStatement;
 import ast.Statement;
 import com.google.common.collect.Sets;
+import lombok.Setter;
 import visitor.PDGGenerationVisitor;
 
 import java.util.Collection;
@@ -14,22 +16,37 @@ import java.util.Set;
  */
 public class PDGUselessCodeRemover {
 
-    public void removeUselessCode(Collection<PDGNode<? extends BlockItem>> nodes) {
-        markRequiredNodes(nodes);
+    public static final boolean TREAT_MEMORY_WRITES_AS_CRITICAL_AUTOMATICALLY = true;
+    private Set<PDGNode<? extends BlockItem>> visited;
+
+    public PDGUselessCodeRemover() {
+        visited = Sets.newIdentityHashSet();
+    }
+
+    public void removeUselessCode(PDGNodeCompoundStatement node) {
+        Collection<PDGNode<? extends BlockItem>> nodes = node.getBody();
+        markRequiredNodes(node);
         removeAllNonRequiredNodes(nodes);
+    }
+
+    private void markAsRequired(PDGNodeCompoundStatement pdgNode) {
+        for (PDGNode<? extends BlockItem> node : pdgNode.getBody()) {
+            if (node.isRequired() && !visited.contains(node)) {
+                propagateRequired(node);
+            }
+        }
     }
 
     /**
      *
      * @param node
-     * @param required
      */
-    private static void propagateRequired(PDGNode<? extends BlockItem> node, Set<PDGNode<? extends BlockItem>> required) {
+    private void propagateRequired(PDGNode<? extends BlockItem> node) {
         for (PDGNode<? extends BlockItem> pdgNode : node.getDependsOn()) {
-            if (!required.contains(pdgNode)) {
-                required.add(pdgNode);
+            if (!visited.contains(pdgNode)) {
+                visited.add(pdgNode);
                 pdgNode.required = true;
-                propagateRequired(pdgNode, required);
+                propagateRequired(pdgNode);
             }
             if (pdgNode instanceof PDGNodeContainsStatementNode) {
                 propagateThroughStatementNodes(((PDGNodeContainsStatementNode<? extends Statement>) pdgNode), node.getBlockItem().getDependantVariables());
@@ -37,10 +54,10 @@ public class PDGUselessCodeRemover {
         }
     }
 
-    private static void propagateThroughStatementNodes(PDGNodeContainsStatementNode<? extends Statement> node, Set<String> variablesToBeRequired) {
+    private void propagateThroughStatementNodes(PDGNodeContainsStatementNode<? extends Statement> node, Set<String> variablesToBeRequired) {
         for (PDGNode<? extends Statement> pdgNode : node.getStatementNodes()) {
             if (pdgNode instanceof PDGNodeCompoundStatement) {
-                propagateRequiredCompoundStatement(variablesToBeRequired, (PDGNodeCompoundStatement)pdgNode, new HashSet<>());
+                propagateRequiredCompoundStatement(variablesToBeRequired, (PDGNodeCompoundStatement)pdgNode);
             } else if (pdgNode instanceof PDGNodeContainsStatementNode) {
                 propagateThroughStatementNodes(((PDGNodeContainsStatementNode<? extends Statement>) pdgNode), variablesToBeRequired);
             }
@@ -51,19 +68,20 @@ public class PDGUselessCodeRemover {
      * Takes every String in dependVariables and marks the BlockItem inside pdgNode (A compound statement), as critical.
      * @param dependVariables
      * @param pdgNode
-     * @param required
      */
-    public static void propagateRequiredCompoundStatement(Set<String> dependVariables, PDGNodeCompoundStatement pdgNode, Set<PDGNode<? extends BlockItem>> required) {
+    public void propagateRequiredCompoundStatement(Set<String> dependVariables, PDGNodeCompoundStatement pdgNode) {
         for (String dependVariable : dependVariables) {
             if (pdgNode.getLastAssigned().containsKey(dependVariable)) {
                 for (PDGNode<? extends BlockItem> node : pdgNode.getLastAssigned().get(dependVariable)) {
-                    if (!required.contains(node)) {
+                    if (!visited.contains(node)) {
                         node.required = true;
-                        required.add(node);
-                        propagateRequired(node, required);
+                        visited.add(node);
+                        propagateRequired(node);
                     }
                     if (node instanceof PDGNodeContainsStatementNode) {
-                        propagateThroughStatementNodes(((PDGNodeContainsStatementNode<? extends Statement>) node), Sets.newHashSet(dependVariable));
+                        Set<String> newSet = Sets.newIdentityHashSet();
+                        newSet.add(dependVariable);
+                        propagateThroughStatementNodes(((PDGNodeContainsStatementNode<? extends Statement>) node), newSet);
                     }
                 }
             }
@@ -72,20 +90,31 @@ public class PDGUselessCodeRemover {
 
     /**
      * Starting point
-     * @param nodes
      */
-    private static void markRequiredNodes(Collection<PDGNode<? extends BlockItem>> nodes) {
-        Set<PDGNode<? extends BlockItem>> required = new HashSet<>();
+    private void markRequiredNodes(PDGNodeCompoundStatement pdgNodeCompoundStatement) {
+        Collection<PDGNode<? extends BlockItem>> nodes = pdgNodeCompoundStatement.getBody();
         for (PDGNode<? extends BlockItem> node : nodes) {
-            if (node.isRequired() && !required.contains(node)) {
-                required.add(node);
-                propagateRequired(node, required);
+            if ((node.blockItem.isCritical() || node.isRequired()) && !visited.contains(node)) {
+                node.required = true;
+                visited.add(node);
+                propagateRequired(node);
+            }
+            if (node instanceof PDGNodeContainsStatementNode) {
+                Collection<PDGNode<? extends Statement>> statementNodes = ((PDGNodeContainsStatementNode) node).getStatementNodes();
+                for (PDGNode<? extends Statement> statementNode : statementNodes) {
+                    if (statementNode instanceof PDGNodeCompoundStatement) {
+                        markRequiredNodes(((PDGNodeCompoundStatement) statementNode));
+                    }
+                }
+            }
+            if (node instanceof PDGNodeCompoundStatement) {
+                markRequiredNodes(((PDGNodeCompoundStatement) node));
             }
         }
     }
 
-    private static void removeAllNonRequiredNodes(Collection<PDGNode<? extends BlockItem>> nodes) {
-        Set<PDGNode<? extends BlockItem>> notRequired = new HashSet<>();
+    private void removeAllNonRequiredNodes(Collection<PDGNode<? extends BlockItem>> nodes) {
+        Set<PDGNode<? extends BlockItem>> notRequired = Sets.newIdentityHashSet();
         for (PDGNode<? extends BlockItem> node : nodes) {
             if (node instanceof PDGNodeContainsStatementNode) {
                 for (PDGNode<? extends Statement> pdgNode : ((PDGNodeContainsStatementNode<? extends Statement>) node).getStatementNodes()) {

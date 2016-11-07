@@ -7,6 +7,7 @@ import org.junit.Test;
 import parser.CLexer;
 import parser.CParser;
 import pdg.PDGNode;
+import pdg.PDGNodeCompoundStatement;
 import pdg.PDGSorterDefault;
 import visitor.PDGGenerationVisitor;
 import visitor.TreeToASTVisitor;
@@ -31,9 +32,9 @@ public class ASTGeneralVisitorTest {
         PDGGenerationVisitor pdgVisitor = new PDGGenerationVisitor();
         pdgVisitor.visit(program);
         for (Function function : program.getFunction()) {
-            Collection<PDGNode<? extends BlockItem>> functionBody = pdgVisitor.visit(function);
+            PDGNodeCompoundStatement functionBody = pdgVisitor.visit(function);
             PDGSorterDefault sorter = new PDGSorterDefault();
-            CompoundStatement statement = sorter.sort(functionBody);
+            CompoundStatement statement = sorter.sort(functionBody.getBody());
             function.setCompoundStatement(statement);
             System.out.println("Reprinted program");
             System.out.println(function.toCode());

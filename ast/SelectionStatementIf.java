@@ -61,6 +61,8 @@ public class SelectionStatementIf implements SelectionStatement, CanContainState
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
+        throw new IllegalArgumentException("Ever run?");
+        /*
         if (elseStatement != null) {
             Set<String> changedVariables = new HashSet<>(thenStatement.getGuaranteedChangedVariables());
             changedVariables.retainAll(elseStatement.getGuaranteedChangedVariables());
@@ -69,10 +71,13 @@ public class SelectionStatementIf implements SelectionStatement, CanContainState
         } else {
             return condition.getGuaranteedChangedVariables();
         }
+        */
     }
 
     @Override
     public Set<String> getPotentiallyChangedVariables() {
+        throw new IllegalArgumentException("Ever run?");
+        /*
         Set<String> potentiallyChangedVariables = new HashSet<>();
         if (elseStatement != null) {
             Set<String> thenGuaranteed = new HashSet<>(thenStatement.getGuaranteedChangedVariables());
@@ -92,6 +97,7 @@ public class SelectionStatementIf implements SelectionStatement, CanContainState
             potentiallyChangedVariables.addAll(thenStatement.getPotentiallyChangedVariables());
         }
         return potentiallyChangedVariables;
+        */
     }
 
     @Override

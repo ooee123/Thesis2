@@ -1,6 +1,7 @@
 package ast;
 
 import lombok.Value;
+import pdg.PDGUselessCodeRemover;
 import visitor.Visitor;
 
 import java.util.Collection;
@@ -26,7 +27,7 @@ public class ExpressionStatement implements Statement {
 
     @Override
     public boolean isCritical() {
-        return !expression.getInvocations().isEmpty();
+        return !expression.getInvocations().isEmpty() || (PDGUselessCodeRemover.TREAT_MEMORY_WRITES_AS_CRITICAL_AUTOMATICALLY && writesMemory());
     }
 
     @Override

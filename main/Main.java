@@ -35,15 +35,15 @@ public class Main {
             FunctionArgumentOrderVisitor functionArgumentOrderVisitor = new FunctionArgumentOrderVisitor();
             //functionArgumentOrderVisitor.visit(program);
             for (Function function : program.getFunction()) {
-                Collection<PDGNode<? extends BlockItem>> functionBody = pdgVisitor.visit(function);
+                PDGNodeCompoundStatement functionBody = pdgVisitor.visit(function);
                 PDGUselessCodeRemover pdgUselessCodeRemover = new PDGUselessCodeRemover();
-                //pdgUselessCodeRemover.removeUselessCode(functionBody);
+                pdgUselessCodeRemover.removeUselessCode(functionBody);
 
                 PDGNodeTransitiveReducer pdgNodeTransitiveReducer = new PDGNodeTransitiveReducer();
                 pdgNodeTransitiveReducer.reduce(functionBody);
 
                 PDGSorter sorter = new PDGSorterDefault();
-                CompoundStatement statement = sorter.sort(functionBody);
+                CompoundStatement statement = sorter.sort(functionBody.getBody());
                 function.setCompoundStatement(statement);
 
                 IdentifierNormalizerVisitor identifierNormalizerVisitor = new IdentifierNormalizerVisitor();
