@@ -37,7 +37,7 @@ public class Main {
             for (Function function : program.getFunction()) {
                 PDGNodeCompoundStatement functionBody = pdgVisitor.visit(function);
                 PDGUselessCodeRemover pdgUselessCodeRemover = new PDGUselessCodeRemover();
-                pdgUselessCodeRemover.removeUselessCode(functionBody);
+                //pdgUselessCodeRemover.removeUselessCode(functionBody);
 
                 PDGNodeTransitiveReducer pdgNodeTransitiveReducer = new PDGNodeTransitiveReducer();
                 pdgNodeTransitiveReducer.reduce(functionBody);

@@ -3,6 +3,7 @@ package ast;
 import lombok.Value;
 import visitor.Visitor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -37,12 +38,23 @@ public class PostfixExpressionStructAccessImpl implements PostfixExpression {
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return postfixExpression.getGuaranteedChangedVariables();
+        Set<String> guaranteedChangedVariables = new HashSet<>();
+        Set<String> postfixGuaranteedChangedVariables = postfixExpression.getGuaranteedChangedVariables();
+        for (String postfixGuaranteedChangedVariable : postfixGuaranteedChangedVariables) {
+            guaranteedChangedVariables.add(postfixGuaranteedChangedVariable + accessOperator.token + identifier);
+        }
+        throw new IllegalArgumentException("In");
+        //return guaranteedChangedVariables;
     }
 
     @Override
     public Set<String> getDependentVariables() {
-        return postfixExpression.getDependentVariables();
+        Set<String> dependentVariables = new HashSet<>();
+        Set<String> postfixDependentVariables = postfixExpression.getDependentVariables();
+        for (String postfixDependentVariable : postfixDependentVariables) {
+            dependentVariables.add(postfixDependentVariable + accessOperator.token + identifier);
+        }
+        return dependentVariables;
     }
 
     public String toCode() {
@@ -51,7 +63,12 @@ public class PostfixExpressionStructAccessImpl implements PostfixExpression {
 
     @Override
     public Set<String> getVariables() {
-        return postfixExpression.getVariables();
+        Set<String> variables = new HashSet<>();
+        Set<String> postfixVariables = postfixExpression.getVariables();
+        for (String postfixVariable : postfixVariables) {
+            variables.add(postfixVariable + accessOperator.token + identifier);
+        }
+        return variables;
     }
 
     @Override

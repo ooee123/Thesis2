@@ -266,9 +266,9 @@ public class PDGGenerationVisitor {
     }
 
     private Returns<CompoundStatement> visit(CompoundStatement statement) {
-        Map<String, Collection<PDGNode<? extends BlockItem>>> usedSinceLastAssignment = new HashMap<>();
+        Map<String, Collection<PDGNode<? extends BlockItem>>> usedSinceLastAssignment = new VariableMap();
         Map<BlockItem, PDGNode<? extends BlockItem>> allNodes = new IdentityHashMap<>();
-        Map<String, Collection<PDGNode<? extends BlockItem>>> lastAssigned = new HashMap<>();
+        Map<String, Collection<PDGNode<? extends BlockItem>>> lastAssigned = new VariableMap();
         Map<String, PDGNode<VariableDeclaration>> variableDeclarations = new HashMap<>();
         Set<String> dependentVariables = new HashSet<>();
         Set<String> locallyDeclaredVariables = new HashSet<>();
