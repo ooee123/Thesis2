@@ -158,6 +158,12 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
         //variableMap.putAll(map);
     }
 
+    public void clearVariable(String variable) {
+        for (Collection<PDGNode<? extends BlockItem>> pdgNodes : getAllAssociated(variable)) {
+            pdgNodes.clear();
+        }
+    }
+
     @Override
     public void clear() {
         variableMap.clear();
