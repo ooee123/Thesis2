@@ -43,8 +43,9 @@ public class PostfixExpressionStructAccessImpl implements PostfixExpression {
         for (String postfixGuaranteedChangedVariable : postfixGuaranteedChangedVariables) {
             guaranteedChangedVariables.add(postfixGuaranteedChangedVariable + accessOperator.token + identifier);
         }
-        throw new IllegalArgumentException("In");
-        //return guaranteedChangedVariables;
+        //postfixExpression.
+        //throw new IllegalArgumentException("In");
+        return guaranteedChangedVariables;
     }
 
     @Override

@@ -24,7 +24,7 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
      */
     public boolean containsKey(String variableName) {
         if (variableName.contains(".")) {
-            List<String> split = Arrays.asList(variableName.split("."));
+            List<String> split = Arrays.asList(variableName.split("\\."));
             for (int i = split.size(); i > 0; i--) {
                 String key = String.join(".", split.subList(0, i));
                 if (variableMap.containsKey(key)) {
@@ -32,7 +32,12 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
                 }
             }
         }
-        return variableMap.containsKey(variableName);
+        for (String s : variableMap.keySet()) {
+            if (s.startsWith(variableName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -42,7 +47,7 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
      */
     public Collection<PDGNode<? extends BlockItem>> get(String variableName) {
         if (variableName.contains(".")) {
-            List<String> split = Arrays.asList(variableName.split("."));
+            List<String> split = Arrays.asList(variableName.split("\\."));
             for (int i = split.size(); i > 0; i--) {
                 String key = String.join(".", split.subList(0, i));
                 if (variableMap.containsKey(key)) {
@@ -54,6 +59,7 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
     }
     /**
      * Used to change variables. So if I want to modify the variable a, then a.b, a.c, etc. will also be changed.
+     * Also get parents of a
      * @param variableName
      * @return
      */
@@ -62,6 +68,13 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
         for (String s : variableMap.keySet()) {
             if (s.startsWith(variableName)) {
                 associated.add(variableMap.get(s));
+            }
+        }
+        List<String> split = Arrays.asList(variableName.split("\\."));
+        for (int i = split.size(); i > 0; i--) {
+            String key = String.join(".", split.subList(0, i));
+            if (variableMap.containsKey(key)) {
+                associated.add(variableMap.get(key));
             }
         }
         return associated;
@@ -124,14 +137,14 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
     }
 
     /**
-     * For all variables under s, add t to that Collection
+     * For all variables under s, add t to that Collection. Also get parents of s.
      * @param s
      * @param t
      * @return
      */
     public Collection<PDGNode<? extends BlockItem>> augment(String s, PDGNode<? extends BlockItem> t) {
         Collection<PDGNode<? extends BlockItem>> ret = get(s);
-        if (variableMap.containsKey(s)) {
+        if (!variableMap.containsKey(s)) {
             variableMap.put(s, Sets.newIdentityHashSet());
         }
         variableMap.get(s).add(t);
@@ -144,6 +157,29 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
             }
         }
         return ret;
+    }
+
+    public Collection<PDGNode<? extends BlockItem>> getAllPDGNodes() {
+        Collection<PDGNode<? extends BlockItem>> pdgNodes = Sets.newIdentityHashSet();
+        for (Collection<PDGNode<? extends BlockItem>> nodes : variableMap.values()) {
+            pdgNodes.addAll(nodes);
+        }
+        return pdgNodes;
+    }
+
+    public void variablePotentiallyChanged(String s, PDGNode<? extends BlockItem> t) {
+        Collection<Collection<PDGNode<? extends BlockItem>>> allAssociated = getAllAssociated(s);
+        for (Collection<PDGNode<? extends BlockItem>> pdgNodes : allAssociated) {
+            pdgNodes.add(t);
+        }
+    }
+
+    public void variableGuaranteedChanged(String s, PDGNode<? extends BlockItem> t) {
+        Collection<Collection<PDGNode<? extends BlockItem>>> allAssociated = getAllAssociated(s);
+        for (Collection<PDGNode<? extends BlockItem>> pdgNodes : allAssociated) {
+            pdgNodes.clear();
+            pdgNodes.add(t);
+        }
     }
 
     @Override

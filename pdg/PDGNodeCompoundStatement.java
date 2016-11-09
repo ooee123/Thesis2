@@ -1,8 +1,6 @@
 package pdg;
 
-import ast.BlockItem;
-import ast.CompoundStatement;
-import ast.Statement;
+import ast.*;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
@@ -20,13 +18,13 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 public class PDGNodeCompoundStatement extends PDGNode<CompoundStatement> {
     private Collection<PDGNode<? extends BlockItem>> body;
-    private Map<String, Collection<PDGNode<? extends BlockItem>>> lastAssigned;
+    private VariableMap lastAssigned;
 
-    public PDGNodeCompoundStatement(CompoundStatement compoundStatement, Collection<PDGNode<? extends BlockItem>> body, Map<String, Collection<PDGNode<? extends BlockItem>>> lastAssigned) {
+    public PDGNodeCompoundStatement(CompoundStatement compoundStatement, Collection<PDGNode<? extends BlockItem>> body, VariableMap lastAssigned) {
         this(compoundStatement, body, lastAssigned, false);
     }
 
-    public PDGNodeCompoundStatement(CompoundStatement compoundStatement, Collection<PDGNode<? extends BlockItem>> body, Map<String, Collection<PDGNode<? extends BlockItem>>> lastAssigned, boolean required) {
+    public PDGNodeCompoundStatement(CompoundStatement compoundStatement, Collection<PDGNode<? extends BlockItem>> body, VariableMap lastAssigned, boolean required) {
         super(compoundStatement, required);
         this.body = body;
         this.lastAssigned = lastAssigned;

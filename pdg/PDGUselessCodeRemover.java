@@ -72,16 +72,18 @@ public class PDGUselessCodeRemover {
     public void propagateRequiredCompoundStatement(Set<String> dependVariables, PDGNodeCompoundStatement pdgNode) {
         for (String dependVariable : dependVariables) {
             if (pdgNode.getLastAssigned().containsKey(dependVariable)) {
-                for (PDGNode<? extends BlockItem> node : pdgNode.getLastAssigned().get(dependVariable)) {
-                    if (!visited.contains(node)) {
-                        node.required = true;
-                        visited.add(node);
-                        propagateRequired(node);
-                    }
-                    if (node instanceof PDGNodeContainsStatementNode) {
-                        Set<String> newSet = Sets.newIdentityHashSet();
-                        newSet.add(dependVariable);
-                        propagateThroughStatementNodes(((PDGNodeContainsStatementNode<? extends Statement>) node), newSet);
+                for (Collection<PDGNode<? extends BlockItem>> nodes : pdgNode.getLastAssigned().getAllAssociated(dependVariable)) {
+                    for (PDGNode<? extends BlockItem> node : nodes) {
+                        if (!visited.contains(node)) {
+                            node.required = true;
+                            visited.add(node);
+                            propagateRequired(node);
+                        }
+                        if (node instanceof PDGNodeContainsStatementNode) {
+                            Set<String> newSet = Sets.newIdentityHashSet();
+                            newSet.add(dependVariable);
+                            propagateThroughStatementNodes(((PDGNodeContainsStatementNode<? extends Statement>) node), newSet);
+                        }
                     }
                 }
             }
