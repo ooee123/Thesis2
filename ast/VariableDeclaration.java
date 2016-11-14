@@ -5,6 +5,7 @@ import ast.type.PointerType;
 import ast.type.PrimitiveType;
 import ast.type.Type;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
 import visitor.PDGGenerationVisitor;
@@ -37,7 +38,7 @@ public class VariableDeclaration implements Declaration {
         }
     }
 
-    private List<DeclaredVariable> declaredVariables;
+    @Getter private List<DeclaredVariable> declaredVariables;
 
     @Override
     public Set<String> getDependantVariables() {

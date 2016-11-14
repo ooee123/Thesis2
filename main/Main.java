@@ -1,18 +1,21 @@
 package main;
 
+import IdentifierNormalizer.ProgramIdentifierNormalizerVisitor;
 import ast.*;
-import org.antlr.v4.runtime.ANTLRFileStream;
+import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import parser.CLexer;
 import parser.CParser;
 import pdg.*;
 import visitor.FunctionArgumentOrderVisitor;
-import visitor.IdentifierNormalizerVisitor;
+import IdentifierNormalizer.FunctionIdentifierNormalizerVisitor;
 import visitor.PDGGenerationVisitor;
 import visitor.TreeToASTVisitor;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.Scanner;
 
 /**
  * Created by ooee on 10/20/16.
@@ -24,18 +27,28 @@ public class Main {
             System.exit(-1);
         }
         try {
-            CLexer lexer = new CLexer(new ANTLRFileStream(args[0]));
+            Scanner scanner = new Scanner(new File(args[0]));
+            StringBuffer buffer = new StringBuffer();
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (!line.trim().startsWith("#")) {
+                    buffer.append(line);
+                }
+            }
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer.toString().getBytes());
+            CLexer lexer = new CLexer(new ANTLRInputStream(byteArrayInputStream));
+            //CLexer lexer = new CLexer(new ANTLRFileStream(args[0]));
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             CParser parser = new CParser(tokens);
             CParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
             TreeToASTVisitor visitor = new TreeToASTVisitor();
             Program program = visitor.visit(compilationUnit);
-            PDGGenerationVisitor pdgVisitor = new PDGGenerationVisitor();
-            pdgVisitor.visit(program);
+            PDGGenerationVisitor pdgGenerationVisitor = new PDGGenerationVisitor(program);
+            //pdgGenerationVisitor.visit(program);
             FunctionArgumentOrderVisitor functionArgumentOrderVisitor = new FunctionArgumentOrderVisitor();
             //functionArgumentOrderVisitor.visit(program);
             for (Function function : program.getFunction()) {
-                PDGNodeCompoundStatement functionBody = pdgVisitor.visit(function);
+                PDGNodeCompoundStatement functionBody = pdgGenerationVisitor.visit(function);
                 PDGUselessCodeRemover pdgUselessCodeRemover = new PDGUselessCodeRemover();
                 pdgUselessCodeRemover.removeUselessCode(functionBody);
 
@@ -45,10 +58,9 @@ public class Main {
                 PDGSorter sorter = new PDGSorterDefault();
                 CompoundStatement statement = sorter.sort(functionBody.getBody());
                 function.setCompoundStatement(statement);
-
-                IdentifierNormalizerVisitor identifierNormalizerVisitor = new IdentifierNormalizerVisitor();
-                identifierNormalizerVisitor.visit(function);
             }
+            ProgramIdentifierNormalizerVisitor programIdentifierNormalizerVisitor = new ProgramIdentifierNormalizerVisitor();
+            //programIdentifierNormalizerVisitor.visit(program);
             System.out.println(program.toCode());
         } catch (IOException e) {
             System.err.println(e);

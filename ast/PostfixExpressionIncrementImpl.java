@@ -32,12 +32,12 @@ public class PostfixExpressionIncrementImpl implements PostfixExpression {
 
     @Override
     public Set<String> getDependentVariables() {
-        return postfixExpression.getDependentVariables();
+        return postfixExpression.getVariables();
     }
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return postfixExpression.getGuaranteedChangedVariables();
+        return postfixExpression.getVariables();
     }
 
     @Override

@@ -21,22 +21,21 @@ public class TreeToASTVisitor {
 
     private Map<String, StructUnionType> tagMapper = new HashMap<>();
     private Map<String, StructUnionType> typedefMapper = new HashMap<>();
+    private Map<String, Function> functions = new LinkedHashMap<>();
 
     public Program visit(CParser.CompilationUnitContext ctx) {
-        Collection<Function> functions = new ArrayList<>();
         Collection<Declaration> variableDeclarations = new ArrayList<>();
         CParser.TranslationUnitContext translationUnitContext = ctx.translationUnit();
         List<CParser.ExternalDeclarationContext> externalDeclarationContexts = translationUnitContext.externalDeclaration();
         for (CParser.ExternalDeclarationContext externalDeclarationContext : externalDeclarationContexts) {
             if (externalDeclarationContext.functionDefinition() != null) {
-                Function function = visit(externalDeclarationContext.functionDefinition());
-                functions.add(function);
+                visit(externalDeclarationContext.functionDefinition());
             } else if (externalDeclarationContext.declaration() != null) {
                 Declaration declaration = visit(externalDeclarationContext.declaration());
                 variableDeclarations.add(declaration);
             }
         }
-        return new Program(functions, variableDeclarations);
+        return new Program(functions.values(), variableDeclarations);
     }
 
     private String visit(CParser.DeclaratorContext ctx) {
@@ -52,7 +51,9 @@ public class TreeToASTVisitor {
         String identifier = visit(ctx.declarator());
         ParameterList parameterList = visit(ctx.declarator().directDeclarator().parameterTypeList());
         CompoundStatement compoundStatement = visit(ctx.compoundStatement());
-        return new Function(type, identifier, parameterList, compoundStatement);
+        Function function = new Function(type, identifier, parameterList, compoundStatement);
+        functions.put(identifier, function);
+        return function;
     }
 
     private Type visit(CParser.DeclarationSpecifiersContext ctx) {
@@ -312,7 +313,12 @@ public class TreeToASTVisitor {
             case "break":
                 return new JumpBreakStatement();
             case "return":
-                return new JumpReturnStatement(visit(ctx.expression()));
+                if (ctx.expression() != null) {
+                    return new JumpReturnStatement(visit(ctx.expression()));
+                } else {
+                    return new JumpReturnStatement(null);
+                }
+
             default:
                 throw new UnsupportedOperationException("What kind of jump statement is this? " + ctx);
         }
@@ -509,10 +515,22 @@ public class TreeToASTVisitor {
                 case "sizeof":
                     if (ctx.unaryExpression() != null) {
                         unaryExpression = visit(ctx.unaryExpression());
+                        if (unaryExpression instanceof PrimaryExpressionParentheses) {
+                            PrimaryExpressionParentheses unaryExpression1 = (PrimaryExpressionParentheses) unaryExpression;
+                            if (unaryExpression1.getExpression() instanceof PrimaryExpressionIdentifier) {
+                                String identifier = ((PrimaryExpressionIdentifier) unaryExpression1.getExpression()).getIdentifier();
+                                if (typedefMapper.containsKey(identifier)) {
+                                    return new UnaryExpressionSizeofTypeImpl(typedefMapper.get(identifier));
+                                }
+                            }
+                        }
                         return new UnaryExpressionSizeofExpressionImpl(unaryExpression);
                     } else {
+                        throw new IllegalArgumentException("this shouldn't ever fall through because of parsing");
+                        /*
                         Type type = visit(ctx.typeName());
                         return new UnaryExpressionSizeofTypeImpl(type);
+                        */
                     }
                 default:
                     throw new IllegalArgumentException("Token not recognized " + firstToken);
@@ -537,7 +555,7 @@ public class TreeToASTVisitor {
                     return new PostfixExpressionArrayAccessImpl(postfixExpression, expression);
                 case "(":
                     List<AssignmentExpression> assignmentExpressions = visit(ctx.argumentExpressionList());
-                    return new PostfixExpressionInvocationImpl(postfixExpression, assignmentExpressions);
+                    return new PostfixExpressionInvocationImpl(postfixExpression, assignmentExpressions, functions.get(postfixExpression.toCode()));
                 case ".":
                     identifier = ctx.Identifier().getSymbol().getText();
                     return new PostfixExpressionStructAccessImpl(postfixExpression, PostfixExpressionStructAccessImpl.AccessOperator.DOT, identifier);

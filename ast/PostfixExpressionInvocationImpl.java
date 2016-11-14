@@ -15,6 +15,28 @@ import java.util.*;
 public class PostfixExpressionInvocationImpl implements PostfixExpression {
     private PostfixExpression postfixExpression;
     private List<AssignmentExpression> arguments;
+    private Function function;
+
+    public PostfixExpressionInvocationImpl(PostfixExpression expression, List<AssignmentExpression> arguments) {
+        this.postfixExpression = expression;
+        this.arguments = arguments;
+    }
+
+    public boolean writesMemory() {
+        if (function != null) {
+            return function.getCompoundStatement().writesMemory();
+        } else {
+            return true;
+        }
+    }
+
+    public boolean readsMemory() {
+        if (function != null) {
+            return function.getCompoundStatement().readsMemory();
+        } else {
+            return true;
+        }
+    }
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
@@ -33,7 +55,7 @@ public class PostfixExpressionInvocationImpl implements PostfixExpression {
 
     public String toCode() {
         List<String> args = collectionToCode(arguments);
-        return postfixExpression.toCode() + "(" + String.join(",", args) + ")";
+        return postfixExpression.toCode() + "(" + String.join(", ", args) + ")";
     }
 
     @Override

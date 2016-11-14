@@ -1,5 +1,6 @@
 package ast;
 
+import ast.type.PointerType;
 import ast.type.Type;
 import lombok.NonNull;
 import lombok.Value;
@@ -14,6 +15,10 @@ public class Parameter implements BaseElement {
 
     @Override
     public String toCode() {
-        return type.toString() + " " + formalParameterName;
+        if (type instanceof PointerType) {
+            return type.toCode() + formalParameterName.toCode();
+        } else {
+            return type.toCode() + " " + formalParameterName.toCode();
+        }
     }
 }

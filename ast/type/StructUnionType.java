@@ -1,7 +1,5 @@
 package ast.type;
 
-import ast.Declaration;
-import ast.TypedefDeclaration;
 import ast.VariableDeclaration;
 import lombok.*;
 
@@ -51,9 +49,9 @@ public class StructUnionType extends TypedefType {
         if (tag != null) {
             builder.append(" " + tag);
         }
-        builder.append(" {");
+        builder.append(" {\n");
         for (VariableDeclaration declaration : declarations) {
-            builder.append(declaration.toCode());
+            builder.append(declaration.toCode() + "\n");
         }
         builder.append("}");
         return builder.toString();

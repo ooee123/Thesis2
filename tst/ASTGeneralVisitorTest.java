@@ -29,8 +29,7 @@ public class ASTGeneralVisitorTest {
         CParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
         TreeToASTVisitor visitor = new TreeToASTVisitor();
         Program program = visitor.visit(compilationUnit);
-        PDGGenerationVisitor pdgVisitor = new PDGGenerationVisitor();
-        pdgVisitor.visit(program);
+        PDGGenerationVisitor pdgVisitor = new PDGGenerationVisitor(program);
         for (Function function : program.getFunction()) {
             PDGNodeCompoundStatement functionBody = pdgVisitor.visit(function);
             PDGSorterDefault sorter = new PDGSorterDefault();

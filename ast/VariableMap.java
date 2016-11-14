@@ -33,7 +33,7 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
             }
         }
         for (String s : variableMap.keySet()) {
-            if (s.startsWith(variableName)) {
+            if (s.equals(variableName) || s.startsWith(variableName + ".")) {
                 return true;
             }
         }
@@ -66,7 +66,7 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
     public Collection<Collection<PDGNode<? extends BlockItem>>> getAllAssociated(String variableName) {
         Collection<Collection<PDGNode<? extends BlockItem>>> associated = new ArrayList<>();
         for (String s : variableMap.keySet()) {
-            if (s.startsWith(variableName)) {
+            if (s.equals(variableName) || s.startsWith(variableName + ".")) {
                 associated.add(variableMap.get(s));
             }
         }
@@ -127,7 +127,7 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
         set.add(t);
         variableMap.put(s, set);
         for (String s1 : variableMap.keySet()) {
-            if (s1.startsWith(s)) {
+            if (s1.equals(s) || s1.startsWith(s + ".")) {
                 Set<PDGNode<? extends BlockItem>> set2 = Sets.newIdentityHashSet();
                 set2.add(t);
                 variableMap.put(s1, set2);
@@ -149,7 +149,7 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
         }
         variableMap.get(s).add(t);
         for (String s1 : variableMap.keySet()) {
-            if (s1.startsWith(s)) {
+            if (s1.equals(s) || s1.startsWith(s + ".")) {
                 if (variableMap.containsKey(s1)) {
                     variableMap.put(s1, Sets.newIdentityHashSet());
                 }

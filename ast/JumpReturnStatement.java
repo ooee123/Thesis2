@@ -16,7 +16,11 @@ public class JumpReturnStatement implements JumpStatementStrict {
 
     @Override
     public String toCode() {
-        return "return " + returnExpression.toCode() + ";";
+        String returnString = "";
+        if (returnExpression != null) {
+            returnString = " " + returnExpression.toCode();
+        }
+        return "return" + returnString + ";";
     }
 
     @Override
@@ -51,6 +55,8 @@ public class JumpReturnStatement implements JumpStatementStrict {
 
     @Override
     public void visitAllExpressions(Visitor<Expression> visitor) {
-        visitor.visit(returnExpression);
+        if (returnExpression != null) {
+            visitor.visit(returnExpression);
+        }
     }
 }

@@ -22,7 +22,7 @@ public class IterationStatementDoWhile implements IterationStatement, CanContain
 
     @Override
     public String toCode() {
-        return String.format("do %s while (%s)", statement.toCode(), condition.toCode());
+        return String.format("do %s while (%s);", statement.toCode(), condition.toCode());
     }
 
     @Override

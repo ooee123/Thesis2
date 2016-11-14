@@ -79,20 +79,29 @@ public class PDGGenerationVisitor {
         return dependencies;
     }
 
-    public void visit(Program p) {
-        for (Function function : p.getFunction()) {
-            PDGNodeCompoundStatement fun = visit(function);
+    private Set<String> globalVariables;
+    private Program program;
+
+    public PDGGenerationVisitor(Program p) {
+        program = p;
+        globalVariables = new HashSet<>();
+        for (Declaration declaration : program.getDeclarations()) {
+            if (declaration instanceof VariableDeclaration) {
+                for (VariableDeclaration.DeclaredVariable declaredVariable : ((VariableDeclaration) declaration).getDeclaredVariables()) {
+                    globalVariables.add(declaredVariable.getIdentifier().getIdentifier());
+                }
+            }
         }
     }
 
     public PDGNodeCompoundStatement visit(Function function) {
         Returns<CompoundStatement> returns = visit(function.getCompoundStatement());
+        Set<String> changedVariables = new HashSet<>();
+        changedVariables.addAll(returns.getDependencies().getGuaranteedChangedVariables());
+        changedVariables.addAll(returns.getDependencies().getPotentiallyChangedVariables());
         for (Parameter parameter : function.getParameterList().getParameters()) {
             // If the type is a pointer, mark it as changed.
-            //functionDependencies.
-
-
-            if (parameter.getType() instanceof PointerType && returns.dependencies.guaranteedChangedVariables.contains(parameter.getFormalParameterName())) {
+            if (parameter.getType() instanceof PointerType && changedVariables.contains(parameter.getFormalParameterName())) {
                 // Pointer value changed
 
             }
@@ -102,7 +111,11 @@ public class PDGGenerationVisitor {
     }
 
     public Returns<JumpReturnStatement> visit(JumpReturnStatement statement) {
-        return new Returns<>(visit(statement.getReturnExpression()), new PDGNodeReturn(statement, true));
+        if (statement.getReturnExpression() != null) {
+            return new Returns<>(visit(statement.getReturnExpression()), new PDGNodeReturn(statement, true));
+        } else {
+            return new Returns<>(new Dependencies(), new PDGNodeReturn(statement, true));
+        }
     }
 
     public Returns<JumpBreakStatement> visit(JumpBreakStatement statement) {
@@ -135,7 +148,7 @@ public class PDGGenerationVisitor {
         } else if (statement instanceof JumpContinueStatement) {
             return visit(((JumpContinueStatement) statement));
         } else {
-            return null;
+            throw new IllegalArgumentException("What kind of statement is this? " + statement);
         }
     }
 
@@ -240,6 +253,9 @@ public class PDGGenerationVisitor {
     }
 
     private Dependencies visit(Expression expression) {
+        if (expression instanceof UnaryExpressionIncrementImpl) {
+            System.out.println();
+        }
         Set<String> dependentVariables = expression.getDependentVariables();
         Set<String> changedVariables = expression.getGuaranteedChangedVariables();
         Set<String> potentialVariables = expression.getPotentiallyChangedVariables();
@@ -274,6 +290,7 @@ public class PDGGenerationVisitor {
         Set<String> locallyDeclaredVariables = new HashSet<>();
         for (BlockItem blockItem : statement.getBlockItems()) {
             Returns returns = visit(blockItem);
+            boolean required = false;
             PDGNode<? extends BlockItem> pdgNode = returns.getPdgNode();
             allNodes.put(blockItem, pdgNode);
             if (blockItem.readsMemory()) {
@@ -288,6 +305,9 @@ public class PDGGenerationVisitor {
                         node.linkOrderDependency(pdgNode);
                     }
                     pdgNodes.add(pdgNode);
+                }
+                for (String s : returns.getDependencies().getDependentVariables()) {
+                    usedSinceLastAssignment.augment(s, pdgNode);
                 }
                 // Set statement as one that depends on things outside of scope?
             } else {
@@ -306,8 +326,10 @@ public class PDGGenerationVisitor {
                             }
                         }
                     }
+                    if (usedVariable.equals("fd")) {
+                        System.out.println();
+                    }
                     usedSinceLastAssignment.augment(usedVariable, pdgNode);
-
                 }
             }
             if (blockItem.writesMemory()) {
@@ -316,45 +338,62 @@ public class PDGGenerationVisitor {
                     variableDeclarationPDGNode.linkVariableDependency(pdgNode);
                 }
                 */
+                required = true;
                 for (Collection<PDGNode<? extends BlockItem>> pdgNodes : lastAssigned.values()) {
                     for (PDGNode<? extends BlockItem> node : pdgNodes) {
                         node.linkVariableDependency(pdgNode);
                     }
                     pdgNodes.add(pdgNode);
                 }
+                for (String s : returns.getDependencies().getPotentiallyChangedVariables()) {
+                    lastAssigned.augment(s, pdgNode);
+                }
+                for (String s : returns.getDependencies().getGuaranteedChangedVariables()) {
+                    lastAssigned.augment(s, pdgNode);
+                }
             } else {
-                for (String guaranteedChangedVariables : returns.dependencies.getGuaranteedChangedVariables()) {
-                    if (variableDeclarations.containsKey(guaranteedChangedVariables)) {
-                        PDGNode<VariableDeclaration> declarationPDGNode = variableDeclarations.get(guaranteedChangedVariables);
+                for (String guaranteedChangedVariable : returns.dependencies.getGuaranteedChangedVariables()) {
+                    if (globalVariables.contains(guaranteedChangedVariable)) {
+                        required = true;
+                    }
+                    if (variableDeclarations.containsKey(guaranteedChangedVariable)) {
+                        PDGNode<VariableDeclaration> declarationPDGNode = variableDeclarations.get(guaranteedChangedVariable);
                         declarationPDGNode.linkVariableDependency(pdgNode);
                     }
-                    if (lastAssigned.containsKey(guaranteedChangedVariables)) {
-                        for (Collection<PDGNode<? extends BlockItem>> nodes : lastAssigned.getAllAssociated(guaranteedChangedVariables)) {
+                    if (lastAssigned.containsKey(guaranteedChangedVariable)) {
+                        for (Collection<PDGNode<? extends BlockItem>> nodes : lastAssigned.getAllAssociated(guaranteedChangedVariable)) {
                             for (PDGNode<? extends BlockItem> node : nodes) {
                                 node.linkOrderDependency(pdgNode);
                             }
                         }
                     }
-                    lastAssigned.replace(guaranteedChangedVariables, pdgNode);
-                    //lastAssigned.put(guaranteedChangedVariables, Sets.newHashSet(pdgNode));
-                    if (usedSinceLastAssignment.containsKey(guaranteedChangedVariables)) {
-                        for (Collection<PDGNode<? extends BlockItem>> usedSinceLastAssignmentNodes : usedSinceLastAssignment.getAllAssociated(guaranteedChangedVariables)) {
+                    lastAssigned.replace(guaranteedChangedVariable, pdgNode);
+                    if (guaranteedChangedVariable.equals("fd")) {
+                        System.out.println();
+                    }
+                    //lastAssigned.put(guaranteedChangedVariable, Sets.newHashSet(pdgNode));
+                    if (usedSinceLastAssignment.containsKey(guaranteedChangedVariable)) {
+                        for (Collection<PDGNode<? extends BlockItem>> usedSinceLastAssignmentNodes : usedSinceLastAssignment.getAllAssociated(guaranteedChangedVariable)) {
                             for (PDGNode<? extends BlockItem> usedSinceLastAssignmentNode : usedSinceLastAssignmentNodes) {
                                 usedSinceLastAssignmentNode.linkOrderDependency(pdgNode);
                             }
                         }
                     }
 
-                    usedSinceLastAssignment.clearVariable(guaranteedChangedVariables);
-                    //usedSinceLastAssignment.put(guaranteedChangedVariables, new HashSet<>());
+                    usedSinceLastAssignment.clearVariable(guaranteedChangedVariable);
+                    //usedSinceLastAssignment.put(guaranteedChangedVariable, new HashSet<>());
                 }
                 for (String potentiallyChangedVariable : returns.dependencies.getPotentiallyChangedVariables()) {
+                    if (globalVariables.contains(potentiallyChangedVariable)) {
+                        required = true;
+                    }
                     if (variableDeclarations.containsKey(potentiallyChangedVariable)) {
                         PDGNode<VariableDeclaration> declarationPDGNode = variableDeclarations.get(potentiallyChangedVariable);
                         declarationPDGNode.linkVariableDependency(pdgNode);
                     }
                     if (!lastAssigned.containsKey(potentiallyChangedVariable)) {
-                        lastAssigned.put(potentiallyChangedVariable, new ArrayList<>());
+                        lastAssigned.clearVariable(potentiallyChangedVariable);
+                        //lastAssigned.put(potentiallyChangedVariable, new ArrayList<>());
                     } else {
                         for (Collection<PDGNode<? extends BlockItem>> previouslyPotentiallyAssigneds : lastAssigned.getAllAssociated(potentiallyChangedVariable)) {
                             for (PDGNode<? extends BlockItem> previouslyPotentiallyAssigned : previouslyPotentiallyAssigneds) {
@@ -363,8 +402,12 @@ public class PDGGenerationVisitor {
                             }
                         }
                     }
-                    lastAssigned.get(potentiallyChangedVariable).add(pdgNode);
+                    lastAssigned.augment(potentiallyChangedVariable, pdgNode);
+                    //lastAssigned.get(potentiallyChangedVariable).add(pdgNode);
 
+                    if (potentiallyChangedVariable.equals("fd")) {
+                        System.out.println();
+                    }
                     for (Collection<PDGNode<? extends BlockItem>> usedSinceLastAssignmentNodes : usedSinceLastAssignment.getAllAssociated(potentiallyChangedVariable)) {
                         for (PDGNode<? extends BlockItem> usedSinceLastAssignmentNode : usedSinceLastAssignmentNodes) {
                             usedSinceLastAssignmentNode.linkOrderDependency(pdgNode);
@@ -378,6 +421,9 @@ public class PDGGenerationVisitor {
                     //lastAssigned.put(declaredVariable.getIdentifier(), Sets.newHashSet(pdgNode));
                     locallyDeclaredVariables.add(declaredVariable.getIdentifier().getIdentifier());
                 }
+            }
+            if (required) {
+                pdgNode.setRequired(true);
             }
         }
         HashSet<String> changed = new HashSet<>(lastAssigned.keySet());
@@ -423,6 +469,9 @@ public class PDGGenerationVisitor {
             potentiallyChangedVariables.addAll(thenDependencies.getGuaranteedChangedVariables());
             potentiallyChangedVariables.addAll(thenDependencies.getPotentiallyChangedVariables());
         }
+
+        //return new Returns<>(new Dependencies(statement.getDependantVariables(), statement.getGuaranteedChangedVariables(), statement.getPotentiallyChangedVariables()), new PDGNodeIf(statement, thenReturns.pdgNode, elseNode, statement.isCritical()));
+
         return new Returns<>(new Dependencies(dependentVariables, guaranteedChangedVariables, potentiallyChangedVariables), new PDGNodeIf(statement, thenReturns.pdgNode, elseNode, statement.isCritical()));
     }
 

@@ -2,10 +2,7 @@ package pdg;
 
 import ast.BlockItem;
 import ast.Statement;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.*;
 import visitor.PDGGenerationVisitor;
 
 import java.util.ArrayList;
@@ -26,7 +23,7 @@ public abstract class PDGNode<T extends BlockItem> {
     @Getter Collection<PDGNode<? extends BlockItem>> isBehindOfMe;
     // Nodes that are ahead of this node. (This node is behind these nodes)
     @Getter Collection<PDGNode<? extends BlockItem>> isAheadOfMe;
-    @Getter boolean required;
+    @Getter @Setter boolean required;
 
     public PDGNode(T blockItem) {
         this(blockItem, false);

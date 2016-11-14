@@ -1,0 +1,2808 @@
+# /home/ooee/Thesis2/clones/Lab/src/Lab.c
+n 1 program [min,max]=[12,98] TC=0
+e 1 2
+n 2 extdefs [min,max]=[12,98] TC=0
+e 2 3
+n 3 extdefs [min,max]=[12,97] TC=0
+e 3 4
+n 4 extdefs [min,max]=[12,96] TC=0
+e 4 5
+n 5 extdefs [min,max]=[12,95] TC=0
+e 5 6
+n 6 extdefs [min,max]=[12,95] TC=0
+e 6 7
+n 7 extdefs [min,max]=[12,95] TC=0
+e 7 8
+n 8 extdefs [min,max]=[12,95] TC=0
+e 8 9
+n 9 extdefs [min,max]=[12,94] TC=0
+e 9 10
+n 10 extdefs [min,max]=[12,92] TC=0
+e 10 11
+n 11 extdefs [min,max]=[12,91] TC=0
+e 11 12
+n 12 extdefs [min,max]=[12,90] TC=0
+e 12 13
+n 13 extdefs [min,max]=[12,90] TC=0
+e 13 14
+n 14 extdefs [min,max]=[12,90] TC=0
+e 14 15
+n 15 extdefs [min,max]=[12,90] TC=0
+e 15 16
+n 16 extdefs [min,max]=[12,89] TC=0
+e 16 17
+n 17 extdefs [min,max]=[12,87] TC=0
+e 17 18
+n 18 extdefs [min,max]=[12,86] TC=0
+e 18 19
+n 19 extdefs [min,max]=[12,86] TC=0
+e 19 20
+n 20 extdefs [min,max]=[12,86] TC=0
+e 20 21
+n 21 extdefs [min,max]=[12,86] TC=0
+e 21 22
+n 22 extdefs [min,max]=[12,85] TC=0
+e 22 23
+n 23 extdefs [min,max]=[12,83] TC=0
+e 23 24
+n 24 extdefs [min,max]=[12,82] TC=0
+e 24 25
+n 25 extdefs [min,max]=[12,82] TC=0
+e 25 26
+n 26 extdefs [min,max]=[12,82] TC=0
+e 26 27
+n 27 extdefs [min,max]=[12,82] TC=0
+e 27 28
+n 28 extdefs [min,max]=[12,81] TC=0
+e 28 29
+n 29 extdefs [min,max]=[12,79] TC=0
+e 29 30
+n 30 extdefs [min,max]=[12,78] TC=0
+e 30 31
+n 31 extdefs [min,max]=[12,76] TC=0
+e 31 32
+n 32 extdefs [min,max]=[12,75] TC=0
+e 32 33
+n 33 extdefs [min,max]=[12,75] TC=0
+e 33 34
+n 34 extdefs [min,max]=[12,74] TC=0
+e 34 35
+n 35 extdefs [min,max]=[12,74] TC=0
+e 35 36
+n 36 extdefs [min,max]=[12,74] TC=0
+e 36 37
+n 37 extdefs [min,max]=[12,73] TC=0
+e 37 38
+n 38 extdefs [min,max]=[12,73] TC=0
+e 38 39
+n 39 extdefs [min,max]=[12,73] TC=0
+e 39 40
+n 40 extdefs [min,max]=[12,67] TC=0
+e 40 41
+n 41 extdefs [min,max]=[12,52] TC=0
+e 41 42
+n 42 extdefs [min,max]=[12,47] TC=0
+e 42 43
+n 43 extdefs [min,max]=[12,42] TC=0
+e 43 44
+n 44 extdefs [min,max]=[12,41] TC=0
+e 44 45
+n 45 extdefs [min,max]=[12,40] TC=0
+e 45 46
+n 46 extdefs [min,max]=[12,39] TC=0
+e 46 47
+n 47 extdefs [min,max]=[12,36] TC=0
+e 47 48
+n 48 extdefs [min,max]=[12,29] TC=0
+e 48 49
+n 49 extdefs [min,max]=[12,28] TC=0
+e 49 50
+n 50 extdefs [min,max]=[12,27] TC=0
+e 50 51
+n 51 extdefs [min,max]=[12,26] TC=0
+e 51 52
+n 52 extdefs [min,max]=[12,23] TC=0
+e 52 53
+n 53 extdefs [min,max]=[12,15] TC=0
+e 53 54
+n 54 extdef [min,max]=[12,15] TC=0
+e 54 55
+n 55 extdef_1 [min,max]=[12,15] TC=0
+e 55 56
+n 56 datadef [min,max]=[12,15] TC=0
+e 56 57
+n 57 declspecs_ts [min,max]=[12,15] TC=0
+e 57 58
+n 58 declspecs_sc_ts_nosa_ea [min,max]=[12,15] TC=0
+e 58 59
+n 59 declspecs_sc_nots_nosa_noea [min,max]=[12,12] TC=0
+e 59 60
+n 60 scspec [min,max]=[12,12] TC=0
+e 60 61
+n 61 SCSPEC [min,max]=[12,12] TC=0
+e 58 62
+n 62 typespec_attr [min,max]=[12,15] TC=0
+e 62 63
+n 63 typespec_reserved_attr [min,max]=[12,15] TC=0
+e 63 64
+n 64 structsp_attr [min,max]=[12,15] TC=0
+e 64 65
+n 65 struct_head [min,max]=[12,12] TC=0
+e 65 66
+n 66 STRUCT [min,max]=[12,12] TC=0
+e 64 67
+n 67 identifier [min,max]=[12,12] TC=0
+e 67 68
+n 68 IDENTIFIER [min,max]=[12,12] TC=0
+e 64 69
+n 69 '{' [min,max]=[12,12] TC=0
+e 64 70
+n 70 component_decl_list [min,max]=[13,14] TC=0
+e 70 71
+n 71 component_decl_list2 [min,max]=[13,14] TC=0
+e 71 72
+n 72 component_decl_list2 [min,max]=[13,13] TC=0
+e 72 73
+n 73 component_decl_list2 [min,max]=[2147483647,-1] TC=0
+e 72 74
+n 74 component_decl [min,max]=[13,13] TC=0
+e 74 75
+n 75 declspecs_nosc_ts [min,max]=[13,13] TC=0
+e 75 76
+n 76 declspecs_nosc_ts_nosa_noea [min,max]=[13,13] TC=0
+e 76 77
+n 77 typespec_nonattr [min,max]=[13,13] TC=0
+e 77 78
+n 78 typespec_reserved_nonattr [min,max]=[13,13] TC=0
+e 78 79
+n 79 TYPESPEC [min,max]=[13,13] TC=0
+e 74 80
+n 80 setspecs [min,max]=[2147483647,-1] TC=0
+e 74 81
+n 81 components [min,max]=[13,13] TC=0
+e 81 82
+n 82 component_declarator [min,max]=[13,13] TC=0
+e 82 83
+n 83 declarator [min,max]=[13,13] TC=0
+e 83 84
+n 84 notype_declarator [min,max]=[13,13] TC=0
+e 84 85
+n 85 notype_declarator [min,max]=[13,13] TC=0
+e 85 86
+n 86 IDENTIFIER [min,max]=[13,13] TC=0
+e 84 87
+n 87 array_declarator [min,max]=[13,13] TC=0
+e 87 88
+n 88 '[' [min,max]=[13,13] TC=0
+e 87 89
+n 89 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 87 90
+n 90 expr_no_commas [min,max]=[13,13] TC=0
+e 90 91
+n 91 expr_no_commas [min,max]=[13,13] TC=0
+e 91 92
+n 92 cast_expr [min,max]=[13,13] TC=0
+e 92 93
+n 93 unary_expr [min,max]=[13,13] TC=0
+e 93 94
+n 94 primary [min,max]=[13,13] TC=0
+e 94 95
+n 95 IDENTIFIER [min,max]=[13,13] TC=0
+e 90 96
+n 96 '+' [min,max]=[13,13] TC=0
+e 90 97
+n 97 expr_no_commas [min,max]=[13,13] TC=0
+e 97 98
+n 98 cast_expr [min,max]=[13,13] TC=0
+e 98 99
+n 99 unary_expr [min,max]=[13,13] TC=0
+e 99 100
+n 100 primary [min,max]=[13,13] TC=0
+e 100 101
+n 101 CONSTANT [min,max]=[13,13] TC=0
+e 87 102
+n 102 ']' [min,max]=[13,13] TC=0
+e 82 103
+n 103 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 72 104
+n 104 ';' [min,max]=[13,13] TC=0
+e 71 105
+n 105 component_decl [min,max]=[14,14] TC=0
+e 105 106
+n 106 declspecs_nosc_ts [min,max]=[14,14] TC=0
+e 106 107
+n 107 declspecs_nosc_ts_nosa_noea [min,max]=[14,14] TC=0
+e 107 108
+n 108 typespec_nonattr [min,max]=[14,14] TC=0
+e 108 109
+n 109 typespec_reserved_nonattr [min,max]=[14,14] TC=0
+e 109 110
+n 110 TYPESPEC [min,max]=[14,14] TC=0
+e 105 111
+n 111 setspecs [min,max]=[2147483647,-1] TC=0
+e 105 112
+n 112 components [min,max]=[14,14] TC=0
+e 112 113
+n 113 component_declarator [min,max]=[14,14] TC=0
+e 113 114
+n 114 declarator [min,max]=[14,14] TC=0
+e 114 115
+n 115 notype_declarator [min,max]=[14,14] TC=0
+e 115 116
+n 116 notype_declarator [min,max]=[14,14] TC=0
+e 116 117
+n 117 IDENTIFIER [min,max]=[14,14] TC=0
+e 115 118
+n 118 array_declarator [min,max]=[14,14] TC=0
+e 118 119
+n 119 '[' [min,max]=[14,14] TC=0
+e 118 120
+n 120 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 118 121
+n 121 expr_no_commas [min,max]=[14,14] TC=0
+e 121 122
+n 122 expr_no_commas [min,max]=[14,14] TC=0
+e 122 123
+n 123 cast_expr [min,max]=[14,14] TC=0
+e 123 124
+n 124 unary_expr [min,max]=[14,14] TC=0
+e 124 125
+n 125 primary [min,max]=[14,14] TC=0
+e 125 126
+n 126 IDENTIFIER [min,max]=[14,14] TC=0
+e 121 127
+n 127 '+' [min,max]=[14,14] TC=0
+e 121 128
+n 128 expr_no_commas [min,max]=[14,14] TC=0
+e 128 129
+n 129 cast_expr [min,max]=[14,14] TC=0
+e 129 130
+n 130 unary_expr [min,max]=[14,14] TC=0
+e 130 131
+n 131 primary [min,max]=[14,14] TC=0
+e 131 132
+n 132 CONSTANT [min,max]=[14,14] TC=0
+e 118 133
+n 133 ']' [min,max]=[14,14] TC=0
+e 113 134
+n 134 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 71 135
+n 135 ';' [min,max]=[14,14] TC=0
+e 64 136
+n 136 '}' [min,max]=[15,15] TC=0
+e 64 137
+n 137 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 56 138
+n 138 setspecs [min,max]=[2147483647,-1] TC=0
+e 56 139
+n 139 initdecls [min,max]=[15,15] TC=0
+e 139 140
+n 140 initdcl [min,max]=[15,15] TC=0
+e 140 141
+n 141 declarator [min,max]=[15,15] TC=0
+e 141 142
+n 142 notype_declarator [min,max]=[15,15] TC=0
+e 142 143
+n 143 IDENTIFIER [min,max]=[15,15] TC=0
+e 140 144
+n 144 maybeasm [min,max]=[2147483647,-1] TC=0
+e 140 145
+n 145 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 56 146
+n 146 ';' [min,max]=[15,15] TC=0
+e 52 147
+n 147 extdef [min,max]=[18,23] TC=0
+e 147 148
+n 148 extdef_1 [min,max]=[18,23] TC=0
+e 148 149
+n 149 fndef [min,max]=[18,23] TC=0
+e 149 150
+n 150 declspecs_ts [min,max]=[18,18] TC=0
+e 150 151
+n 151 declspecs_nosc_ts_nosa_noea [min,max]=[18,18] TC=0
+e 151 152
+n 152 typespec_nonattr [min,max]=[18,18] TC=0
+e 152 153
+n 153 typespec_reserved_nonattr [min,max]=[18,18] TC=0
+e 153 154
+n 154 TYPESPEC [min,max]=[18,18] TC=0
+e 149 155
+n 155 setspecs [min,max]=[2147483647,-1] TC=0
+e 149 156
+n 156 declarator [min,max]=[18,18] TC=0
+e 156 157
+n 157 notype_declarator [min,max]=[18,18] TC=0
+e 157 158
+n 158 notype_declarator [min,max]=[18,18] TC=0
+e 158 159
+n 159 IDENTIFIER [min,max]=[18,18] TC=0
+e 157 160
+n 160 '(' [min,max]=[18,18] TC=0
+e 157 161
+n 161 parmlist_or_identifiers [min,max]=[18,18] TC=0
+e 161 162
+n 162 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 161 163
+n 163 parmlist_or_identifiers_1 [min,max]=[18,18] TC=0
+e 163 164
+n 164 parmlist_1 [min,max]=[18,18] TC=0
+e 164 165
+n 165 parmlist_2 [min,max]=[18,18] TC=0
+e 165 166
+n 166 parms [min,max]=[18,18] TC=0
+e 166 167
+n 167 parms [min,max]=[18,18] TC=0
+e 167 168
+n 168 firstparm [min,max]=[18,18] TC=0
+e 168 169
+n 169 declspecs_ts_nosa [min,max]=[18,18] TC=0
+e 169 170
+n 170 declspecs_nosc_ts_nosa_noea [min,max]=[18,18] TC=0
+e 170 171
+n 171 typespec_nonattr [min,max]=[18,18] TC=0
+e 171 172
+n 172 typespec_reserved_nonattr [min,max]=[18,18] TC=0
+e 172 173
+n 173 TYPESPEC [min,max]=[18,18] TC=0
+e 168 174
+n 174 setspecs_fp [min,max]=[2147483647,-1] TC=0
+e 174 175
+n 175 setspecs [min,max]=[2147483647,-1] TC=0
+e 168 176
+n 176 notype_declarator [min,max]=[18,18] TC=0
+e 176 177
+n 177 '*' [min,max]=[18,18] TC=0
+e 176 178
+n 178 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 176 179
+n 179 notype_declarator [min,max]=[18,18] TC=0
+e 179 180
+n 180 IDENTIFIER [min,max]=[18,18] TC=0
+e 168 181
+n 181 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 166 182
+n 182 ',' [min,max]=[18,18] TC=0
+e 166 183
+n 183 parm [min,max]=[18,18] TC=0
+e 183 184
+n 184 declspecs_ts [min,max]=[18,18] TC=0
+e 184 185
+n 185 declspecs_nosc_ts_nosa_noea [min,max]=[18,18] TC=0
+e 185 186
+n 186 typespec_nonattr [min,max]=[18,18] TC=0
+e 186 187
+n 187 typespec_reserved_nonattr [min,max]=[18,18] TC=0
+e 187 188
+n 188 TYPESPEC [min,max]=[18,18] TC=0
+e 183 189
+n 189 setspecs [min,max]=[2147483647,-1] TC=0
+e 183 190
+n 190 notype_declarator [min,max]=[18,18] TC=0
+e 190 191
+n 191 '*' [min,max]=[18,18] TC=0
+e 190 192
+n 192 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 190 193
+n 193 notype_declarator [min,max]=[18,18] TC=0
+e 193 194
+n 194 IDENTIFIER [min,max]=[18,18] TC=0
+e 183 195
+n 195 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 164 196
+n 196 ')' [min,max]=[18,18] TC=0
+e 149 197
+n 197 old_style_parm_decls [min,max]=[2147483647,-1] TC=0
+e 197 198
+n 198 old_style_parm_decls_1 [min,max]=[2147483647,-1] TC=0
+e 149 199
+n 199 save_location [min,max]=[2147483647,-1] TC=0
+e 149 200
+n 200 compstmt_or_error [min,max]=[19,23] TC=0
+e 200 201
+n 201 compstmt [min,max]=[19,23] TC=0
+e 201 202
+n 202 compstmt_start [min,max]=[19,19] TC=0
+e 202 203
+n 203 '{' [min,max]=[19,19] TC=0
+e 201 204
+n 204 compstmt_nostart [min,max]=[23,23] TC=0
+e 204 205
+n 205 pushlevel [min,max]=[2147483647,-1] TC=0
+e 204 206
+n 206 maybe_label_decls [min,max]=[2147483647,-1] TC=0
+e 204 207
+n 207 compstmt_contents_nonempty [min,max]=[2147483647,-1] TC=0
+e 204 208
+n 208 '}' [min,max]=[23,23] TC=0
+e 204 209
+n 209 poplevel [min,max]=[2147483647,-1] TC=0
+e 51 210
+n 210 extdef [min,max]=[26,26] TC=0
+e 210 211
+n 211 extdef_1 [min,max]=[26,26] TC=0
+e 211 212
+n 212 datadef [min,max]=[26,26] TC=0
+e 212 213
+n 213 ';' [min,max]=[26,26] TC=0
+e 50 214
+n 214 extdef [min,max]=[27,27] TC=0
+e 214 215
+n 215 extdef_1 [min,max]=[27,27] TC=0
+e 215 216
+n 216 datadef [min,max]=[27,27] TC=0
+e 216 217
+n 217 '}' [min,max]=[27,27] TC=0
+e 49 218
+n 218 extdef [min,max]=[28,28] TC=0
+e 218 219
+n 219 extdef_1 [min,max]=[28,28] TC=0
+e 219 220
+n 220 datadef [min,max]=[28,28] TC=0
+e 220 221
+n 221 ';' [min,max]=[28,28] TC=0
+e 48 222
+n 222 extdef [min,max]=[29,29] TC=0
+e 222 223
+n 223 extdef_1 [min,max]=[29,29] TC=0
+e 223 224
+n 224 datadef [min,max]=[29,29] TC=0
+e 224 225
+n 225 '}' [min,max]=[29,29] TC=0
+e 47 226
+n 226 extdef [min,max]=[31,36] TC=0
+e 226 227
+n 227 extdef_1 [min,max]=[31,36] TC=0
+e 227 228
+n 228 fndef [min,max]=[31,36] TC=0
+e 228 229
+n 229 declspecs_ts [min,max]=[31,31] TC=0
+e 229 230
+n 230 declspecs_nosc_ts_nosa_noea [min,max]=[31,31] TC=0
+e 230 231
+n 231 typespec_nonattr [min,max]=[31,31] TC=0
+e 231 232
+n 232 typespec_reserved_nonattr [min,max]=[31,31] TC=0
+e 232 233
+n 233 TYPESPEC [min,max]=[31,31] TC=0
+e 228 234
+n 234 setspecs [min,max]=[2147483647,-1] TC=0
+e 228 235
+n 235 declarator [min,max]=[31,31] TC=0
+e 235 236
+n 236 notype_declarator [min,max]=[31,31] TC=0
+e 236 237
+n 237 notype_declarator [min,max]=[31,31] TC=0
+e 237 238
+n 238 IDENTIFIER [min,max]=[31,31] TC=0
+e 236 239
+n 239 '(' [min,max]=[31,31] TC=0
+e 236 240
+n 240 parmlist_or_identifiers [min,max]=[31,31] TC=0
+e 240 241
+n 241 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 240 242
+n 242 parmlist_or_identifiers_1 [min,max]=[31,31] TC=0
+e 242 243
+n 243 parmlist_1 [min,max]=[31,31] TC=0
+e 243 244
+n 244 parmlist_2 [min,max]=[31,31] TC=0
+e 244 245
+n 245 parms [min,max]=[31,31] TC=0
+e 245 246
+n 246 parms [min,max]=[31,31] TC=0
+e 246 247
+n 247 firstparm [min,max]=[31,31] TC=0
+e 247 248
+n 248 declspecs_ts_nosa [min,max]=[31,31] TC=0
+e 248 249
+n 249 declspecs_nosc_ts_nosa_noea [min,max]=[31,31] TC=0
+e 249 250
+n 250 typespec_nonattr [min,max]=[31,31] TC=0
+e 250 251
+n 251 typespec_reserved_nonattr [min,max]=[31,31] TC=0
+e 251 252
+n 252 TYPESPEC [min,max]=[31,31] TC=0
+e 247 253
+n 253 setspecs_fp [min,max]=[2147483647,-1] TC=0
+e 253 254
+n 254 setspecs [min,max]=[2147483647,-1] TC=0
+e 247 255
+n 255 notype_declarator [min,max]=[31,31] TC=0
+e 255 256
+n 256 '*' [min,max]=[31,31] TC=0
+e 255 257
+n 257 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 255 258
+n 258 notype_declarator [min,max]=[31,31] TC=0
+e 258 259
+n 259 IDENTIFIER [min,max]=[31,31] TC=0
+e 247 260
+n 260 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 245 261
+n 261 ',' [min,max]=[31,31] TC=0
+e 245 262
+n 262 parm [min,max]=[31,31] TC=0
+e 262 263
+n 263 declspecs_ts [min,max]=[31,31] TC=0
+e 263 264
+n 264 declspecs_nosc_ts_nosa_noea [min,max]=[31,31] TC=0
+e 264 265
+n 265 typespec_nonattr [min,max]=[31,31] TC=0
+e 265 266
+n 266 typespec_reserved_nonattr [min,max]=[31,31] TC=0
+e 266 267
+n 267 TYPESPEC [min,max]=[31,31] TC=0
+e 262 268
+n 268 setspecs [min,max]=[2147483647,-1] TC=0
+e 262 269
+n 269 notype_declarator [min,max]=[31,31] TC=0
+e 269 270
+n 270 '*' [min,max]=[31,31] TC=0
+e 269 271
+n 271 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 269 272
+n 272 notype_declarator [min,max]=[31,31] TC=0
+e 272 273
+n 273 IDENTIFIER [min,max]=[31,31] TC=0
+e 262 274
+n 274 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 243 275
+n 275 ')' [min,max]=[31,31] TC=0
+e 228 276
+n 276 old_style_parm_decls [min,max]=[2147483647,-1] TC=0
+e 276 277
+n 277 old_style_parm_decls_1 [min,max]=[2147483647,-1] TC=0
+e 228 278
+n 278 save_location [min,max]=[2147483647,-1] TC=0
+e 228 279
+n 279 compstmt_or_error [min,max]=[32,36] TC=0
+e 279 280
+n 280 compstmt [min,max]=[32,36] TC=0
+e 280 281
+n 281 compstmt_start [min,max]=[32,32] TC=0
+e 281 282
+n 282 '{' [min,max]=[32,32] TC=0
+e 280 283
+n 283 compstmt_nostart [min,max]=[36,36] TC=0
+e 283 284
+n 284 pushlevel [min,max]=[2147483647,-1] TC=0
+e 283 285
+n 285 maybe_label_decls [min,max]=[2147483647,-1] TC=0
+e 283 286
+n 286 compstmt_contents_nonempty [min,max]=[2147483647,-1] TC=0
+e 283 287
+n 287 '}' [min,max]=[36,36] TC=0
+e 283 288
+n 288 poplevel [min,max]=[2147483647,-1] TC=0
+e 46 289
+n 289 extdef [min,max]=[39,39] TC=0
+e 289 290
+n 290 extdef_1 [min,max]=[39,39] TC=0
+e 290 291
+n 291 datadef [min,max]=[39,39] TC=0
+e 291 292
+n 292 ';' [min,max]=[39,39] TC=0
+e 45 293
+n 293 extdef [min,max]=[40,40] TC=0
+e 293 294
+n 294 extdef_1 [min,max]=[40,40] TC=0
+e 294 295
+n 295 datadef [min,max]=[40,40] TC=0
+e 295 296
+n 296 '}' [min,max]=[40,40] TC=0
+e 44 297
+n 297 extdef [min,max]=[41,41] TC=0
+e 297 298
+n 298 extdef_1 [min,max]=[41,41] TC=0
+e 298 299
+n 299 datadef [min,max]=[41,41] TC=0
+e 299 300
+n 300 ';' [min,max]=[41,41] TC=0
+e 43 301
+n 301 extdef [min,max]=[42,42] TC=0
+e 301 302
+n 302 extdef_1 [min,max]=[42,42] TC=0
+e 302 303
+n 303 datadef [min,max]=[42,42] TC=0
+e 303 304
+n 304 '}' [min,max]=[42,42] TC=0
+e 42 305
+n 305 extdef [min,max]=[44,47] TC=0
+e 305 306
+n 306 extdef_1 [min,max]=[44,47] TC=0
+e 306 307
+n 307 fndef [min,max]=[44,47] TC=0
+e 307 308
+n 308 declspecs_ts [min,max]=[44,44] TC=0
+e 308 309
+n 309 declspecs_nosc_ts_nosa_noea [min,max]=[44,44] TC=0
+e 309 310
+n 310 typespec_nonattr [min,max]=[44,44] TC=0
+e 310 311
+n 311 typespec_reserved_nonattr [min,max]=[44,44] TC=0
+e 311 312
+n 312 TYPESPEC [min,max]=[44,44] TC=0
+e 307 313
+n 313 setspecs [min,max]=[2147483647,-1] TC=0
+e 307 314
+n 314 declarator [min,max]=[44,44] TC=0
+e 314 315
+n 315 notype_declarator [min,max]=[44,44] TC=0
+e 315 316
+n 316 notype_declarator [min,max]=[44,44] TC=0
+e 316 317
+n 317 IDENTIFIER [min,max]=[44,44] TC=0
+e 315 318
+n 318 '(' [min,max]=[44,44] TC=0
+e 315 319
+n 319 parmlist_or_identifiers [min,max]=[44,44] TC=0
+e 319 320
+n 320 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 319 321
+n 321 parmlist_or_identifiers_1 [min,max]=[44,44] TC=0
+e 321 322
+n 322 parmlist_1 [min,max]=[44,44] TC=0
+e 322 323
+n 323 parmlist_2 [min,max]=[44,44] TC=0
+e 323 324
+n 324 parms [min,max]=[44,44] TC=0
+e 324 325
+n 325 parms [min,max]=[44,44] TC=0
+e 325 326
+n 326 firstparm [min,max]=[44,44] TC=0
+e 326 327
+n 327 declspecs_ts_nosa [min,max]=[44,44] TC=0
+e 327 328
+n 328 declspecs_nosc_ts_nosa_noea [min,max]=[44,44] TC=0
+e 328 329
+n 329 typespec_nonattr [min,max]=[44,44] TC=0
+e 329 330
+n 330 typespec_reserved_nonattr [min,max]=[44,44] TC=0
+e 330 331
+n 331 TYPESPEC [min,max]=[44,44] TC=0
+e 326 332
+n 332 setspecs_fp [min,max]=[2147483647,-1] TC=0
+e 332 333
+n 333 setspecs [min,max]=[2147483647,-1] TC=0
+e 326 334
+n 334 notype_declarator [min,max]=[44,44] TC=0
+e 334 335
+n 335 '*' [min,max]=[44,44] TC=0
+e 334 336
+n 336 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 334 337
+n 337 notype_declarator [min,max]=[44,44] TC=0
+e 337 338
+n 338 IDENTIFIER [min,max]=[44,44] TC=0
+e 326 339
+n 339 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 324 340
+n 340 ',' [min,max]=[44,44] TC=0
+e 324 341
+n 341 parm [min,max]=[44,44] TC=0
+e 341 342
+n 342 declspecs_ts [min,max]=[44,44] TC=0
+e 342 343
+n 343 declspecs_nosc_ts_nosa_noea [min,max]=[44,44] TC=0
+e 343 344
+n 344 typespec_nonattr [min,max]=[44,44] TC=0
+e 344 345
+n 345 typespec_reserved_nonattr [min,max]=[44,44] TC=0
+e 345 346
+n 346 TYPESPEC [min,max]=[44,44] TC=0
+e 341 347
+n 347 setspecs [min,max]=[2147483647,-1] TC=0
+e 341 348
+n 348 notype_declarator [min,max]=[44,44] TC=0
+e 348 349
+n 349 '*' [min,max]=[44,44] TC=0
+e 348 350
+n 350 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 348 351
+n 351 notype_declarator [min,max]=[44,44] TC=0
+e 351 352
+n 352 IDENTIFIER [min,max]=[44,44] TC=0
+e 341 353
+n 353 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 322 354
+n 354 ')' [min,max]=[44,44] TC=0
+e 307 355
+n 355 old_style_parm_decls [min,max]=[2147483647,-1] TC=0
+e 355 356
+n 356 old_style_parm_decls_1 [min,max]=[2147483647,-1] TC=0
+e 307 357
+n 357 save_location [min,max]=[2147483647,-1] TC=0
+e 307 358
+n 358 compstmt_or_error [min,max]=[45,47] TC=0
+e 358 359
+n 359 compstmt [min,max]=[45,47] TC=0
+e 359 360
+n 360 compstmt_start [min,max]=[45,45] TC=0
+e 360 361
+n 361 '{' [min,max]=[45,45] TC=0
+e 359 362
+n 362 compstmt_nostart [min,max]=[46,47] TC=0
+e 362 363
+n 363 pushlevel [min,max]=[2147483647,-1] TC=0
+e 362 364
+n 364 maybe_label_decls [min,max]=[2147483647,-1] TC=0
+e 362 365
+n 365 compstmt_contents_nonempty [min,max]=[46,46] TC=0
+e 365 366
+n 366 stmts_and_decls [min,max]=[46,46] TC=0
+e 366 367
+n 367 lineno_stmt_decl_or_labels_ending_stmt [min,max]=[46,46] TC=0
+e 367 368
+n 368 lineno_stmt [min,max]=[46,46] TC=0
+e 368 369
+n 369 save_location [min,max]=[2147483647,-1] TC=0
+e 368 370
+n 370 stmt [min,max]=[46,46] TC=0
+e 370 371
+n 371 RETURN [min,max]=[46,46] TC=0
+e 370 372
+n 372 expr [min,max]=[46,46] TC=0
+e 372 373
+n 373 nonnull_exprlist [min,max]=[46,46] TC=0
+e 373 374
+n 374 expr_no_commas [min,max]=[46,46] TC=0
+e 374 375
+n 375 expr_no_commas [min,max]=[46,46] TC=0
+e 375 376
+n 376 cast_expr [min,max]=[46,46] TC=0
+e 376 377
+n 377 unary_expr [min,max]=[46,46] TC=0
+e 377 378
+n 378 primary [min,max]=[46,46] TC=0
+e 378 379
+n 379 IDENTIFIER [min,max]=[46,46] TC=0
+e 374 380
+n 380 ARITHCOMPARE [min,max]=[46,46] TC=0
+e 374 381
+n 381 expr_no_commas [min,max]=[46,46] TC=0
+e 381 382
+n 382 cast_expr [min,max]=[46,46] TC=0
+e 382 383
+n 383 unary_expr [min,max]=[46,46] TC=0
+e 383 384
+n 384 primary [min,max]=[46,46] TC=0
+e 384 385
+n 385 IDENTIFIER [min,max]=[46,46] TC=0
+e 370 386
+n 386 ';' [min,max]=[46,46] TC=0
+e 362 387
+n 387 '}' [min,max]=[47,47] TC=0
+e 362 388
+n 388 poplevel [min,max]=[2147483647,-1] TC=0
+e 41 389
+n 389 extdef [min,max]=[49,52] TC=0
+e 389 390
+n 390 extdef_1 [min,max]=[49,52] TC=0
+e 390 391
+n 391 fndef [min,max]=[49,52] TC=0
+e 391 392
+n 392 declspecs_ts [min,max]=[49,49] TC=0
+e 392 393
+n 393 declspecs_nosc_ts_nosa_noea [min,max]=[49,49] TC=0
+e 393 394
+n 394 typespec_nonattr [min,max]=[49,49] TC=0
+e 394 395
+n 395 typespec_reserved_nonattr [min,max]=[49,49] TC=0
+e 395 396
+n 396 TYPESPEC [min,max]=[49,49] TC=0
+e 391 397
+n 397 setspecs [min,max]=[2147483647,-1] TC=0
+e 391 398
+n 398 declarator [min,max]=[49,49] TC=0
+e 398 399
+n 399 notype_declarator [min,max]=[49,49] TC=0
+e 399 400
+n 400 notype_declarator [min,max]=[49,49] TC=0
+e 400 401
+n 401 IDENTIFIER [min,max]=[49,49] TC=0
+e 399 402
+n 402 '(' [min,max]=[49,49] TC=0
+e 399 403
+n 403 parmlist_or_identifiers [min,max]=[49,49] TC=0
+e 403 404
+n 404 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 403 405
+n 405 parmlist_or_identifiers_1 [min,max]=[49,49] TC=0
+e 405 406
+n 406 parmlist_1 [min,max]=[49,49] TC=0
+e 406 407
+n 407 parmlist_2 [min,max]=[49,49] TC=0
+e 407 408
+n 408 parms [min,max]=[49,49] TC=0
+e 408 409
+n 409 parms [min,max]=[49,49] TC=0
+e 409 410
+n 410 firstparm [min,max]=[49,49] TC=0
+e 410 411
+n 411 declspecs_ts_nosa [min,max]=[49,49] TC=0
+e 411 412
+n 412 declspecs_nosc_ts_nosa_noea [min,max]=[49,49] TC=0
+e 412 413
+n 413 typespec_nonattr [min,max]=[49,49] TC=0
+e 413 414
+n 414 typespec_reserved_nonattr [min,max]=[49,49] TC=0
+e 414 415
+n 415 TYPESPEC [min,max]=[49,49] TC=0
+e 410 416
+n 416 setspecs_fp [min,max]=[2147483647,-1] TC=0
+e 416 417
+n 417 setspecs [min,max]=[2147483647,-1] TC=0
+e 410 418
+n 418 notype_declarator [min,max]=[49,49] TC=0
+e 418 419
+n 419 '*' [min,max]=[49,49] TC=0
+e 418 420
+n 420 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 418 421
+n 421 notype_declarator [min,max]=[49,49] TC=0
+e 421 422
+n 422 IDENTIFIER [min,max]=[49,49] TC=0
+e 410 423
+n 423 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 408 424
+n 424 ',' [min,max]=[49,49] TC=0
+e 408 425
+n 425 parm [min,max]=[49,49] TC=0
+e 425 426
+n 426 declspecs_ts [min,max]=[49,49] TC=0
+e 426 427
+n 427 declspecs_nosc_ts_nosa_noea [min,max]=[49,49] TC=0
+e 427 428
+n 428 typespec_nonattr [min,max]=[49,49] TC=0
+e 428 429
+n 429 typespec_reserved_nonattr [min,max]=[49,49] TC=0
+e 429 430
+n 430 TYPESPEC [min,max]=[49,49] TC=0
+e 425 431
+n 431 setspecs [min,max]=[2147483647,-1] TC=0
+e 425 432
+n 432 notype_declarator [min,max]=[49,49] TC=0
+e 432 433
+n 433 '*' [min,max]=[49,49] TC=0
+e 432 434
+n 434 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 432 435
+n 435 notype_declarator [min,max]=[49,49] TC=0
+e 435 436
+n 436 IDENTIFIER [min,max]=[49,49] TC=0
+e 425 437
+n 437 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 406 438
+n 438 ')' [min,max]=[49,49] TC=0
+e 391 439
+n 439 old_style_parm_decls [min,max]=[2147483647,-1] TC=0
+e 439 440
+n 440 old_style_parm_decls_1 [min,max]=[2147483647,-1] TC=0
+e 391 441
+n 441 save_location [min,max]=[2147483647,-1] TC=0
+e 391 442
+n 442 compstmt_or_error [min,max]=[50,52] TC=0
+e 442 443
+n 443 compstmt [min,max]=[50,52] TC=0
+e 443 444
+n 444 compstmt_start [min,max]=[50,50] TC=0
+e 444 445
+n 445 '{' [min,max]=[50,50] TC=0
+e 443 446
+n 446 compstmt_nostart [min,max]=[51,52] TC=0
+e 446 447
+n 447 pushlevel [min,max]=[2147483647,-1] TC=0
+e 446 448
+n 448 maybe_label_decls [min,max]=[2147483647,-1] TC=0
+e 446 449
+n 449 compstmt_contents_nonempty [min,max]=[51,51] TC=0
+e 449 450
+n 450 stmts_and_decls [min,max]=[51,51] TC=0
+e 450 451
+n 451 lineno_stmt_decl_or_labels_ending_stmt [min,max]=[51,51] TC=0
+e 451 452
+n 452 lineno_stmt [min,max]=[51,51] TC=0
+e 452 453
+n 453 save_location [min,max]=[2147483647,-1] TC=0
+e 452 454
+n 454 stmt [min,max]=[51,51] TC=0
+e 454 455
+n 455 RETURN [min,max]=[51,51] TC=0
+e 454 456
+n 456 expr [min,max]=[51,51] TC=0
+e 456 457
+n 457 nonnull_exprlist [min,max]=[51,51] TC=0
+e 457 458
+n 458 expr_no_commas [min,max]=[51,51] TC=0
+e 458 459
+n 459 expr_no_commas [min,max]=[51,51] TC=0
+e 459 460
+n 460 cast_expr [min,max]=[51,51] TC=0
+e 460 461
+n 461 unary_expr [min,max]=[51,51] TC=0
+e 461 462
+n 462 primary [min,max]=[51,51] TC=0
+e 462 463
+n 463 primary [min,max]=[51,51] TC=0
+e 463 464
+n 464 IDENTIFIER [min,max]=[51,51] TC=0
+e 462 465
+n 465 '(' [min,max]=[51,51] TC=0
+e 462 466
+n 466 exprlist [min,max]=[51,51] TC=0
+e 466 467
+n 467 nonnull_exprlist [min,max]=[51,51] TC=0
+e 467 468
+n 468 nonnull_exprlist [min,max]=[51,51] TC=0
+e 468 469
+n 469 expr_no_commas [min,max]=[51,51] TC=0
+e 469 470
+n 470 cast_expr [min,max]=[51,51] TC=0
+e 470 471
+n 471 unary_expr [min,max]=[51,51] TC=0
+e 471 472
+n 472 primary [min,max]=[51,51] TC=0
+e 472 473
+n 473 IDENTIFIER [min,max]=[51,51] TC=0
+e 467 474
+n 474 ',' [min,max]=[51,51] TC=0
+e 467 475
+n 475 expr_no_commas [min,max]=[51,51] TC=0
+e 475 476
+n 476 cast_expr [min,max]=[51,51] TC=0
+e 476 477
+n 477 unary_expr [min,max]=[51,51] TC=0
+e 477 478
+n 478 primary [min,max]=[51,51] TC=0
+e 478 479
+n 479 IDENTIFIER [min,max]=[51,51] TC=0
+e 462 480
+n 480 ')' [min,max]=[51,51] TC=0
+e 458 481
+n 481 ARITHCOMPARE [min,max]=[51,51] TC=0
+e 458 482
+n 482 expr_no_commas [min,max]=[51,51] TC=0
+e 482 483
+n 483 cast_expr [min,max]=[51,51] TC=0
+e 483 484
+n 484 unary_expr [min,max]=[51,51] TC=0
+e 484 485
+n 485 primary [min,max]=[51,51] TC=0
+e 485 486
+n 486 CONSTANT [min,max]=[51,51] TC=0
+e 454 487
+n 487 ';' [min,max]=[51,51] TC=0
+e 446 488
+n 488 '}' [min,max]=[52,52] TC=0
+e 446 489
+n 489 poplevel [min,max]=[2147483647,-1] TC=0
+e 40 490
+n 490 extdef [min,max]=[56,67] TC=0
+e 490 491
+n 491 extdef_1 [min,max]=[56,67] TC=0
+e 491 492
+n 492 fndef [min,max]=[56,67] TC=0
+e 492 493
+n 493 declspecs_ts [min,max]=[56,56] TC=0
+e 493 494
+n 494 declspecs_nosc_ts_nosa_noea [min,max]=[56,56] TC=0
+e 494 495
+n 495 typespec_nonattr [min,max]=[56,56] TC=0
+e 495 496
+n 496 typespec_reserved_nonattr [min,max]=[56,56] TC=0
+e 496 497
+n 497 TYPESPEC [min,max]=[56,56] TC=0
+e 492 498
+n 498 setspecs [min,max]=[2147483647,-1] TC=0
+e 492 499
+n 499 declarator [min,max]=[56,56] TC=0
+e 499 500
+n 500 notype_declarator [min,max]=[56,56] TC=0
+e 500 501
+n 501 notype_declarator [min,max]=[56,56] TC=0
+e 501 502
+n 502 IDENTIFIER [min,max]=[56,56] TC=0
+e 500 503
+n 503 '(' [min,max]=[56,56] TC=0
+e 500 504
+n 504 parmlist_or_identifiers [min,max]=[56,56] TC=0
+e 504 505
+n 505 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 504 506
+n 506 parmlist_or_identifiers_1 [min,max]=[56,56] TC=0
+e 506 507
+n 507 parmlist_1 [min,max]=[56,56] TC=0
+e 507 508
+n 508 parmlist_2 [min,max]=[56,56] TC=0
+e 508 509
+n 509 parms [min,max]=[56,56] TC=0
+e 509 510
+n 510 parms [min,max]=[56,56] TC=0
+e 510 511
+n 511 parms [min,max]=[56,56] TC=0
+e 511 512
+n 512 parms [min,max]=[56,56] TC=0
+e 512 513
+n 513 firstparm [min,max]=[56,56] TC=0
+e 513 514
+n 514 declspecs_ts_nosa [min,max]=[56,56] TC=0
+e 514 515
+n 515 declspecs_nosc_ts_nosa_noea [min,max]=[56,56] TC=0
+e 515 516
+n 516 typespec_nonattr [min,max]=[56,56] TC=0
+e 516 517
+n 517 typespec_reserved_nonattr [min,max]=[56,56] TC=0
+e 517 518
+n 518 TYPESPEC [min,max]=[56,56] TC=0
+e 513 519
+n 519 setspecs_fp [min,max]=[2147483647,-1] TC=0
+e 519 520
+n 520 setspecs [min,max]=[2147483647,-1] TC=0
+e 513 521
+n 521 notype_declarator [min,max]=[56,56] TC=0
+e 521 522
+n 522 '*' [min,max]=[56,56] TC=0
+e 521 523
+n 523 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 521 524
+n 524 notype_declarator [min,max]=[56,56] TC=0
+e 524 525
+n 525 IDENTIFIER [min,max]=[56,56] TC=0
+e 513 526
+n 526 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 511 527
+n 527 ',' [min,max]=[56,56] TC=0
+e 511 528
+n 528 parm [min,max]=[56,56] TC=0
+e 528 529
+n 529 declspecs_ts [min,max]=[56,56] TC=0
+e 529 530
+n 530 declspecs_nosc_ts_nosa_noea [min,max]=[56,56] TC=0
+e 530 531
+n 531 typespec_nonattr [min,max]=[56,56] TC=0
+e 531 532
+n 532 typespec_reserved_nonattr [min,max]=[56,56] TC=0
+e 532 533
+n 533 TYPESPEC [min,max]=[56,56] TC=0
+e 528 534
+n 534 setspecs [min,max]=[2147483647,-1] TC=0
+e 528 535
+n 535 notype_declarator [min,max]=[56,56] TC=0
+e 535 536
+n 536 IDENTIFIER [min,max]=[56,56] TC=0
+e 528 537
+n 537 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 510 538
+n 538 ',' [min,max]=[56,56] TC=0
+e 510 539
+n 539 parm [min,max]=[56,56] TC=0
+e 539 540
+n 540 declspecs_ts [min,max]=[56,56] TC=0
+e 540 541
+n 541 declspecs_nosc_ts_nosa_noea [min,max]=[56,56] TC=0
+e 541 542
+n 542 typespec_nonattr [min,max]=[56,56] TC=0
+e 542 543
+n 543 typespec_reserved_nonattr [min,max]=[56,56] TC=0
+e 543 544
+n 544 TYPESPEC [min,max]=[56,56] TC=0
+e 539 545
+n 545 setspecs [min,max]=[2147483647,-1] TC=0
+e 539 546
+n 546 notype_declarator [min,max]=[56,56] TC=0
+e 546 547
+n 547 IDENTIFIER [min,max]=[56,56] TC=0
+e 539 548
+n 548 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 509 549
+n 549 ',' [min,max]=[56,56] TC=0
+e 509 550
+n 550 parm [min,max]=[56,56] TC=0
+e 550 551
+n 551 declspecs_ts [min,max]=[56,56] TC=0
+e 551 552
+n 552 declspecs_nosc_ts_nosa_noea [min,max]=[56,56] TC=0
+e 552 553
+n 553 typespec_nonattr [min,max]=[56,56] TC=0
+e 553 554
+n 554 typespec_reserved_nonattr [min,max]=[56,56] TC=0
+e 554 555
+n 555 TYPESPEC [min,max]=[56,56] TC=0
+e 550 556
+n 556 setspecs [min,max]=[2147483647,-1] TC=0
+e 550 557
+n 557 notype_declarator [min,max]=[56,56] TC=0
+e 557 558
+n 558 notype_declarator [min,max]=[56,56] TC=0
+e 558 559
+n 559 '(' [min,max]=[56,56] TC=0
+e 558 560
+n 560 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 558 561
+n 561 notype_declarator [min,max]=[56,56] TC=0
+e 561 562
+n 562 '*' [min,max]=[56,56] TC=0
+e 561 563
+n 563 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 561 564
+n 564 notype_declarator [min,max]=[56,56] TC=0
+e 564 565
+n 565 IDENTIFIER [min,max]=[56,56] TC=0
+e 558 566
+n 566 ')' [min,max]=[56,56] TC=0
+e 557 567
+n 567 '(' [min,max]=[56,56] TC=0
+e 557 568
+n 568 parmlist_or_identifiers [min,max]=[56,56] TC=0
+e 568 569
+n 569 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 568 570
+n 570 parmlist_or_identifiers_1 [min,max]=[56,56] TC=0
+e 570 571
+n 571 parmlist_1 [min,max]=[56,56] TC=0
+e 571 572
+n 572 parmlist_2 [min,max]=[56,56] TC=0
+e 572 573
+n 573 parms [min,max]=[56,56] TC=0
+e 573 574
+n 574 parms [min,max]=[56,56] TC=0
+e 574 575
+n 575 firstparm [min,max]=[56,56] TC=0
+e 575 576
+n 576 declspecs_ts_nosa [min,max]=[56,56] TC=0
+e 576 577
+n 577 declspecs_nosc_ts_nosa_noea [min,max]=[56,56] TC=0
+e 577 578
+n 578 typespec_nonattr [min,max]=[56,56] TC=0
+e 578 579
+n 579 typespec_reserved_nonattr [min,max]=[56,56] TC=0
+e 579 580
+n 580 TYPESPEC [min,max]=[56,56] TC=0
+e 575 581
+n 581 setspecs_fp [min,max]=[2147483647,-1] TC=0
+e 581 582
+n 582 setspecs [min,max]=[2147483647,-1] TC=0
+e 575 583
+n 583 absdcl_maybe_attribute [min,max]=[56,56] TC=0
+e 583 584
+n 584 absdcl1 [min,max]=[56,56] TC=0
+e 584 585
+n 585 absdcl1_ea [min,max]=[56,56] TC=0
+e 585 586
+n 586 '*' [min,max]=[56,56] TC=0
+e 585 587
+n 587 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 573 588
+n 588 ',' [min,max]=[56,56] TC=0
+e 573 589
+n 589 parm [min,max]=[56,56] TC=0
+e 589 590
+n 590 declspecs_ts [min,max]=[56,56] TC=0
+e 590 591
+n 591 declspecs_nosc_ts_nosa_noea [min,max]=[56,56] TC=0
+e 591 592
+n 592 typespec_nonattr [min,max]=[56,56] TC=0
+e 592 593
+n 593 typespec_reserved_nonattr [min,max]=[56,56] TC=0
+e 593 594
+n 594 TYPESPEC [min,max]=[56,56] TC=0
+e 589 595
+n 595 setspecs [min,max]=[2147483647,-1] TC=0
+e 589 596
+n 596 absdcl_maybe_attribute [min,max]=[56,56] TC=0
+e 596 597
+n 597 absdcl1 [min,max]=[56,56] TC=0
+e 597 598
+n 598 absdcl1_ea [min,max]=[56,56] TC=0
+e 598 599
+n 599 '*' [min,max]=[56,56] TC=0
+e 598 600
+n 600 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 571 601
+n 601 ')' [min,max]=[56,56] TC=0
+e 550 602
+n 602 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 507 603
+n 603 ')' [min,max]=[56,56] TC=0
+e 492 604
+n 604 old_style_parm_decls [min,max]=[2147483647,-1] TC=0
+e 604 605
+n 605 old_style_parm_decls_1 [min,max]=[2147483647,-1] TC=0
+e 492 606
+n 606 save_location [min,max]=[2147483647,-1] TC=0
+e 492 607
+n 607 compstmt_or_error [min,max]=[56,67] TC=0
+e 607 608
+n 608 compstmt [min,max]=[56,67] TC=0
+e 608 609
+n 609 compstmt_start [min,max]=[56,56] TC=0
+e 609 610
+n 610 '{' [min,max]=[56,56] TC=0
+e 608 611
+n 611 compstmt_nostart [min,max]=[57,67] TC=0
+e 611 612
+n 612 pushlevel [min,max]=[2147483647,-1] TC=0
+e 611 613
+n 613 maybe_label_decls [min,max]=[2147483647,-1] TC=0
+e 611 614
+n 614 compstmt_contents_nonempty [min,max]=[57,66] TC=0
+e 614 615
+n 615 stmts_and_decls [min,max]=[57,66] TC=0
+e 615 616
+n 616 lineno_stmt_decl_or_labels_ending_stmt [min,max]=[57,66] TC=0
+e 616 617
+n 617 lineno_stmt_decl_or_labels_ending_decl [min,max]=[57,57] TC=0
+e 617 618
+n 618 lineno_decl [min,max]=[57,57] TC=0
+e 618 619
+n 619 save_location [min,max]=[2147483647,-1] TC=0
+e 618 620
+n 620 decl [min,max]=[57,57] TC=0
+e 620 621
+n 621 declspecs_ts [min,max]=[57,57] TC=0
+e 621 622
+n 622 declspecs_nosc_ts_nosa_noea [min,max]=[57,57] TC=0
+e 622 623
+n 623 typespec_nonattr [min,max]=[57,57] TC=0
+e 623 624
+n 624 typespec_reserved_nonattr [min,max]=[57,57] TC=0
+e 624 625
+n 625 TYPESPEC [min,max]=[57,57] TC=0
+e 620 626
+n 626 setspecs [min,max]=[2147483647,-1] TC=0
+e 620 627
+n 627 initdecls [min,max]=[57,57] TC=0
+e 627 628
+n 628 initdecls [min,max]=[57,57] TC=0
+e 628 629
+n 629 initdecls [min,max]=[57,57] TC=0
+e 629 630
+n 630 initdcl [min,max]=[57,57] TC=0
+e 630 631
+n 631 declarator [min,max]=[57,57] TC=0
+e 631 632
+n 632 notype_declarator [min,max]=[57,57] TC=0
+e 632 633
+n 633 IDENTIFIER [min,max]=[57,57] TC=0
+e 630 634
+n 634 maybeasm [min,max]=[2147483647,-1] TC=0
+e 630 635
+n 635 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 628 636
+n 636 ',' [min,max]=[57,57] TC=0
+e 628 637
+n 637 maybe_resetattrs [min,max]=[2147483647,-1] TC=0
+e 637 638
+n 638 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 628 639
+n 639 initdcl [min,max]=[57,57] TC=0
+e 639 640
+n 640 declarator [min,max]=[57,57] TC=0
+e 640 641
+n 641 notype_declarator [min,max]=[57,57] TC=0
+e 641 642
+n 642 IDENTIFIER [min,max]=[57,57] TC=0
+e 639 643
+n 643 maybeasm [min,max]=[2147483647,-1] TC=0
+e 639 644
+n 644 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 627 645
+n 645 ',' [min,max]=[57,57] TC=0
+e 627 646
+n 646 maybe_resetattrs [min,max]=[2147483647,-1] TC=0
+e 646 647
+n 647 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 627 648
+n 648 initdcl [min,max]=[57,57] TC=0
+e 648 649
+n 649 declarator [min,max]=[57,57] TC=0
+e 649 650
+n 650 notype_declarator [min,max]=[57,57] TC=0
+e 650 651
+n 651 IDENTIFIER [min,max]=[57,57] TC=0
+e 648 652
+n 652 maybeasm [min,max]=[2147483647,-1] TC=0
+e 648 653
+n 653 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 620 654
+n 654 ';' [min,max]=[57,57] TC=0
+e 616 655
+n 655 lineno_stmt [min,max]=[59,66] TC=0
+e 655 656
+n 656 save_location [min,max]=[2147483647,-1] TC=0
+e 655 657
+n 657 stmt [min,max]=[59,66] TC=0
+e 657 658
+n 658 select_or_iter_stmt [min,max]=[59,66] TC=0
+e 658 659
+n 659 FOR [min,max]=[59,59] TC=0
+e 658 660
+n 660 '(' [min,max]=[59,59] TC=0
+e 658 661
+n 661 for_init_stmt [min,max]=[59,59] TC=0
+e 661 662
+n 662 xexpr [min,max]=[59,59] TC=0
+e 662 663
+n 663 expr [min,max]=[59,59] TC=0
+e 663 664
+n 664 nonnull_exprlist [min,max]=[59,59] TC=0
+e 664 665
+n 665 expr_no_commas [min,max]=[59,59] TC=0
+e 665 666
+n 666 expr_no_commas [min,max]=[59,59] TC=0
+e 666 667
+n 667 cast_expr [min,max]=[59,59] TC=0
+e 667 668
+n 668 unary_expr [min,max]=[59,59] TC=0
+e 668 669
+n 669 primary [min,max]=[59,59] TC=0
+e 669 670
+n 670 IDENTIFIER [min,max]=[59,59] TC=0
+e 665 671
+n 671 '=' [min,max]=[59,59] TC=0
+e 665 672
+n 672 expr_no_commas [min,max]=[59,59] TC=0
+e 672 673
+n 673 cast_expr [min,max]=[59,59] TC=0
+e 673 674
+n 674 unary_expr [min,max]=[59,59] TC=0
+e 674 675
+n 675 primary [min,max]=[59,59] TC=0
+e 675 676
+n 676 CONSTANT [min,max]=[59,59] TC=0
+e 661 677
+n 677 ';' [min,max]=[59,59] TC=0
+e 658 678
+n 678 xexpr [min,max]=[59,59] TC=0
+e 678 679
+n 679 expr [min,max]=[59,59] TC=0
+e 679 680
+n 680 nonnull_exprlist [min,max]=[59,59] TC=0
+e 680 681
+n 681 expr_no_commas [min,max]=[59,59] TC=0
+e 681 682
+n 682 expr_no_commas [min,max]=[59,59] TC=0
+e 682 683
+n 683 cast_expr [min,max]=[59,59] TC=0
+e 683 684
+n 684 unary_expr [min,max]=[59,59] TC=0
+e 684 685
+n 685 primary [min,max]=[59,59] TC=0
+e 685 686
+n 686 IDENTIFIER [min,max]=[59,59] TC=0
+e 681 687
+n 687 ARITHCOMPARE [min,max]=[59,59] TC=0
+e 681 688
+n 688 expr_no_commas [min,max]=[59,59] TC=0
+e 688 689
+n 689 cast_expr [min,max]=[59,59] TC=0
+e 689 690
+n 690 unary_expr [min,max]=[59,59] TC=0
+e 690 691
+n 691 primary [min,max]=[59,59] TC=0
+e 691 692
+n 692 IDENTIFIER [min,max]=[59,59] TC=0
+e 658 693
+n 693 ';' [min,max]=[59,59] TC=0
+e 658 694
+n 694 xexpr [min,max]=[59,59] TC=0
+e 694 695
+n 695 expr [min,max]=[59,59] TC=0
+e 695 696
+n 696 nonnull_exprlist [min,max]=[59,59] TC=0
+e 696 697
+n 697 expr_no_commas [min,max]=[59,59] TC=0
+e 697 698
+n 698 cast_expr [min,max]=[59,59] TC=0
+e 698 699
+n 699 unary_expr [min,max]=[59,59] TC=0
+e 699 700
+n 700 primary [min,max]=[59,59] TC=0
+e 700 701
+n 701 primary [min,max]=[59,59] TC=0
+e 701 702
+n 702 IDENTIFIER [min,max]=[59,59] TC=0
+e 700 703
+n 703 PLUSPLUS [min,max]=[59,59] TC=0
+e 658 704
+n 704 ')' [min,max]=[59,59] TC=0
+e 658 705
+n 705 c99_block_lineno_labeled_stmt [min,max]=[59,66] TC=0
+e 705 706
+n 706 lineno_labeled_stmt [min,max]=[59,66] TC=0
+e 706 707
+n 707 lineno_stmt [min,max]=[59,66] TC=0
+e 707 708
+n 708 save_location [min,max]=[2147483647,-1] TC=0
+e 707 709
+n 709 stmt [min,max]=[59,66] TC=0
+e 709 710
+n 710 compstmt [min,max]=[59,66] TC=0
+e 710 711
+n 711 compstmt_start [min,max]=[59,59] TC=0
+e 711 712
+n 712 '{' [min,max]=[59,59] TC=0
+e 710 713
+n 713 compstmt_nostart [min,max]=[60,66] TC=0
+e 713 714
+n 714 pushlevel [min,max]=[2147483647,-1] TC=0
+e 713 715
+n 715 maybe_label_decls [min,max]=[2147483647,-1] TC=0
+e 713 716
+n 716 compstmt_contents_nonempty [min,max]=[60,65] TC=0
+e 716 717
+n 717 stmts_and_decls [min,max]=[60,65] TC=0
+e 717 718
+n 718 lineno_stmt_decl_or_labels_ending_stmt [min,max]=[60,65] TC=0
+e 718 719
+n 719 lineno_stmt_decl_or_labels_ending_stmt [min,max]=[60,64] TC=0
+e 719 720
+n 720 lineno_stmt_decl_or_labels_ending_stmt [min,max]=[60,60] TC=0
+e 720 721
+n 721 lineno_stmt [min,max]=[60,60] TC=0
+e 721 722
+n 722 save_location [min,max]=[2147483647,-1] TC=0
+e 721 723
+n 723 stmt [min,max]=[60,60] TC=0
+e 723 724
+n 724 exprstmt [min,max]=[60,60] TC=0
+e 724 725
+n 725 expr [min,max]=[60,60] TC=0
+e 725 726
+n 726 nonnull_exprlist [min,max]=[60,60] TC=0
+e 726 727
+n 727 expr_no_commas [min,max]=[60,60] TC=0
+e 727 728
+n 728 expr_no_commas [min,max]=[60,60] TC=0
+e 728 729
+n 729 cast_expr [min,max]=[60,60] TC=0
+e 729 730
+n 730 unary_expr [min,max]=[60,60] TC=0
+e 730 731
+n 731 primary [min,max]=[60,60] TC=0
+e 731 732
+n 732 IDENTIFIER [min,max]=[60,60] TC=0
+e 727 733
+n 733 '=' [min,max]=[60,60] TC=0
+e 727 734
+n 734 expr_no_commas [min,max]=[60,60] TC=0
+e 734 735
+n 735 cast_expr [min,max]=[60,60] TC=0
+e 735 736
+n 736 unary_expr [min,max]=[60,60] TC=0
+e 736 737
+n 737 primary [min,max]=[60,60] TC=0
+e 737 738
+n 738 primary [min,max]=[60,60] TC=0
+e 738 739
+n 739 IDENTIFIER [min,max]=[60,60] TC=0
+e 737 740
+n 740 '[' [min,max]=[60,60] TC=0
+e 737 741
+n 741 expr [min,max]=[60,60] TC=0
+e 741 742
+n 742 nonnull_exprlist [min,max]=[60,60] TC=0
+e 742 743
+n 743 expr_no_commas [min,max]=[60,60] TC=0
+e 743 744
+n 744 expr_no_commas [min,max]=[60,60] TC=0
+e 744 745
+n 745 cast_expr [min,max]=[60,60] TC=0
+e 745 746
+n 746 unary_expr [min,max]=[60,60] TC=0
+e 746 747
+n 747 primary [min,max]=[60,60] TC=0
+e 747 748
+n 748 IDENTIFIER [min,max]=[60,60] TC=0
+e 743 749
+n 749 '=' [min,max]=[60,60] TC=0
+e 743 750
+n 750 expr_no_commas [min,max]=[60,60] TC=0
+e 750 751
+n 751 cast_expr [min,max]=[60,60] TC=0
+e 751 752
+n 752 unary_expr [min,max]=[60,60] TC=0
+e 752 753
+n 753 primary [min,max]=[60,60] TC=0
+e 753 754
+n 754 IDENTIFIER [min,max]=[60,60] TC=0
+e 737 755
+n 755 ']' [min,max]=[60,60] TC=0
+e 724 756
+n 756 ';' [min,max]=[60,60] TC=0
+e 719 757
+n 757 lineno_stmt [min,max]=[61,64] TC=0
+e 757 758
+n 758 save_location [min,max]=[2147483647,-1] TC=0
+e 757 759
+n 759 stmt [min,max]=[61,64] TC=0
+e 759 760
+n 760 select_or_iter_stmt [min,max]=[61,64] TC=0
+e 760 761
+n 761 WHILE [min,max]=[61,61] TC=0
+e 760 762
+n 762 '(' [min,max]=[61,61] TC=0
+e 760 763
+n 763 expr [min,max]=[61,61] TC=0
+e 763 764
+n 764 nonnull_exprlist [min,max]=[61,61] TC=0
+e 764 765
+n 765 expr_no_commas [min,max]=[61,61] TC=0
+e 765 766
+n 766 expr_no_commas [min,max]=[61,61] TC=0
+e 766 767
+n 767 expr_no_commas [min,max]=[61,61] TC=0
+e 767 768
+n 768 cast_expr [min,max]=[61,61] TC=0
+e 768 769
+n 769 unary_expr [min,max]=[61,61] TC=0
+e 769 770
+n 770 primary [min,max]=[61,61] TC=0
+e 770 771
+n 771 IDENTIFIER [min,max]=[61,61] TC=0
+e 766 772
+n 772 ARITHCOMPARE [min,max]=[61,61] TC=0
+e 766 773
+n 773 expr_no_commas [min,max]=[61,61] TC=0
+e 773 774
+n 774 cast_expr [min,max]=[61,61] TC=0
+e 774 775
+n 775 unary_expr [min,max]=[61,61] TC=0
+e 775 776
+n 776 primary [min,max]=[61,61] TC=0
+e 776 777
+n 777 CONSTANT [min,max]=[61,61] TC=0
+e 765 778
+n 778 ANDAND [min,max]=[61,61] TC=0
+e 765 779
+n 779 expr_no_commas [min,max]=[61,61] TC=0
+e 779 780
+n 780 cast_expr [min,max]=[61,61] TC=0
+e 780 781
+n 781 unary_expr [min,max]=[61,61] TC=0
+e 781 782
+n 782 primary [min,max]=[61,61] TC=0
+e 782 783
+n 783 primary [min,max]=[61,61] TC=0
+e 783 784
+n 784 '(' [min,max]=[61,61] TC=0
+e 783 785
+n 785 expr [min,max]=[61,61] TC=0
+e 785 786
+n 786 nonnull_exprlist [min,max]=[61,61] TC=0
+e 786 787
+n 787 expr_no_commas [min,max]=[61,61] TC=0
+e 787 788
+n 788 cast_expr [min,max]=[61,61] TC=0
+e 788 789
+n 789 unary_expr [min,max]=[61,61] TC=0
+e 789 790
+n 790 '*' [min,max]=[61,61] TC=0
+e 789 791
+n 791 cast_expr [min,max]=[61,61] TC=0
+e 791 792
+n 792 unary_expr [min,max]=[61,61] TC=0
+e 792 793
+n 793 primary [min,max]=[61,61] TC=0
+e 793 794
+n 794 IDENTIFIER [min,max]=[61,61] TC=0
+e 783 795
+n 795 ')' [min,max]=[61,61] TC=0
+e 782 796
+n 796 '(' [min,max]=[61,61] TC=0
+e 782 797
+n 797 exprlist [min,max]=[61,61] TC=0
+e 797 798
+n 798 nonnull_exprlist [min,max]=[61,61] TC=0
+e 798 799
+n 799 nonnull_exprlist [min,max]=[61,61] TC=0
+e 799 800
+n 800 expr_no_commas [min,max]=[61,61] TC=0
+e 800 801
+n 801 cast_expr [min,max]=[61,61] TC=0
+e 801 802
+n 802 unary_expr [min,max]=[61,61] TC=0
+e 802 803
+n 803 primary [min,max]=[61,61] TC=0
+e 803 804
+n 804 IDENTIFIER [min,max]=[61,61] TC=0
+e 798 805
+n 805 ',' [min,max]=[61,61] TC=0
+e 798 806
+n 806 expr_no_commas [min,max]=[61,61] TC=0
+e 806 807
+n 807 cast_expr [min,max]=[61,61] TC=0
+e 807 808
+n 808 unary_expr [min,max]=[61,61] TC=0
+e 808 809
+n 809 primary [min,max]=[61,61] TC=0
+e 809 810
+n 810 primary [min,max]=[61,61] TC=0
+e 810 811
+n 811 IDENTIFIER [min,max]=[61,61] TC=0
+e 809 812
+n 812 '[' [min,max]=[61,61] TC=0
+e 809 813
+n 813 expr [min,max]=[61,61] TC=0
+e 813 814
+n 814 nonnull_exprlist [min,max]=[61,61] TC=0
+e 814 815
+n 815 expr_no_commas [min,max]=[61,61] TC=0
+e 815 816
+n 816 expr_no_commas [min,max]=[61,61] TC=0
+e 816 817
+n 817 cast_expr [min,max]=[61,61] TC=0
+e 817 818
+n 818 unary_expr [min,max]=[61,61] TC=0
+e 818 819
+n 819 primary [min,max]=[61,61] TC=0
+e 819 820
+n 820 IDENTIFIER [min,max]=[61,61] TC=0
+e 815 821
+n 821 '-' [min,max]=[61,61] TC=0
+e 815 822
+n 822 expr_no_commas [min,max]=[61,61] TC=0
+e 822 823
+n 823 cast_expr [min,max]=[61,61] TC=0
+e 823 824
+n 824 unary_expr [min,max]=[61,61] TC=0
+e 824 825
+n 825 primary [min,max]=[61,61] TC=0
+e 825 826
+n 826 CONSTANT [min,max]=[61,61] TC=0
+e 809 827
+n 827 ']' [min,max]=[61,61] TC=0
+e 782 828
+n 828 ')' [min,max]=[61,61] TC=0
+e 760 829
+n 829 ')' [min,max]=[61,61] TC=0
+e 760 830
+n 830 c99_block_lineno_labeled_stmt [min,max]=[61,64] TC=0
+e 830 831
+n 831 lineno_labeled_stmt [min,max]=[61,64] TC=0
+e 831 832
+n 832 lineno_stmt [min,max]=[61,64] TC=0
+e 832 833
+n 833 save_location [min,max]=[2147483647,-1] TC=0
+e 832 834
+n 834 stmt [min,max]=[61,64] TC=0
+e 834 835
+n 835 compstmt [min,max]=[61,64] TC=0
+e 835 836
+n 836 compstmt_start [min,max]=[61,61] TC=0
+e 836 837
+n 837 '{' [min,max]=[61,61] TC=0
+e 835 838
+n 838 compstmt_nostart [min,max]=[62,64] TC=0
+e 838 839
+n 839 pushlevel [min,max]=[2147483647,-1] TC=0
+e 838 840
+n 840 maybe_label_decls [min,max]=[2147483647,-1] TC=0
+e 838 841
+n 841 compstmt_contents_nonempty [min,max]=[62,63] TC=0
+e 841 842
+n 842 stmts_and_decls [min,max]=[62,63] TC=0
+e 842 843
+n 843 lineno_stmt_decl_or_labels_ending_stmt [min,max]=[62,63] TC=0
+e 843 844
+n 844 lineno_stmt_decl_or_labels_ending_stmt [min,max]=[62,62] TC=0
+e 844 845
+n 845 lineno_stmt [min,max]=[62,62] TC=0
+e 845 846
+n 846 save_location [min,max]=[2147483647,-1] TC=0
+e 845 847
+n 847 stmt [min,max]=[62,62] TC=0
+e 847 848
+n 848 exprstmt [min,max]=[62,62] TC=0
+e 848 849
+n 849 expr [min,max]=[62,62] TC=0
+e 849 850
+n 850 nonnull_exprlist [min,max]=[62,62] TC=0
+e 850 851
+n 851 expr_no_commas [min,max]=[62,62] TC=0
+e 851 852
+n 852 expr_no_commas [min,max]=[62,62] TC=0
+e 852 853
+n 853 cast_expr [min,max]=[62,62] TC=0
+e 853 854
+n 854 unary_expr [min,max]=[62,62] TC=0
+e 854 855
+n 855 primary [min,max]=[62,62] TC=0
+e 855 856
+n 856 primary [min,max]=[62,62] TC=0
+e 856 857
+n 857 IDENTIFIER [min,max]=[62,62] TC=0
+e 855 858
+n 858 '[' [min,max]=[62,62] TC=0
+e 855 859
+n 859 expr [min,max]=[62,62] TC=0
+e 859 860
+n 860 nonnull_exprlist [min,max]=[62,62] TC=0
+e 860 861
+n 861 expr_no_commas [min,max]=[62,62] TC=0
+e 861 862
+n 862 cast_expr [min,max]=[62,62] TC=0
+e 862 863
+n 863 unary_expr [min,max]=[62,62] TC=0
+e 863 864
+n 864 primary [min,max]=[62,62] TC=0
+e 864 865
+n 865 IDENTIFIER [min,max]=[62,62] TC=0
+e 855 866
+n 866 ']' [min,max]=[62,62] TC=0
+e 851 867
+n 867 '=' [min,max]=[62,62] TC=0
+e 851 868
+n 868 expr_no_commas [min,max]=[62,62] TC=0
+e 868 869
+n 869 cast_expr [min,max]=[62,62] TC=0
+e 869 870
+n 870 unary_expr [min,max]=[62,62] TC=0
+e 870 871
+n 871 primary [min,max]=[62,62] TC=0
+e 871 872
+n 872 primary [min,max]=[62,62] TC=0
+e 872 873
+n 873 IDENTIFIER [min,max]=[62,62] TC=0
+e 871 874
+n 874 '[' [min,max]=[62,62] TC=0
+e 871 875
+n 875 expr [min,max]=[62,62] TC=0
+e 875 876
+n 876 nonnull_exprlist [min,max]=[62,62] TC=0
+e 876 877
+n 877 expr_no_commas [min,max]=[62,62] TC=0
+e 877 878
+n 878 expr_no_commas [min,max]=[62,62] TC=0
+e 878 879
+n 879 cast_expr [min,max]=[62,62] TC=0
+e 879 880
+n 880 unary_expr [min,max]=[62,62] TC=0
+e 880 881
+n 881 primary [min,max]=[62,62] TC=0
+e 881 882
+n 882 IDENTIFIER [min,max]=[62,62] TC=0
+e 877 883
+n 883 '-' [min,max]=[62,62] TC=0
+e 877 884
+n 884 expr_no_commas [min,max]=[62,62] TC=0
+e 884 885
+n 885 cast_expr [min,max]=[62,62] TC=0
+e 885 886
+n 886 unary_expr [min,max]=[62,62] TC=0
+e 886 887
+n 887 primary [min,max]=[62,62] TC=0
+e 887 888
+n 888 CONSTANT [min,max]=[62,62] TC=0
+e 871 889
+n 889 ']' [min,max]=[62,62] TC=0
+e 848 890
+n 890 ';' [min,max]=[62,62] TC=0
+e 843 891
+n 891 lineno_stmt [min,max]=[63,63] TC=0
+e 891 892
+n 892 save_location [min,max]=[2147483647,-1] TC=0
+e 891 893
+n 893 stmt [min,max]=[63,63] TC=0
+e 893 894
+n 894 exprstmt [min,max]=[63,63] TC=0
+e 894 895
+n 895 expr [min,max]=[63,63] TC=0
+e 895 896
+n 896 nonnull_exprlist [min,max]=[63,63] TC=0
+e 896 897
+n 897 expr_no_commas [min,max]=[63,63] TC=0
+e 897 898
+n 898 cast_expr [min,max]=[63,63] TC=0
+e 898 899
+n 899 unary_expr [min,max]=[63,63] TC=0
+e 899 900
+n 900 primary [min,max]=[63,63] TC=0
+e 900 901
+n 901 primary [min,max]=[63,63] TC=0
+e 901 902
+n 902 IDENTIFIER [min,max]=[63,63] TC=0
+e 900 903
+n 903 MINUSMINUS [min,max]=[63,63] TC=0
+e 894 904
+n 904 ';' [min,max]=[63,63] TC=0
+e 838 905
+n 905 '}' [min,max]=[64,64] TC=0
+e 838 906
+n 906 poplevel [min,max]=[2147483647,-1] TC=0
+e 718 907
+n 907 lineno_stmt [min,max]=[65,65] TC=0
+e 907 908
+n 908 save_location [min,max]=[2147483647,-1] TC=0
+e 907 909
+n 909 stmt [min,max]=[65,65] TC=0
+e 909 910
+n 910 exprstmt [min,max]=[65,65] TC=0
+e 910 911
+n 911 expr [min,max]=[65,65] TC=0
+e 911 912
+n 912 nonnull_exprlist [min,max]=[65,65] TC=0
+e 912 913
+n 913 expr_no_commas [min,max]=[65,65] TC=0
+e 913 914
+n 914 expr_no_commas [min,max]=[65,65] TC=0
+e 914 915
+n 915 cast_expr [min,max]=[65,65] TC=0
+e 915 916
+n 916 unary_expr [min,max]=[65,65] TC=0
+e 916 917
+n 917 primary [min,max]=[65,65] TC=0
+e 917 918
+n 918 primary [min,max]=[65,65] TC=0
+e 918 919
+n 919 IDENTIFIER [min,max]=[65,65] TC=0
+e 917 920
+n 920 '[' [min,max]=[65,65] TC=0
+e 917 921
+n 921 expr [min,max]=[65,65] TC=0
+e 921 922
+n 922 nonnull_exprlist [min,max]=[65,65] TC=0
+e 922 923
+n 923 expr_no_commas [min,max]=[65,65] TC=0
+e 923 924
+n 924 cast_expr [min,max]=[65,65] TC=0
+e 924 925
+n 925 unary_expr [min,max]=[65,65] TC=0
+e 925 926
+n 926 primary [min,max]=[65,65] TC=0
+e 926 927
+n 927 IDENTIFIER [min,max]=[65,65] TC=0
+e 917 928
+n 928 ']' [min,max]=[65,65] TC=0
+e 913 929
+n 929 '=' [min,max]=[65,65] TC=0
+e 913 930
+n 930 expr_no_commas [min,max]=[65,65] TC=0
+e 930 931
+n 931 cast_expr [min,max]=[65,65] TC=0
+e 931 932
+n 932 unary_expr [min,max]=[65,65] TC=0
+e 932 933
+n 933 primary [min,max]=[65,65] TC=0
+e 933 934
+n 934 IDENTIFIER [min,max]=[65,65] TC=0
+e 910 935
+n 935 ';' [min,max]=[65,65] TC=0
+e 713 936
+n 936 '}' [min,max]=[66,66] TC=0
+e 713 937
+n 937 poplevel [min,max]=[2147483647,-1] TC=0
+e 611 938
+n 938 '}' [min,max]=[67,67] TC=0
+e 611 939
+n 939 poplevel [min,max]=[2147483647,-1] TC=0
+e 39 940
+n 940 extdef [min,max]=[72,73] TC=0
+e 940 941
+n 941 extdef_1 [min,max]=[72,73] TC=0
+e 941 942
+n 942 fndef [min,max]=[72,73] TC=0
+e 942 943
+n 943 declspecs_ts [min,max]=[72,72] TC=0
+e 943 944
+n 944 declspecs_nosc_ts_nosa_noea [min,max]=[72,72] TC=0
+e 944 945
+n 945 typespec_nonattr [min,max]=[72,72] TC=0
+e 945 946
+n 946 typespec_reserved_nonattr [min,max]=[72,72] TC=0
+e 946 947
+n 947 TYPESPEC [min,max]=[72,72] TC=0
+e 942 948
+n 948 setspecs [min,max]=[2147483647,-1] TC=0
+e 942 949
+n 949 declarator [min,max]=[72,72] TC=0
+e 949 950
+n 950 notype_declarator [min,max]=[72,72] TC=0
+e 950 951
+n 951 notype_declarator [min,max]=[72,72] TC=0
+e 951 952
+n 952 IDENTIFIER [min,max]=[72,72] TC=0
+e 950 953
+n 953 '(' [min,max]=[72,72] TC=0
+e 950 954
+n 954 parmlist_or_identifiers [min,max]=[72,72] TC=0
+e 954 955
+n 955 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 954 956
+n 956 parmlist_or_identifiers_1 [min,max]=[72,72] TC=0
+e 956 957
+n 957 parmlist_1 [min,max]=[72,72] TC=0
+e 957 958
+n 958 parmlist_2 [min,max]=[2147483647,-1] TC=0
+e 957 959
+n 959 ')' [min,max]=[72,72] TC=0
+e 942 960
+n 960 old_style_parm_decls [min,max]=[2147483647,-1] TC=0
+e 960 961
+n 961 old_style_parm_decls_1 [min,max]=[2147483647,-1] TC=0
+e 942 962
+n 962 save_location [min,max]=[2147483647,-1] TC=0
+e 942 963
+n 963 compstmt_or_error [min,max]=[72,73] TC=0
+e 963 964
+n 964 compstmt [min,max]=[72,73] TC=0
+e 964 965
+n 965 compstmt_start [min,max]=[72,72] TC=0
+e 965 966
+n 966 '{' [min,max]=[72,72] TC=0
+e 964 967
+n 967 compstmt_nostart [min,max]=[73,73] TC=0
+e 967 968
+n 968 pushlevel [min,max]=[2147483647,-1] TC=0
+e 967 969
+n 969 maybe_label_decls [min,max]=[2147483647,-1] TC=0
+e 967 970
+n 970 compstmt_contents_nonempty [min,max]=[2147483647,-1] TC=0
+e 967 971
+n 971 '}' [min,max]=[73,73] TC=0
+e 967 972
+n 972 poplevel [min,max]=[2147483647,-1] TC=0
+e 38 973
+n 973 extdef [min,max]=[73,73] TC=0
+e 973 974
+n 974 extdef_1 [min,max]=[73,73] TC=0
+e 974 975
+n 975 datadef [min,max]=[73,73] TC=0
+e 975 976
+n 976 '}' [min,max]=[73,73] TC=0
+e 37 977
+n 977 extdef [min,max]=[73,73] TC=0
+e 977 978
+n 978 extdef_1 [min,max]=[73,73] TC=0
+e 978 979
+n 979 datadef [min,max]=[73,73] TC=0
+e 979 980
+n 980 '}' [min,max]=[73,73] TC=0
+e 36 981
+n 981 extdef [min,max]=[74,74] TC=0
+e 981 982
+n 982 extdef_1 [min,max]=[74,74] TC=0
+e 982 983
+n 983 datadef [min,max]=[74,74] TC=0
+e 983 984
+n 984 '}' [min,max]=[74,74] TC=0
+e 35 985
+n 985 extdef [min,max]=[74,74] TC=0
+e 985 986
+n 986 extdef_1 [min,max]=[74,74] TC=0
+e 986 987
+n 987 datadef [min,max]=[74,74] TC=0
+e 987 988
+n 988 '}' [min,max]=[74,74] TC=0
+e 34 989
+n 989 extdef [min,max]=[74,74] TC=0
+e 989 990
+n 990 extdef_1 [min,max]=[74,74] TC=0
+e 990 991
+n 991 datadef [min,max]=[74,74] TC=0
+e 991 992
+n 992 '}' [min,max]=[74,74] TC=0
+e 33 993
+n 993 extdef [min,max]=[75,75] TC=0
+e 993 994
+n 994 extdef_1 [min,max]=[75,75] TC=0
+e 994 995
+n 995 datadef [min,max]=[75,75] TC=0
+e 995 996
+n 996 '}' [min,max]=[75,75] TC=0
+e 32 997
+n 997 extdef [min,max]=[75,75] TC=0
+e 997 998
+n 998 extdef_1 [min,max]=[75,75] TC=0
+e 998 999
+n 999 datadef [min,max]=[75,75] TC=0
+e 999 1000
+n 1000 ';' [min,max]=[75,75] TC=0
+e 31 1001
+n 1001 extdef [min,max]=[76,76] TC=0
+e 1001 1002
+n 1002 extdef_1 [min,max]=[76,76] TC=0
+e 1002 1003
+n 1003 datadef [min,max]=[76,76] TC=0
+e 1003 1004
+n 1004 declspecs_ts [min,max]=[76,76] TC=0
+e 1004 1005
+n 1005 declspecs_nosc_ts_nosa_noea [min,max]=[76,76] TC=0
+e 1005 1006
+n 1006 typespec_nonattr [min,max]=[76,76] TC=0
+e 1006 1007
+n 1007 typespec_reserved_nonattr [min,max]=[76,76] TC=0
+e 1007 1008
+n 1008 TYPESPEC [min,max]=[76,76] TC=0
+e 1003 1009
+n 1009 setspecs [min,max]=[2147483647,-1] TC=0
+e 1003 1010
+n 1010 initdecls [min,max]=[76,76] TC=0
+e 1010 1011
+n 1011 initdcl [min,max]=[76,76] TC=0
+e 1011 1012
+n 1012 declarator [min,max]=[76,76] TC=0
+e 1012 1013
+n 1013 notype_declarator [min,max]=[76,76] TC=0
+e 1013 1014
+n 1014 notype_declarator [min,max]=[76,76] TC=0
+e 1014 1015
+n 1015 IDENTIFIER [min,max]=[76,76] TC=0
+e 1013 1016
+n 1016 array_declarator [min,max]=[76,76] TC=0
+e 1016 1017
+n 1017 '[' [min,max]=[76,76] TC=0
+e 1016 1018
+n 1018 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 1016 1019
+n 1019 expr_no_commas [min,max]=[76,76] TC=0
+e 1019 1020
+n 1020 cast_expr [min,max]=[76,76] TC=0
+e 1020 1021
+n 1021 unary_expr [min,max]=[76,76] TC=0
+e 1021 1022
+n 1022 primary [min,max]=[76,76] TC=0
+e 1022 1023
+n 1023 IDENTIFIER [min,max]=[76,76] TC=0
+e 1016 1024
+n 1024 ']' [min,max]=[76,76] TC=0
+e 1011 1025
+n 1025 maybeasm [min,max]=[2147483647,-1] TC=0
+e 1011 1026
+n 1026 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 1011 1027
+n 1027 '=' [min,max]=[76,76] TC=0
+e 1011 1028
+n 1028 init [min,max]=[76,76] TC=0
+e 1028 1029
+n 1029 '{' [min,max]=[76,76] TC=0
+e 1028 1030
+n 1030 initlist_maybe_comma [min,max]=[76,76] TC=0
+e 1030 1031
+n 1031 initlist1 [min,max]=[76,76] TC=0
+e 1031 1032
+n 1032 initlist1 [min,max]=[76,76] TC=0
+e 1032 1033
+n 1033 initlist1 [min,max]=[76,76] TC=0
+e 1033 1034
+n 1034 initlist1 [min,max]=[76,76] TC=0
+e 1034 1035
+n 1035 initlist1 [min,max]=[76,76] TC=0
+e 1035 1036
+n 1036 initlist1 [min,max]=[76,76] TC=0
+e 1036 1037
+n 1037 initlist1 [min,max]=[76,76] TC=0
+e 1037 1038
+n 1038 initlist1 [min,max]=[76,76] TC=0
+e 1038 1039
+n 1039 initelt [min,max]=[76,76] TC=0
+e 1039 1040
+n 1040 initval [min,max]=[76,76] TC=0
+e 1040 1041
+n 1041 expr_no_commas [min,max]=[76,76] TC=0
+e 1041 1042
+n 1042 cast_expr [min,max]=[76,76] TC=0
+e 1042 1043
+n 1043 unary_expr [min,max]=[76,76] TC=0
+e 1043 1044
+n 1044 primary [min,max]=[76,76] TC=0
+e 1044 1045
+n 1045 CONSTANT [min,max]=[76,76] TC=0
+e 1037 1046
+n 1046 ',' [min,max]=[76,76] TC=0
+e 1037 1047
+n 1047 initelt [min,max]=[76,76] TC=0
+e 1047 1048
+n 1048 initval [min,max]=[76,76] TC=0
+e 1048 1049
+n 1049 expr_no_commas [min,max]=[76,76] TC=0
+e 1049 1050
+n 1050 cast_expr [min,max]=[76,76] TC=0
+e 1050 1051
+n 1051 unary_expr [min,max]=[76,76] TC=0
+e 1051 1052
+n 1052 unop [min,max]=[76,76] TC=0
+e 1052 1053
+n 1053 '-' [min,max]=[76,76] TC=0
+e 1051 1054
+n 1054 cast_expr [min,max]=[76,76] TC=0
+e 1054 1055
+n 1055 unary_expr [min,max]=[76,76] TC=0
+e 1055 1056
+n 1056 primary [min,max]=[76,76] TC=0
+e 1056 1057
+n 1057 CONSTANT [min,max]=[76,76] TC=0
+e 1036 1058
+n 1058 ',' [min,max]=[76,76] TC=0
+e 1036 1059
+n 1059 initelt [min,max]=[76,76] TC=0
+e 1059 1060
+n 1060 initval [min,max]=[76,76] TC=0
+e 1060 1061
+n 1061 expr_no_commas [min,max]=[76,76] TC=0
+e 1061 1062
+n 1062 cast_expr [min,max]=[76,76] TC=0
+e 1062 1063
+n 1063 unary_expr [min,max]=[76,76] TC=0
+e 1063 1064
+n 1064 primary [min,max]=[76,76] TC=0
+e 1064 1065
+n 1065 CONSTANT [min,max]=[76,76] TC=0
+e 1035 1066
+n 1066 ',' [min,max]=[76,76] TC=0
+e 1035 1067
+n 1067 initelt [min,max]=[76,76] TC=0
+e 1067 1068
+n 1068 initval [min,max]=[76,76] TC=0
+e 1068 1069
+n 1069 expr_no_commas [min,max]=[76,76] TC=0
+e 1069 1070
+n 1070 cast_expr [min,max]=[76,76] TC=0
+e 1070 1071
+n 1071 unary_expr [min,max]=[76,76] TC=0
+e 1071 1072
+n 1072 unop [min,max]=[76,76] TC=0
+e 1072 1073
+n 1073 '-' [min,max]=[76,76] TC=0
+e 1071 1074
+n 1074 cast_expr [min,max]=[76,76] TC=0
+e 1074 1075
+n 1075 unary_expr [min,max]=[76,76] TC=0
+e 1075 1076
+n 1076 primary [min,max]=[76,76] TC=0
+e 1076 1077
+n 1077 CONSTANT [min,max]=[76,76] TC=0
+e 1034 1078
+n 1078 ',' [min,max]=[76,76] TC=0
+e 1034 1079
+n 1079 initelt [min,max]=[76,76] TC=0
+e 1079 1080
+n 1080 initval [min,max]=[76,76] TC=0
+e 1080 1081
+n 1081 expr_no_commas [min,max]=[76,76] TC=0
+e 1081 1082
+n 1082 cast_expr [min,max]=[76,76] TC=0
+e 1082 1083
+n 1083 unary_expr [min,max]=[76,76] TC=0
+e 1083 1084
+n 1084 primary [min,max]=[76,76] TC=0
+e 1084 1085
+n 1085 CONSTANT [min,max]=[76,76] TC=0
+e 1033 1086
+n 1086 ',' [min,max]=[76,76] TC=0
+e 1033 1087
+n 1087 initelt [min,max]=[76,76] TC=0
+e 1087 1088
+n 1088 initval [min,max]=[76,76] TC=0
+e 1088 1089
+n 1089 expr_no_commas [min,max]=[76,76] TC=0
+e 1089 1090
+n 1090 cast_expr [min,max]=[76,76] TC=0
+e 1090 1091
+n 1091 unary_expr [min,max]=[76,76] TC=0
+e 1091 1092
+n 1092 unop [min,max]=[76,76] TC=0
+e 1092 1093
+n 1093 '-' [min,max]=[76,76] TC=0
+e 1091 1094
+n 1094 cast_expr [min,max]=[76,76] TC=0
+e 1094 1095
+n 1095 unary_expr [min,max]=[76,76] TC=0
+e 1095 1096
+n 1096 primary [min,max]=[76,76] TC=0
+e 1096 1097
+n 1097 CONSTANT [min,max]=[76,76] TC=0
+e 1032 1098
+n 1098 ',' [min,max]=[76,76] TC=0
+e 1032 1099
+n 1099 initelt [min,max]=[76,76] TC=0
+e 1099 1100
+n 1100 initval [min,max]=[76,76] TC=0
+e 1100 1101
+n 1101 expr_no_commas [min,max]=[76,76] TC=0
+e 1101 1102
+n 1102 cast_expr [min,max]=[76,76] TC=0
+e 1102 1103
+n 1103 unary_expr [min,max]=[76,76] TC=0
+e 1103 1104
+n 1104 primary [min,max]=[76,76] TC=0
+e 1104 1105
+n 1105 CONSTANT [min,max]=[76,76] TC=0
+e 1031 1106
+n 1106 ',' [min,max]=[76,76] TC=0
+e 1031 1107
+n 1107 initelt [min,max]=[76,76] TC=0
+e 1107 1108
+n 1108 initval [min,max]=[76,76] TC=0
+e 1108 1109
+n 1109 expr_no_commas [min,max]=[76,76] TC=0
+e 1109 1110
+n 1110 cast_expr [min,max]=[76,76] TC=0
+e 1110 1111
+n 1111 unary_expr [min,max]=[76,76] TC=0
+e 1111 1112
+n 1112 unop [min,max]=[76,76] TC=0
+e 1112 1113
+n 1113 '-' [min,max]=[76,76] TC=0
+e 1111 1114
+n 1114 cast_expr [min,max]=[76,76] TC=0
+e 1114 1115
+n 1115 unary_expr [min,max]=[76,76] TC=0
+e 1115 1116
+n 1116 primary [min,max]=[76,76] TC=0
+e 1116 1117
+n 1117 CONSTANT [min,max]=[76,76] TC=0
+e 1030 1118
+n 1118 maybecomma [min,max]=[2147483647,-1] TC=0
+e 1028 1119
+n 1119 '}' [min,max]=[76,76] TC=0
+e 1003 1120
+n 1120 ';' [min,max]=[76,76] TC=0
+e 30 1121
+n 1121 extdef [min,max]=[77,78] TC=0
+e 1121 1122
+n 1122 extdef_1 [min,max]=[77,78] TC=0
+e 1122 1123
+n 1123 datadef [min,max]=[77,78] TC=0
+e 1123 1124
+n 1124 declspecs_ts [min,max]=[77,77] TC=0
+e 1124 1125
+n 1125 declspecs_nosc_ts_nosa_noea [min,max]=[77,77] TC=0
+e 1125 1126
+n 1126 typespec_nonattr [min,max]=[77,77] TC=0
+e 1126 1127
+n 1127 typespec_reserved_nonattr [min,max]=[77,77] TC=0
+e 1127 1128
+n 1128 TYPESPEC [min,max]=[77,77] TC=0
+e 1123 1129
+n 1129 setspecs [min,max]=[2147483647,-1] TC=0
+e 1123 1130
+n 1130 initdecls [min,max]=[77,78] TC=0
+e 1130 1131
+n 1131 initdcl [min,max]=[77,78] TC=0
+e 1131 1132
+n 1132 declarator [min,max]=[77,77] TC=0
+e 1132 1133
+n 1133 notype_declarator [min,max]=[77,77] TC=0
+e 1133 1134
+n 1134 '*' [min,max]=[77,77] TC=0
+e 1133 1135
+n 1135 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 1133 1136
+n 1136 notype_declarator [min,max]=[77,77] TC=0
+e 1136 1137
+n 1137 notype_declarator [min,max]=[77,77] TC=0
+e 1137 1138
+n 1138 IDENTIFIER [min,max]=[77,77] TC=0
+e 1136 1139
+n 1139 array_declarator [min,max]=[77,77] TC=0
+e 1139 1140
+n 1140 '[' [min,max]=[77,77] TC=0
+e 1139 1141
+n 1141 maybe_type_quals_attrs [min,max]=[2147483647,-1] TC=0
+e 1139 1142
+n 1142 expr_no_commas [min,max]=[77,77] TC=0
+e 1142 1143
+n 1143 cast_expr [min,max]=[77,77] TC=0
+e 1143 1144
+n 1144 unary_expr [min,max]=[77,77] TC=0
+e 1144 1145
+n 1145 primary [min,max]=[77,77] TC=0
+e 1145 1146
+n 1146 IDENTIFIER [min,max]=[77,77] TC=0
+e 1139 1147
+n 1147 ']' [min,max]=[77,77] TC=0
+e 1131 1148
+n 1148 maybeasm [min,max]=[2147483647,-1] TC=0
+e 1131 1149
+n 1149 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 1131 1150
+n 1150 '=' [min,max]=[78,78] TC=0
+e 1131 1151
+n 1151 init [min,max]=[78,78] TC=0
+e 1151 1152
+n 1152 '{' [min,max]=[78,78] TC=0
+e 1151 1153
+n 1153 initlist_maybe_comma [min,max]=[78,78] TC=0
+e 1153 1154
+n 1154 initlist1 [min,max]=[78,78] TC=0
+e 1154 1155
+n 1155 initlist1 [min,max]=[78,78] TC=0
+e 1155 1156
+n 1156 initlist1 [min,max]=[78,78] TC=0
+e 1156 1157
+n 1157 initlist1 [min,max]=[78,78] TC=0
+e 1157 1158
+n 1158 initlist1 [min,max]=[78,78] TC=0
+e 1158 1159
+n 1159 initlist1 [min,max]=[78,78] TC=0
+e 1159 1160
+n 1160 initlist1 [min,max]=[78,78] TC=0
+e 1160 1161
+n 1161 initlist1 [min,max]=[78,78] TC=0
+e 1161 1162
+n 1162 initelt [min,max]=[78,78] TC=0
+e 1162 1163
+n 1163 initval [min,max]=[78,78] TC=0
+e 1163 1164
+n 1164 expr_no_commas [min,max]=[78,78] TC=0
+e 1164 1165
+n 1165 cast_expr [min,max]=[78,78] TC=0
+e 1165 1166
+n 1166 unary_expr [min,max]=[78,78] TC=0
+e 1166 1167
+n 1167 primary [min,max]=[78,78] TC=0
+e 1167 1168
+n 1168 multistrings [min,max]=[78,78] TC=0
+e 1168 1169
+n 1169 STRING [min,max]=[78,78] TC=0
+e 1160 1170
+n 1170 ',' [min,max]=[78,78] TC=0
+e 1160 1171
+n 1171 initelt [min,max]=[78,78] TC=0
+e 1171 1172
+n 1172 initval [min,max]=[78,78] TC=0
+e 1172 1173
+n 1173 expr_no_commas [min,max]=[78,78] TC=0
+e 1173 1174
+n 1174 cast_expr [min,max]=[78,78] TC=0
+e 1174 1175
+n 1175 unary_expr [min,max]=[78,78] TC=0
+e 1175 1176
+n 1176 primary [min,max]=[78,78] TC=0
+e 1176 1177
+n 1177 multistrings [min,max]=[78,78] TC=0
+e 1177 1178
+n 1178 STRING [min,max]=[78,78] TC=0
+e 1159 1179
+n 1179 ',' [min,max]=[78,78] TC=0
+e 1159 1180
+n 1180 initelt [min,max]=[78,78] TC=0
+e 1180 1181
+n 1181 initval [min,max]=[78,78] TC=0
+e 1181 1182
+n 1182 expr_no_commas [min,max]=[78,78] TC=0
+e 1182 1183
+n 1183 cast_expr [min,max]=[78,78] TC=0
+e 1183 1184
+n 1184 unary_expr [min,max]=[78,78] TC=0
+e 1184 1185
+n 1185 primary [min,max]=[78,78] TC=0
+e 1185 1186
+n 1186 multistrings [min,max]=[78,78] TC=0
+e 1186 1187
+n 1187 STRING [min,max]=[78,78] TC=0
+e 1158 1188
+n 1188 ',' [min,max]=[78,78] TC=0
+e 1158 1189
+n 1189 initelt [min,max]=[78,78] TC=0
+e 1189 1190
+n 1190 initval [min,max]=[78,78] TC=0
+e 1190 1191
+n 1191 expr_no_commas [min,max]=[78,78] TC=0
+e 1191 1192
+n 1192 cast_expr [min,max]=[78,78] TC=0
+e 1192 1193
+n 1193 unary_expr [min,max]=[78,78] TC=0
+e 1193 1194
+n 1194 primary [min,max]=[78,78] TC=0
+e 1194 1195
+n 1195 multistrings [min,max]=[78,78] TC=0
+e 1195 1196
+n 1196 STRING [min,max]=[78,78] TC=0
+e 1157 1197
+n 1197 ',' [min,max]=[78,78] TC=0
+e 1157 1198
+n 1198 initelt [min,max]=[78,78] TC=0
+e 1198 1199
+n 1199 initval [min,max]=[78,78] TC=0
+e 1199 1200
+n 1200 expr_no_commas [min,max]=[78,78] TC=0
+e 1200 1201
+n 1201 cast_expr [min,max]=[78,78] TC=0
+e 1201 1202
+n 1202 unary_expr [min,max]=[78,78] TC=0
+e 1202 1203
+n 1203 primary [min,max]=[78,78] TC=0
+e 1203 1204
+n 1204 multistrings [min,max]=[78,78] TC=0
+e 1204 1205
+n 1205 STRING [min,max]=[78,78] TC=0
+e 1156 1206
+n 1206 ',' [min,max]=[78,78] TC=0
+e 1156 1207
+n 1207 initelt [min,max]=[78,78] TC=0
+e 1207 1208
+n 1208 initval [min,max]=[78,78] TC=0
+e 1208 1209
+n 1209 expr_no_commas [min,max]=[78,78] TC=0
+e 1209 1210
+n 1210 cast_expr [min,max]=[78,78] TC=0
+e 1210 1211
+n 1211 unary_expr [min,max]=[78,78] TC=0
+e 1211 1212
+n 1212 primary [min,max]=[78,78] TC=0
+e 1212 1213
+n 1213 multistrings [min,max]=[78,78] TC=0
+e 1213 1214
+n 1214 STRING [min,max]=[78,78] TC=0
+e 1155 1215
+n 1215 ',' [min,max]=[78,78] TC=0
+e 1155 1216
+n 1216 initelt [min,max]=[78,78] TC=0
+e 1216 1217
+n 1217 initval [min,max]=[78,78] TC=0
+e 1217 1218
+n 1218 expr_no_commas [min,max]=[78,78] TC=0
+e 1218 1219
+n 1219 cast_expr [min,max]=[78,78] TC=0
+e 1219 1220
+n 1220 unary_expr [min,max]=[78,78] TC=0
+e 1220 1221
+n 1221 primary [min,max]=[78,78] TC=0
+e 1221 1222
+n 1222 multistrings [min,max]=[78,78] TC=0
+e 1222 1223
+n 1223 STRING [min,max]=[78,78] TC=0
+e 1154 1224
+n 1224 ',' [min,max]=[78,78] TC=0
+e 1154 1225
+n 1225 initelt [min,max]=[78,78] TC=0
+e 1225 1226
+n 1226 initval [min,max]=[78,78] TC=0
+e 1226 1227
+n 1227 expr_no_commas [min,max]=[78,78] TC=0
+e 1227 1228
+n 1228 cast_expr [min,max]=[78,78] TC=0
+e 1228 1229
+n 1229 unary_expr [min,max]=[78,78] TC=0
+e 1229 1230
+n 1230 primary [min,max]=[78,78] TC=0
+e 1230 1231
+n 1231 multistrings [min,max]=[78,78] TC=0
+e 1231 1232
+n 1232 STRING [min,max]=[78,78] TC=0
+e 1153 1233
+n 1233 maybecomma [min,max]=[2147483647,-1] TC=0
+e 1151 1234
+n 1234 '}' [min,max]=[78,78] TC=0
+e 1123 1235
+n 1235 ';' [min,max]=[78,78] TC=0
+e 29 1236
+n 1236 extdef [min,max]=[79,79] TC=0
+e 1236 1237
+n 1237 extdef_1 [min,max]=[79,79] TC=0
+e 1237 1238
+n 1238 datadef [min,max]=[79,79] TC=0
+e 1238 1239
+n 1239 declspecs_ts [min,max]=[79,79] TC=0
+e 1239 1240
+n 1240 declspecs_nosc_ts_nosa_noea [min,max]=[79,79] TC=0
+e 1240 1241
+n 1241 typespec_nonattr [min,max]=[79,79] TC=0
+e 1241 1242
+n 1242 typespec_reserved_nonattr [min,max]=[79,79] TC=0
+e 1242 1243
+n 1243 TYPESPEC [min,max]=[79,79] TC=0
+e 1238 1244
+n 1244 setspecs [min,max]=[2147483647,-1] TC=0
+e 1238 1245
+n 1245 initdecls [min,max]=[79,79] TC=0
+e 1245 1246
+n 1246 initdcl [min,max]=[79,79] TC=0
+e 1246 1247
+n 1247 declarator [min,max]=[79,79] TC=0
+e 1247 1248
+n 1248 notype_declarator [min,max]=[79,79] TC=0
+e 1248 1249
+n 1249 IDENTIFIER [min,max]=[79,79] TC=0
+e 1246 1250
+n 1250 maybeasm [min,max]=[2147483647,-1] TC=0
+e 1246 1251
+n 1251 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 1238 1252
+n 1252 ';' [min,max]=[79,79] TC=0
+e 28 1253
+n 1253 extdef [min,max]=[81,81] TC=0
+e 1253 1254
+n 1254 extdef_1 [min,max]=[81,81] TC=0
+e 1254 1255
+n 1255 datadef [min,max]=[81,81] TC=0
+e 1255 1256
+n 1256 ';' [min,max]=[81,81] TC=0
+e 27 1257
+n 1257 extdef [min,max]=[82,82] TC=0
+e 1257 1258
+n 1258 extdef_1 [min,max]=[82,82] TC=0
+e 1258 1259
+n 1259 datadef [min,max]=[82,82] TC=0
+e 1259 1260
+n 1260 ';' [min,max]=[82,82] TC=0
+e 26 1261
+n 1261 extdef [min,max]=[82,82] TC=0
+e 1261 1262
+n 1262 extdef_1 [min,max]=[82,82] TC=0
+e 1262 1263
+n 1263 fndef [min,max]=[82,82] TC=0
+e 1263 1264
+n 1264 setspecs [min,max]=[2147483647,-1] TC=0
+e 1263 1265
+n 1265 notype_declarator [min,max]=[82,82] TC=0
+e 1265 1266
+n 1266 IDENTIFIER [min,max]=[82,82] TC=0
+e 25 1267
+n 1267 extdef [min,max]=[82,82] TC=0
+e 1267 1268
+n 1268 extdef_1 [min,max]=[82,82] TC=0
+e 1268 1269
+n 1269 datadef [min,max]=[82,82] TC=0
+e 1269 1270
+n 1270 ';' [min,max]=[82,82] TC=0
+e 24 1271
+n 1271 extdef [min,max]=[82,82] TC=0
+e 1271 1272
+n 1272 extdef_1 [min,max]=[82,82] TC=0
+e 1272 1273
+n 1273 fndef [min,max]=[82,82] TC=0
+e 1273 1274
+n 1274 setspecs [min,max]=[2147483647,-1] TC=0
+e 1273 1275
+n 1275 notype_declarator [min,max]=[82,82] TC=0
+e 1275 1276
+n 1276 IDENTIFIER [min,max]=[82,82] TC=0
+e 23 1277
+n 1277 extdef [min,max]=[83,83] TC=0
+e 1277 1278
+n 1278 extdef_1 [min,max]=[83,83] TC=0
+e 1278 1279
+n 1279 datadef [min,max]=[83,83] TC=0
+e 1279 1280
+n 1280 ';' [min,max]=[83,83] TC=0
+e 22 1281
+n 1281 extdef [min,max]=[85,85] TC=0
+e 1281 1282
+n 1282 extdef_1 [min,max]=[85,85] TC=0
+e 1282 1283
+n 1283 datadef [min,max]=[85,85] TC=0
+e 1283 1284
+n 1284 ';' [min,max]=[85,85] TC=0
+e 21 1285
+n 1285 extdef [min,max]=[86,86] TC=0
+e 1285 1286
+n 1286 extdef_1 [min,max]=[86,86] TC=0
+e 1286 1287
+n 1287 datadef [min,max]=[86,86] TC=0
+e 1287 1288
+n 1288 ';' [min,max]=[86,86] TC=0
+e 20 1289
+n 1289 extdef [min,max]=[86,86] TC=0
+e 1289 1290
+n 1290 extdef_1 [min,max]=[86,86] TC=0
+e 1290 1291
+n 1291 fndef [min,max]=[86,86] TC=0
+e 1291 1292
+n 1292 setspecs [min,max]=[2147483647,-1] TC=0
+e 1291 1293
+n 1293 notype_declarator [min,max]=[86,86] TC=0
+e 1293 1294
+n 1294 IDENTIFIER [min,max]=[86,86] TC=0
+e 19 1295
+n 1295 extdef [min,max]=[86,86] TC=0
+e 1295 1296
+n 1296 extdef_1 [min,max]=[86,86] TC=0
+e 1296 1297
+n 1297 datadef [min,max]=[86,86] TC=0
+e 1297 1298
+n 1298 ';' [min,max]=[86,86] TC=0
+e 18 1299
+n 1299 extdef [min,max]=[86,86] TC=0
+e 1299 1300
+n 1300 extdef_1 [min,max]=[86,86] TC=0
+e 1300 1301
+n 1301 fndef [min,max]=[86,86] TC=0
+e 1301 1302
+n 1302 setspecs [min,max]=[2147483647,-1] TC=0
+e 1301 1303
+n 1303 notype_declarator [min,max]=[86,86] TC=0
+e 1303 1304
+n 1304 IDENTIFIER [min,max]=[86,86] TC=0
+e 17 1305
+n 1305 extdef [min,max]=[87,87] TC=0
+e 1305 1306
+n 1306 extdef_1 [min,max]=[87,87] TC=0
+e 1306 1307
+n 1307 datadef [min,max]=[87,87] TC=0
+e 1307 1308
+n 1308 ';' [min,max]=[87,87] TC=0
+e 16 1309
+n 1309 extdef [min,max]=[89,89] TC=0
+e 1309 1310
+n 1310 extdef_1 [min,max]=[89,89] TC=0
+e 1310 1311
+n 1311 datadef [min,max]=[89,89] TC=0
+e 1311 1312
+n 1312 ';' [min,max]=[89,89] TC=0
+e 15 1313
+n 1313 extdef [min,max]=[90,90] TC=0
+e 1313 1314
+n 1314 extdef_1 [min,max]=[90,90] TC=0
+e 1314 1315
+n 1315 datadef [min,max]=[90,90] TC=0
+e 1315 1316
+n 1316 ';' [min,max]=[90,90] TC=0
+e 14 1317
+n 1317 extdef [min,max]=[90,90] TC=0
+e 1317 1318
+n 1318 extdef_1 [min,max]=[90,90] TC=0
+e 1318 1319
+n 1319 fndef [min,max]=[90,90] TC=0
+e 1319 1320
+n 1320 setspecs [min,max]=[2147483647,-1] TC=0
+e 1319 1321
+n 1321 notype_declarator [min,max]=[90,90] TC=0
+e 1321 1322
+n 1322 IDENTIFIER [min,max]=[90,90] TC=0
+e 13 1323
+n 1323 extdef [min,max]=[90,90] TC=0
+e 1323 1324
+n 1324 extdef_1 [min,max]=[90,90] TC=0
+e 1324 1325
+n 1325 datadef [min,max]=[90,90] TC=0
+e 1325 1326
+n 1326 ';' [min,max]=[90,90] TC=0
+e 12 1327
+n 1327 extdef [min,max]=[90,90] TC=0
+e 1327 1328
+n 1328 extdef_1 [min,max]=[90,90] TC=0
+e 1328 1329
+n 1329 fndef [min,max]=[90,90] TC=0
+e 1329 1330
+n 1330 setspecs [min,max]=[2147483647,-1] TC=0
+e 1329 1331
+n 1331 notype_declarator [min,max]=[90,90] TC=0
+e 1331 1332
+n 1332 IDENTIFIER [min,max]=[90,90] TC=0
+e 11 1333
+n 1333 extdef [min,max]=[91,91] TC=0
+e 1333 1334
+n 1334 extdef_1 [min,max]=[91,91] TC=0
+e 1334 1335
+n 1335 datadef [min,max]=[91,91] TC=0
+e 1335 1336
+n 1336 ';' [min,max]=[91,91] TC=0
+e 10 1337
+n 1337 extdef [min,max]=[92,92] TC=0
+e 1337 1338
+n 1338 extdef_1 [min,max]=[92,92] TC=0
+e 1338 1339
+n 1339 datadef [min,max]=[92,92] TC=0
+e 1339 1340
+n 1340 setspecs [min,max]=[2147483647,-1] TC=0
+e 1339 1341
+n 1341 notype_initdecls [min,max]=[92,92] TC=0
+e 1341 1342
+n 1342 notype_initdcl [min,max]=[92,92] TC=0
+e 1342 1343
+n 1343 notype_declarator [min,max]=[92,92] TC=0
+e 1343 1344
+n 1344 notype_declarator [min,max]=[92,92] TC=0
+e 1344 1345
+n 1345 IDENTIFIER [min,max]=[92,92] TC=0
+e 1343 1346
+n 1346 '(' [min,max]=[92,92] TC=0
+e 1343 1347
+n 1347 parmlist_or_identifiers [min,max]=[92,92] TC=0
+e 1347 1348
+n 1348 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 1347 1349
+n 1349 parmlist_or_identifiers_1 [min,max]=[92,92] TC=0
+e 1349 1350
+n 1350 parmlist_1 [min,max]=[92,92] TC=0
+e 1350 1351
+n 1351 ')' [min,max]=[92,92] TC=0
+e 1342 1352
+n 1352 maybeasm [min,max]=[2147483647,-1] TC=0
+e 1342 1353
+n 1353 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 1339 1354
+n 1354 ';' [min,max]=[92,92] TC=0
+e 9 1355
+n 1355 extdef [min,max]=[94,94] TC=0
+e 1355 1356
+n 1356 extdef_1 [min,max]=[94,94] TC=0
+e 1356 1357
+n 1357 datadef [min,max]=[94,94] TC=0
+e 1357 1358
+n 1358 ';' [min,max]=[94,94] TC=0
+e 8 1359
+n 1359 extdef [min,max]=[95,95] TC=0
+e 1359 1360
+n 1360 extdef_1 [min,max]=[95,95] TC=0
+e 1360 1361
+n 1361 datadef [min,max]=[95,95] TC=0
+e 1361 1362
+n 1362 ';' [min,max]=[95,95] TC=0
+e 7 1363
+n 1363 extdef [min,max]=[95,95] TC=0
+e 1363 1364
+n 1364 extdef_1 [min,max]=[95,95] TC=0
+e 1364 1365
+n 1365 fndef [min,max]=[95,95] TC=0
+e 1365 1366
+n 1366 setspecs [min,max]=[2147483647,-1] TC=0
+e 1365 1367
+n 1367 notype_declarator [min,max]=[95,95] TC=0
+e 1367 1368
+n 1368 IDENTIFIER [min,max]=[95,95] TC=0
+e 6 1369
+n 1369 extdef [min,max]=[95,95] TC=0
+e 1369 1370
+n 1370 extdef_1 [min,max]=[95,95] TC=0
+e 1370 1371
+n 1371 datadef [min,max]=[95,95] TC=0
+e 1371 1372
+n 1372 ';' [min,max]=[95,95] TC=0
+e 5 1373
+n 1373 extdef [min,max]=[95,95] TC=0
+e 1373 1374
+n 1374 extdef_1 [min,max]=[95,95] TC=0
+e 1374 1375
+n 1375 fndef [min,max]=[95,95] TC=0
+e 1375 1376
+n 1376 setspecs [min,max]=[2147483647,-1] TC=0
+e 1375 1377
+n 1377 notype_declarator [min,max]=[95,95] TC=0
+e 1377 1378
+n 1378 IDENTIFIER [min,max]=[95,95] TC=0
+e 4 1379
+n 1379 extdef [min,max]=[96,96] TC=0
+e 1379 1380
+n 1380 extdef_1 [min,max]=[96,96] TC=0
+e 1380 1381
+n 1381 datadef [min,max]=[96,96] TC=0
+e 1381 1382
+n 1382 ';' [min,max]=[96,96] TC=0
+e 3 1383
+n 1383 extdef [min,max]=[97,97] TC=0
+e 1383 1384
+n 1384 extdef_1 [min,max]=[97,97] TC=0
+e 1384 1385
+n 1385 datadef [min,max]=[97,97] TC=0
+e 1385 1386
+n 1386 setspecs [min,max]=[2147483647,-1] TC=0
+e 1385 1387
+n 1387 notype_initdecls [min,max]=[97,97] TC=0
+e 1387 1388
+n 1388 notype_initdcl [min,max]=[97,97] TC=0
+e 1388 1389
+n 1389 notype_declarator [min,max]=[97,97] TC=0
+e 1389 1390
+n 1390 notype_declarator [min,max]=[97,97] TC=0
+e 1390 1391
+n 1391 IDENTIFIER [min,max]=[97,97] TC=0
+e 1389 1392
+n 1392 '(' [min,max]=[97,97] TC=0
+e 1389 1393
+n 1393 parmlist_or_identifiers [min,max]=[97,97] TC=0
+e 1393 1394
+n 1394 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 1393 1395
+n 1395 parmlist_or_identifiers_1 [min,max]=[97,97] TC=0
+e 1395 1396
+n 1396 parmlist_1 [min,max]=[97,97] TC=0
+e 1396 1397
+n 1397 ')' [min,max]=[97,97] TC=0
+e 1388 1398
+n 1398 maybeasm [min,max]=[2147483647,-1] TC=0
+e 1388 1399
+n 1399 maybe_attribute [min,max]=[2147483647,-1] TC=0
+e 1385 1400
+n 1400 ';' [min,max]=[97,97] TC=0
+e 2 1401
+n 1401 extdef [min,max]=[98,98] TC=0
+e 1401 1402
+n 1402 extdef_1 [min,max]=[98,98] TC=0
+e 1402 1403
+n 1403 datadef [min,max]=[98,98] TC=0
+e 1403 1404
+n 1404 '}' [min,max]=[98,98] TC=0

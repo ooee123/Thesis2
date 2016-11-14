@@ -77,30 +77,30 @@ public interface BlockItem extends BaseElement {
             }
         };
         visitAllExpressions(visitor);
-        return modifiesMemory[0];
+        if (modifiesMemory[0]) {
+            return true;
+        } else {
+            Visitor<Expression> visitorInvocations = new Visitor<Expression>() {
+                @Override
+                public void visit(Expression expression) {
+                    if (expression instanceof PostfixExpressionInvocationImpl) {
+                        if (((PostfixExpressionInvocationImpl) expression).readsMemory()) {
+                            modifiesMemory[0] = true;
+                            return;
+                        }
+                    }
+                    expression.visitNestedExpressions(this);
+                }
+            };
+            visitAllExpressions(visitorInvocations);
+            return modifiesMemory[0];
+        }
     }
 
     default boolean writesMemory() {
         final boolean[] modifiesMemory = new boolean[1];
         modifiesMemory[0] = false;
         Visitor<Expression> visitor = new Visitor<Expression>() {
-            boolean canModifyMemory(Expression expression) {
-                if (expression instanceof UnaryExpressionUnaryOperatorImpl) {
-                    if (((UnaryExpressionUnaryOperatorImpl) expression).getUnaryOperator().equals(UnaryExpressionUnaryOperatorImpl.UnaryOperator.DEREFERENCE)) {
-                        return true;
-                    }
-                } else if (expression instanceof PostfixExpressionStructAccessImpl) {
-                    if (((PostfixExpressionStructAccessImpl) expression).getAccessOperator().equals(PostfixExpressionStructAccessImpl.AccessOperator.ARROW)) {
-                        return true;
-                    }
-                } else if (expression instanceof PostfixExpressionArrayAccessImpl) {
-                    return true;
-                } else if (expression instanceof PrimaryExpressionParentheses) {
-                    return canModifyMemory(((PrimaryExpressionParentheses) expression).getExpression());
-                }
-                return false;
-            }
-
             @Override
             public void visit(Expression expression) {
                 if (expression instanceof AssignmentExpressionImpl) {
@@ -126,7 +126,24 @@ public interface BlockItem extends BaseElement {
             }
         };
         visitAllExpressions(visitor);
-        return modifiesMemory[0];
+        if (modifiesMemory[0]) {
+            return true;
+        } else {
+            Visitor<Expression> invocationVisitor = new Visitor<Expression>() {
+                @Override
+                public void visit(Expression expression) {
+                    if (expression instanceof PostfixExpressionInvocationImpl) {
+                        if (((PostfixExpressionInvocationImpl) expression).writesMemory()) {
+                            modifiesMemory[0] = true;
+                            return;
+                        }
+                    }
+                    expression.visitNestedExpressions(this);
+                }
+            };
+            visitAllExpressions(invocationVisitor);
+            return modifiesMemory[0];
+        }
     }
 
     void visitAllExpressions(Visitor<Expression> visitor);

@@ -1,5 +1,6 @@
 package ast;
 
+import IdentifierNormalizer.FunctionIdentifierNormalizerVisitor;
 import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.NonNull;
