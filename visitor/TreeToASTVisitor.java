@@ -3,6 +3,8 @@ package visitor;
 import ast.*;
 import ast.Function;
 import ast.type.*;
+import com.google.common.collect.Sets;
+import com.sun.corba.se.spi.orbutil.fsm.State;
 import org.antlr.v4.runtime.tree.*;
 import parser.CParser;
 
@@ -20,7 +22,7 @@ public class TreeToASTVisitor {
     public static final boolean ELSE_IF_CHAIN_WITHOUT_COMPOUND_STATEMENTS = true;
 
     private Map<String, StructUnionType> tagMapper = new HashMap<>();
-    private Map<String, StructUnionType> typedefMapper = new HashMap<>();
+    private Map<String, TypedefType> typedefMapper = new HashMap<>();
     private Map<String, Function> functions = new LinkedHashMap<>();
 
     public Program visit(CParser.CompilationUnitContext ctx) {
@@ -75,6 +77,7 @@ public class TreeToASTVisitor {
     }
 
     private Parameter visit(CParser.ParameterDeclarationContext ctx) {
+
         Type type = getType(ctx.declarationSpecifiers(), ctx.declarator());
         PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(visit(ctx.declarator()));
         return new Parameter(type, identifier);
@@ -225,11 +228,34 @@ public class TreeToASTVisitor {
 
             return new SelectionStatementIf(condition, thenStatement, elseStatement);
         } else {
-            CParser.SwitchStatementContext switchStatementContext = ctx.switchStatement();
-            Expression expression = visit(switchStatementContext.expression());
-            Statement statement = visit(switchStatementContext.statement());
-            return new SelectionStatementSwitch(expression, statement);
+            return visit(ctx.switchStatement());
         }
+    }
+
+    private SelectionStatementSwitch visit(CParser.SwitchStatementContext ctx) {
+        Expression expression = visit(ctx.expression());
+        Statement statement = visit(ctx.statement());
+        if (statement instanceof CompoundStatement) {
+            List<BlockItem> statements = new ArrayList<>();
+            List<BlockItem> blockItems = ((CompoundStatement) statement).getBlockItems();
+            for (BlockItem blockItem : blockItems) {
+                if (statements.isEmpty()) {
+                    if (blockItem instanceof LabeledCaseStatement) {
+                        Statement statement1 = ((LabeledCaseStatement) blockItem).getStatement();
+                        statements.add(statement1);
+                    } else {
+
+                    }
+                } else {
+                    if (!(blockItem instanceof LabeledCaseStatement)) {
+                        statements.add(blockItem);
+                    } else {
+                        
+                    }
+                }
+            }
+        }
+        return new SelectionStatementSwitch(expression, statement);
     }
 
     private IterationStatement visit(CParser.IterationStatementContext ctx) {
@@ -526,11 +552,9 @@ public class TreeToASTVisitor {
                         }
                         return new UnaryExpressionSizeofExpressionImpl(unaryExpression);
                     } else {
-                        throw new IllegalArgumentException("this shouldn't ever fall through because of parsing");
-                        /*
                         Type type = visit(ctx.typeName());
                         return new UnaryExpressionSizeofTypeImpl(type);
-                        */
+                        //throw new IllegalArgumentException("this shouldn't ever fall through because of parsing");
                     }
                 default:
                     throw new IllegalArgumentException("Token not recognized " + firstToken);
@@ -594,23 +618,29 @@ public class TreeToASTVisitor {
 
             }
             try {
+                return new PrimaryExpressionConstant(Long.decode(token));
+            } catch (NumberFormatException e) {
+
+            }
+            try {
                 if (token.length() == 1) {
                     return new PrimaryExpressionConstant(Character.valueOf(token.charAt(0)));
                 }
             } catch (NumberFormatException e) {
 
             }
+            throw new IllegalArgumentException("Didn't work");
         } else if (ctx.StringLiteral() != null && ctx.StringLiteral().size() > 0) {
             List<TerminalNode> terminalNodes = ctx.StringLiteral();
             for (TerminalNode terminalNode : terminalNodes) {
                 return new PrimaryExpressionConstant(terminalNode.getSymbol().getText());
             }
+            throw new IllegalArgumentException("Uh oh");
         } else if (ctx.expression() != null) {
             return new PrimaryExpressionParentheses(visit(ctx.expression()));
         } else {
             throw new IllegalArgumentException("What kind of primary expression is this? " + ctx.getText());
         }
-        throw new IllegalArgumentException("Fell through");
     }
 
     private Type visit(CParser.TypeNameContext ctx) {
@@ -618,7 +648,6 @@ public class TreeToASTVisitor {
         Type type = null;
         for (CParser.TypeSpecifierContext typeSpecifierContext : specifierQualifierListContext.typeSpecifier()) {
             type = visit(typeSpecifierContext);
-            System.out.println(type);
             break;
         }
         if (ctx.abstractDeclarator() != null) {
@@ -656,6 +685,15 @@ public class TreeToASTVisitor {
         } else if (ctx.enumSpecifier() != null) {
             throw new UnsupportedOperationException("Enum has been visited. Please implement");
         } else if (ctx.typedefName() != null) {
+            if (!typedefMapper.containsKey(ctx.typedefName().getText())) {
+                typedefMapper.put(ctx.typedefName().getText(), new TypedefType() {
+                    @Override
+                    public String toCode() {
+                        return ctx.typedefName().getText();
+                    }
+                });
+            }
+            System.out.println(ctx.typedefName().getText());
             return typedefMapper.get(ctx.typedefName().getText());
         } else {
             return new PrimitiveType(ctx.getChild(0).getText());

@@ -27,17 +27,8 @@ public class Main {
             System.exit(-1);
         }
         try {
-            Scanner scanner = new Scanner(new File(args[0]));
-            StringBuffer buffer = new StringBuffer();
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                if (!line.trim().startsWith("#")) {
-                    buffer.append(line);
-                }
-            }
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer.toString().getBytes());
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Preprocess.proprocess(new File(args[0])).getBytes());
             CLexer lexer = new CLexer(new ANTLRInputStream(byteArrayInputStream));
-            //CLexer lexer = new CLexer(new ANTLRFileStream(args[0]));
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             CParser parser = new CParser(tokens);
             CParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
@@ -60,7 +51,7 @@ public class Main {
                 function.setCompoundStatement(statement);
             }
             ProgramIdentifierNormalizerVisitor programIdentifierNormalizerVisitor = new ProgramIdentifierNormalizerVisitor();
-            //programIdentifierNormalizerVisitor.visit(program);
+            programIdentifierNormalizerVisitor.visit(program);
             System.out.println(program.toCode());
         } catch (IOException e) {
             System.err.println(e);

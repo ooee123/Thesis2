@@ -147,9 +147,15 @@ public class PDGGenerationVisitor {
             return visit(((JumpBreakStatement) statement));
         } else if (statement instanceof JumpContinueStatement) {
             return visit(((JumpContinueStatement) statement));
+        } else if (statement instanceof SelectionStatementSwitch) {
+            return visit(((SelectionStatementSwitch) statement));
         } else {
             throw new IllegalArgumentException("What kind of statement is this? " + statement);
         }
+    }
+
+    private Returns<? extends Statement> visit(SelectionStatementSwitch statement) {
+        return statement.getStatement()
     }
 
     private Returns<? extends BlockItem> visit(BlockItem blockItem) {
