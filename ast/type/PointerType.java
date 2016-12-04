@@ -1,5 +1,6 @@
 package ast.type;
 
+import lombok.NonNull;
 import lombok.Value;
 
 /**
@@ -8,7 +9,7 @@ import lombok.Value;
 @Value
 public class PointerType implements Type {
     private int pointerLevel;
-    private ActualType actualType;
+    @NonNull private ActualType actualType;
 
     @Override
     public String toCode() {

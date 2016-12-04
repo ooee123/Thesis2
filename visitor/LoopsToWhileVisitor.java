@@ -19,24 +19,28 @@ public class LoopsToWhileVisitor {
         return program;
     }
 
+    public CompoundStatement visit(CompoundStatement statement) {
+        List<BlockItem> blockItems = statement.getBlockItems();
+        List<BlockItem> newBlockItems = new ArrayList<>();
+        for (BlockItem blockItem : blockItems) {
+            if (blockItem instanceof IterationStatement) {
+                List<BlockItem> blockifiedIteration = iterationToWhile(((IterationStatement) blockItem));
+                newBlockItems.addAll(blockifiedIteration);
+            } else {
+                if (blockItem instanceof Statement) {
+                    newBlockItems.add(visit((Statement) blockItem));
+                } else {
+                    newBlockItems.add(blockItem);
+                }
+            }
+        }
+        return new CompoundStatement(newBlockItems);
+    }
+
     public Statement visit(Statement statement) {
         if (statement instanceof CompoundStatement) {
             CompoundStatement compoundStatement = (CompoundStatement) statement;
-            List<BlockItem> blockItems = compoundStatement.getBlockItems();
-            List<BlockItem> newBlockItems = new ArrayList<>();
-            for (BlockItem blockItem : blockItems) {
-                if (blockItem instanceof IterationStatement) {
-                    List<BlockItem> blockifiedIteration = iterationToWhile(((IterationStatement) blockItem));
-                    newBlockItems.addAll(blockifiedIteration);
-                } else {
-                    if (blockItem instanceof Statement) {
-                        newBlockItems.add(visit((Statement) blockItem));
-                    } else {
-                        newBlockItems.add(blockItem);
-                    }
-                }
-            }
-            return new CompoundStatement(newBlockItems);
+            return visit(compoundStatement);
         } else if (statement instanceof IterationStatement) {
             List<BlockItem> newBlockItems = iterationToWhile(((IterationStatement) statement));
             return new CompoundStatement(newBlockItems);
@@ -47,7 +51,7 @@ public class LoopsToWhileVisitor {
             return selectionStatementIf;
         } else if (statement instanceof SelectionStatementSwitch) {
             SelectionStatementSwitch selectionStatementSwitch = (SelectionStatementSwitch) statement;
-            selectionStatementSwitch.setStatement(visit(selectionStatementSwitch.getStatement()));
+            ((SelectionStatementSwitch) statement).setCompoundStatement(visit(((SelectionStatementSwitch) statement).getCompoundStatement()));
             return selectionStatementSwitch;
         }
         return statement;

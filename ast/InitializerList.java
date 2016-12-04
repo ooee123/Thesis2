@@ -20,7 +20,7 @@ public class InitializerList implements AssignmentExpression {
     @Override
     public String toCode() {
         List<String> codes = assignmentExpressions.stream().map(exp -> exp.toCode()).collect(Collectors.toList());
-        return String.join(TOKEN, codes);
+        return "{" + String.join(TOKEN, codes) + "}";
     }
 
     @Override

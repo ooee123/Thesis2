@@ -58,6 +58,27 @@ public class TreeToASTVisitor {
         return function;
     }
 
+    private boolean hasArray(CParser.DirectDeclaratorContext ctx) {
+        if (ctx.directDeclarator() != null) {
+            if (ctx.getChild(1).getText().equals("[")) {
+                return true;
+            }
+            return hasArray(ctx.directDeclarator());
+        }
+        return false;
+    }
+
+    private AssignmentExpression visitGetArray(CParser.DirectDeclaratorContext ctx) {
+        if (hasArray(ctx)) {
+            if (ctx.assignmentExpression() != null) {
+                return visit(ctx.assignmentExpression());
+            } else {
+                return null;
+            }
+        }
+        throw new IllegalArgumentException("Doesn't have an array. Please run hasArray first");
+    }
+
     private Type visit(CParser.DeclarationSpecifiersContext ctx) {
         return visit(ctx.typeSpecifier());
     }
@@ -147,13 +168,16 @@ public class TreeToASTVisitor {
             int nestedPointers = visit(ctx.declarator().pointer());
             type = new PointerType(nestedPointers, (ActualType)type);
         }
-        if (ctx.initializer() != null) {
-            CParser.InitializerContext initializerContext = ctx.initializer();
-            AssignmentExpression assignmentExpression = visit(initializerContext);
-            return new VariableDeclaration.DeclaredVariable(type, identifier, assignmentExpression);
-        } else {
-            return new VariableDeclaration.DeclaredVariable(type, identifier);
+        AssignmentExpression arrayInitialSize = null;
+        boolean hasArray = hasArray(ctx.declarator().directDeclarator());
+        if (hasArray) {
+            arrayInitialSize = visitGetArray(ctx.declarator().directDeclarator());
         }
+        AssignmentExpression assignmentExpression = null;
+        if (ctx.initializer() != null) {
+            assignmentExpression = visit(ctx.initializer());
+        }
+        return new VariableDeclaration.DeclaredVariable(type, identifier, assignmentExpression, hasArray, arrayInitialSize);
     }
 
     private AssignmentExpression visit(CParser.InitializerContext ctx) {
@@ -234,27 +258,7 @@ public class TreeToASTVisitor {
 
     private SelectionStatementSwitch visit(CParser.SwitchStatementContext ctx) {
         Expression expression = visit(ctx.expression());
-        Statement statement = visit(ctx.statement());
-        if (statement instanceof CompoundStatement) {
-            List<BlockItem> statements = new ArrayList<>();
-            List<BlockItem> blockItems = ((CompoundStatement) statement).getBlockItems();
-            for (BlockItem blockItem : blockItems) {
-                if (statements.isEmpty()) {
-                    if (blockItem instanceof LabeledCaseStatement) {
-                        Statement statement1 = ((LabeledCaseStatement) blockItem).getStatement();
-                        statements.add(statement1);
-                    } else {
-
-                    }
-                } else {
-                    if (!(blockItem instanceof LabeledCaseStatement)) {
-                        statements.add(blockItem);
-                    } else {
-                        
-                    }
-                }
-            }
-        }
+        CompoundStatement statement = visit(ctx.compoundStatement());
         return new SelectionStatementSwitch(expression, statement);
     }
 
@@ -648,14 +652,14 @@ public class TreeToASTVisitor {
         Type type = null;
         for (CParser.TypeSpecifierContext typeSpecifierContext : specifierQualifierListContext.typeSpecifier()) {
             type = visit(typeSpecifierContext);
-            break;
+            if (ctx.abstractDeclarator() != null) {
+                int nestedPointers = visit(ctx.abstractDeclarator().pointer());
+                return new PointerType(nestedPointers, (ActualType)type);
+            } else {
+                return type;
+            }
         }
-        if (ctx.abstractDeclarator() != null) {
-            int nestedPointers = visit(ctx.abstractDeclarator().pointer());
-            return new PointerType(nestedPointers, (ActualType)type);
-        } else {
-            return type;
-        }
+        throw new IllegalArgumentException("Type not found");
     }
 
     private int visit(CParser.PointerContext ctx) {
@@ -693,7 +697,6 @@ public class TreeToASTVisitor {
                     }
                 });
             }
-            System.out.println(ctx.typedefName().getText());
             return typedefMapper.get(ctx.typedefName().getText());
         } else {
             return new PrimitiveType(ctx.getChild(0).getText());
@@ -737,6 +740,9 @@ public class TreeToASTVisitor {
             }
             return structUnionType;
         } else {
+            if (!tagMapper.containsKey(tag)) {
+                tagMapper.putIfAbsent(tag, new StructUnionType(tag, StructUnionType.StructUnion.STRUCT, new ArrayList<>()));
+            }
             StructUnionType structUnionType = tagMapper.get(tag);
             return structUnionType;
         }

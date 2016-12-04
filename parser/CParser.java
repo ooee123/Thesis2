@@ -6640,8 +6640,8 @@ public class CParser extends Parser {
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public StatementContext statement() {
-			return getRuleContext(StatementContext.class,0);
+		public CompoundStatementContext compoundStatement() {
+			return getRuleContext(CompoundStatementContext.class,0);
 		}
 		public SwitchStatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -6672,7 +6672,7 @@ public class CParser extends Parser {
 			setState(1123);
 			match(RightParen);
 			setState(1124);
-			statement();
+			compoundStatement();
 			}
 		}
 		catch (RecognitionException re) {
@@ -8118,7 +8118,7 @@ public class CParser extends Parser {
 		"\7=\2\2\u045b\u045c\5.\30\2\u045c\u045d\7>\2\2\u045d\u0460\5\u0090I\2"+
 		"\u045e\u045f\7\32\2\2\u045f\u0461\5\u0090I\2\u0460\u045e\3\2\2\2\u0460"+
 		"\u0461\3\2\2\2\u0461\u009f\3\2\2\2\u0462\u0463\7,\2\2\u0463\u0464\7=\2"+
-		"\2\u0464\u0465\5.\30\2\u0465\u0466\7>\2\2\u0466\u0467\5\u0090I\2\u0467"+
+		"\2\u0464\u0465\5.\30\2\u0465\u0466\7>\2\2\u0466\u0467\5\u0094K\2\u0467"+
 		"\u00a1\3\2\2\2\u0468\u046d\5\u00a4S\2\u0469\u046d\5\u00a6T\2\u046a\u046d"+
 		"\5\u00a8U\2\u046b\u046d\5\u00aaV\2\u046c\u0468\3\2\2\2\u046c\u0469\3\2"+
 		"\2\2\u046c\u046a\3\2\2\2\u046c\u046b\3\2\2\2\u046d\u00a3\3\2\2\2\u046e"+

@@ -25,11 +25,15 @@ public class VariableDeclaration implements Declaration {
         @NonNull private Type type;
         @NonNull private PrimaryExpressionIdentifier identifier;
         private AssignmentExpression initializer;
+        @NonNull private boolean array;
+        private AssignmentExpression initialSize;
+
+        public DeclaredVariable(Type type, PrimaryExpressionIdentifier identifier, AssignmentExpression assignmentExpression) {
+            this(type, identifier, assignmentExpression, false, null);
+        }
 
         public DeclaredVariable(Type type, PrimaryExpressionIdentifier identifier) {
-            this.type = type;
-            this.identifier = identifier;
-            this.initializer = null;
+            this(type, identifier, null);
         }
 
         @Override
@@ -100,6 +104,13 @@ public class VariableDeclaration implements Declaration {
                 }
             }
             builder.append(variable.identifier.toCode());
+            if (variable.isArray()) {
+                builder.append("[");
+                if (variable.getInitialSize() != null) {
+                    builder.append(variable.getInitialSize().toCode());
+                }
+                builder.append("]");
+            }
             if (variable.initializer != null) {
                 builder.append(" = " + variable.initializer.toCode());
             }

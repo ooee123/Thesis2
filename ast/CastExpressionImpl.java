@@ -20,7 +20,7 @@ public class CastExpressionImpl implements CastExpression {
     }
 
     public String toCode() {
-        return "(" + type.toString() + ")" + castExpression.toCode();
+        return "(" + type.toCode() + ")" + castExpression.toCode();
     }
 
     @Override

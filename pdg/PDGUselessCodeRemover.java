@@ -102,10 +102,12 @@ public class PDGUselessCodeRemover {
                 propagateRequired(node);
             }
             if (node instanceof PDGNodeContainsStatementNode) {
-                Collection<PDGNode<? extends Statement>> statementNodes = ((PDGNodeContainsStatementNode) node).getStatementNodes();
-                for (PDGNode<? extends Statement> statementNode : statementNodes) {
-                    if (statementNode instanceof PDGNodeCompoundStatement) {
-                        markRequiredNodes(((PDGNodeCompoundStatement) statementNode));
+                if (!(node instanceof PDGNodeSwitch)) {
+                    Collection<PDGNode<? extends Statement>> statementNodes = ((PDGNodeContainsStatementNode) node).getStatementNodes();
+                    for (PDGNode<? extends Statement> statementNode : statementNodes) {
+                        if (statementNode instanceof PDGNodeCompoundStatement) {
+                            markRequiredNodes(((PDGNodeCompoundStatement) statementNode));
+                        }
                     }
                 }
             }
@@ -119,9 +121,11 @@ public class PDGUselessCodeRemover {
         Set<PDGNode<? extends BlockItem>> notRequired = Sets.newIdentityHashSet();
         for (PDGNode<? extends BlockItem> node : nodes) {
             if (node instanceof PDGNodeContainsStatementNode) {
-                for (PDGNode<? extends Statement> pdgNode : ((PDGNodeContainsStatementNode<? extends Statement>) node).getStatementNodes()) {
-                    if (pdgNode instanceof PDGNodeCompoundStatement) {
-                        removeAllNonRequiredNodes(((PDGNodeCompoundStatement) pdgNode).getBody());
+                if (!(node instanceof PDGNodeSwitch)) {
+                    for (PDGNode<? extends Statement> pdgNode : ((PDGNodeContainsStatementNode<? extends Statement>) node).getStatementNodes()) {
+                        if (pdgNode instanceof PDGNodeCompoundStatement) {
+                            removeAllNonRequiredNodes(((PDGNodeCompoundStatement) pdgNode).getBody());
+                        }
                     }
                 }
             }

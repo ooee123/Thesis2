@@ -355,8 +355,7 @@ pointer
     ;
 
 typeQualifierList
-    :   typeQualifier
-    |   typeQualifierList typeQualifier
+    :   typeQualifier+
     ;
 
 parameterTypeList
@@ -475,7 +474,7 @@ ifStatement
     ;   
 
 switchStatement
-    :   'switch' '(' expression ')' statement
+    :   'switch' '(' expression ')' compoundStatement
     ;
 
 iterationStatement

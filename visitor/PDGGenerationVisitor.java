@@ -149,16 +149,49 @@ public class PDGGenerationVisitor {
             return visit(((JumpContinueStatement) statement));
         } else if (statement instanceof SelectionStatementSwitch) {
             return visit(((SelectionStatementSwitch) statement));
+        } else if (statement instanceof LabeledCaseStatement) {
+            return visit(((LabeledCaseStatement) statement));
+        } else if (statement instanceof LabeledDefaultStatement) {
+            return visit(((LabeledDefaultStatement) statement));
         } else {
             throw new IllegalArgumentException("What kind of statement is this? " + statement);
         }
     }
 
-    private Returns<? extends Statement> visit(SelectionStatementSwitch statement) {
-        return statement.getStatement()
+    private Returns<LabeledCaseStatement> visit(LabeledCaseStatement statement) {
+        Returns<? extends Statement> visit = visit(statement.getStatement());
+        return new Returns<>(visit.getDependencies(), new PDGNodeLabeledCase(statement));
+    }
+
+    private Returns<LabeledDefaultStatement> visit(LabeledDefaultStatement statement) {
+        return new Returns<>(visit(statement.getStatement()).getDependencies(), new PDGNodeDefaultCase(statement));
+    }
+
+    private Returns<SelectionStatementSwitch> visit(SelectionStatementSwitch statement) {
+        List<Collection<PDGNode<? extends BlockItem>>> cases = new ArrayList<>();
+        for (List<BlockItem> blockItems : statement.getCases()) {
+            Collection<PDGNode<? extends BlockItem>> caseBlock = new ArrayList<>();
+            for (BlockItem blockItem : blockItems) {
+                caseBlock.add(visit(blockItem).getPdgNode());
+            }
+            cases.add(caseBlock);
+        }
+        if (statement.hasDefault()) {
+            Collection<PDGNode<? extends BlockItem>> defaultCase = new ArrayList<>();
+            for (BlockItem blockItem : statement.getDefaultCase()) {
+                defaultCase.add(visit(blockItem).getPdgNode());
+            }
+            return new Returns<>(new Dependencies(statement.getDependantVariables(), statement.getGuaranteedChangedVariables(), statement.getPotentiallyChangedVariables()), new PDGNodeSwitch(statement, cases, defaultCase, false));
+        } else {
+            return new Returns<>(new Dependencies(statement.getDependantVariables(), statement.getGuaranteedChangedVariables(), statement.getPotentiallyChangedVariables()), new PDGNodeSwitch(statement, cases));
+        }
     }
 
     private Returns<? extends BlockItem> visit(BlockItem blockItem) {
+        System.err.println(blockItem.toCode());
+        if (blockItem.toCode().equals("config.port = (int)parseArgs(PORT, argv);")) {
+            System.err.println("hello");
+        }
         if (blockItem instanceof VariableDeclaration) {
             return visit(((VariableDeclaration) blockItem));
         } else if (blockItem instanceof TypedefDeclaration) {
@@ -259,9 +292,6 @@ public class PDGGenerationVisitor {
     }
 
     private Dependencies visit(Expression expression) {
-        if (expression instanceof UnaryExpressionIncrementImpl) {
-            System.out.println();
-        }
         Set<String> dependentVariables = expression.getDependentVariables();
         Set<String> changedVariables = expression.getGuaranteedChangedVariables();
         Set<String> potentialVariables = expression.getPotentiallyChangedVariables();
@@ -332,9 +362,6 @@ public class PDGGenerationVisitor {
                             }
                         }
                     }
-                    if (usedVariable.equals("fd")) {
-                        System.out.println();
-                    }
                     usedSinceLastAssignment.augment(usedVariable, pdgNode);
                 }
             }
@@ -374,9 +401,6 @@ public class PDGGenerationVisitor {
                         }
                     }
                     lastAssigned.replace(guaranteedChangedVariable, pdgNode);
-                    if (guaranteedChangedVariable.equals("fd")) {
-                        System.out.println();
-                    }
                     //lastAssigned.put(guaranteedChangedVariable, Sets.newHashSet(pdgNode));
                     if (usedSinceLastAssignment.containsKey(guaranteedChangedVariable)) {
                         for (Collection<PDGNode<? extends BlockItem>> usedSinceLastAssignmentNodes : usedSinceLastAssignment.getAllAssociated(guaranteedChangedVariable)) {
@@ -411,9 +435,6 @@ public class PDGGenerationVisitor {
                     lastAssigned.augment(potentiallyChangedVariable, pdgNode);
                     //lastAssigned.get(potentiallyChangedVariable).add(pdgNode);
 
-                    if (potentiallyChangedVariable.equals("fd")) {
-                        System.out.println();
-                    }
                     for (Collection<PDGNode<? extends BlockItem>> usedSinceLastAssignmentNodes : usedSinceLastAssignment.getAllAssociated(potentiallyChangedVariable)) {
                         for (PDGNode<? extends BlockItem> usedSinceLastAssignmentNode : usedSinceLastAssignmentNodes) {
                             usedSinceLastAssignmentNode.linkOrderDependency(pdgNode);

@@ -30,16 +30,24 @@ public class Main {
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Preprocess.proprocess(new File(args[0])).getBytes());
             CLexer lexer = new CLexer(new ANTLRInputStream(byteArrayInputStream));
             CommonTokenStream tokens = new CommonTokenStream(lexer);
+            System.err.println("Begin parsing");
             CParser parser = new CParser(tokens);
+            System.err.println("Finish parsing");
             CParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
             TreeToASTVisitor visitor = new TreeToASTVisitor();
+            System.err.println("Begin AST building");
             Program program = visitor.visit(compilationUnit);
+            System.err.println("Finish AST building");
+
             PDGGenerationVisitor pdgGenerationVisitor = new PDGGenerationVisitor(program);
+
             //pdgGenerationVisitor.visit(program);
             FunctionArgumentOrderVisitor functionArgumentOrderVisitor = new FunctionArgumentOrderVisitor();
             //functionArgumentOrderVisitor.visit(program);
             for (Function function : program.getFunction()) {
+                System.err.println("Begin PDG generation for function " + function.getIdentifier());
                 PDGNodeCompoundStatement functionBody = pdgGenerationVisitor.visit(function);
+                System.err.println("Finish PDG generation");
                 PDGUselessCodeRemover pdgUselessCodeRemover = new PDGUselessCodeRemover();
                 pdgUselessCodeRemover.removeUselessCode(functionBody);
 
