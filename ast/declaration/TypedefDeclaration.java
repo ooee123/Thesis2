@@ -1,6 +1,9 @@
-package ast;
+package ast.declaration;
 
+import ast.Declaration;
+import ast.Expression;
 import ast.type.StructUnionType;
+import ast.type.TypedefType;
 import com.google.common.collect.Sets;
 import lombok.Value;
 import visitor.Visitor;
@@ -14,23 +17,23 @@ import java.util.Set;
 @Value
 public class TypedefDeclaration implements Declaration {
 
-    private StructUnionType structUnionType;
+    private TypedefType typedefType;
     private String typedefName;
 
-    public TypedefDeclaration(StructUnionType structUnionType, String typedefName) {
-        this.structUnionType = structUnionType;
+    public TypedefDeclaration(TypedefType typedefType, String typedefName) {
+        this.typedefType = typedefType;
         this.typedefName = typedefName;
-        structUnionType.setTypedefName(typedefName);
+        typedefType.setTypedefName(typedefName);
     }
 
     @Override
     public String toCode() {
-        return "typedef " + structUnionType.expandedStructUnion() + " " + typedefName + ";";
+        return "typedef " + typedefType.expandedStructUnion() + " " + typedefName + ";";
     }
 
     @Override
     public boolean isCritical() {
-        return true;
+        return false;
     }
 
     @Override

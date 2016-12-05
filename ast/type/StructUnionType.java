@@ -43,6 +43,7 @@ public class StructUnionType extends TypedefType {
     @NonNull private final List<VariableDeclaration> declarations;
     @Setter private String typedefName;
 
+    @Override
     public String expandedStructUnion() {
         StringBuilder builder = new StringBuilder();
         builder.append(structUnion.token);

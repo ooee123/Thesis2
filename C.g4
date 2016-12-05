@@ -175,6 +175,10 @@ declaration
     |   staticAssertDeclaration
     ;
 
+typedefDefinition
+    :   'typedef' (structOrUnionSpecifier | enumSpecifier) typedefName?
+    ;
+
 declarationSpecifiers
     :   declarationSpecifier* typeSpecifier
     ;
@@ -224,6 +228,14 @@ typeSpecifier
     |   '__m128d'
     |   '__m128i')
     |   '__extension__' '(' ('__m128' | '__m128d' | '__m128i') ')'
+    |   'uint64_t'
+    |   'uint32_t'
+    |   'uint16_t'
+    |   'uint8_t'
+    |   'int64_t'
+    |   'int32_t'
+    |   'int16_t'
+    |   'int8_t'
     |   atomicTypeSpecifier
     |   structOrUnionSpecifier
     |   enumSpecifier
@@ -270,8 +282,7 @@ enumSpecifier
     ;
 
 enumeratorList
-    :   enumerator
-    |   enumeratorList ',' enumerator
+    :   enumerator (',' enumerator)*
     ;
 
 enumerator
@@ -410,8 +421,7 @@ initializer
     ;
 
 initializerList
-    :   designation? initializer
-    |   initializerList ',' designation? initializer
+    :   designation? initializer (',' designation? initializer)*
     ;
 
 designation

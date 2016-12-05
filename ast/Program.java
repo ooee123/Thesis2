@@ -1,13 +1,11 @@
 package ast;
 
-import ast.type.StructUnionType;
+import ast.declaration.TypedefDeclaration;
 import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Value
 public class Program implements BaseElement {

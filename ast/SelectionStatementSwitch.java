@@ -177,18 +177,6 @@ public class SelectionStatementSwitch implements SelectionStatement, CanContainS
     @Override
     public void visitEachStatement(Visitor<Statement> visitor) {
         visitor.visit(compoundStatement);
-        /*
-        for (BlockItem blockItem : compoundStatement.getBlockItems()) {
-            if (blockItem instanceof Statement) {
-                visitor.visit(((Statement) blockItem));
-            }
-        }
-        */
-        /*
-        for (CompoundStatement compoundStatement : blocksToCompoundStatements()) {
-            visitor.visit(compoundStatement);
-        }
-        */
     }
 
     @Override

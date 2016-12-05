@@ -86,7 +86,7 @@ public class FunctionIdentifierNormalizerVisitor {
             }
         }
         if (identifierScopes.get(statement) == null) {
-            System.out.println(statement.toCode());
+            throw new IllegalArgumentException();
         }
         renameVariableInScope(variableRenames, identifierScopes.get(statement));
         for (BlockItem blockItem : statement.getBlockItems()) {
@@ -242,9 +242,6 @@ public class FunctionIdentifierNormalizerVisitor {
                 }
                 //this.identifiers.putAll(identifierFetcher.getUndeclaredVariables());
             } else {
-                if (statement instanceof SelectionStatementSwitch) {
-                    System.out.println(statement.toCode());
-                }
                 Touchy touchy = new Touchy();
                 statement.visitAllExpressions(touchy);
                 Map<String, Collection<PrimaryExpressionIdentifier>> identifiers = touchy.getIdentifiers();

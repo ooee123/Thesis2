@@ -1,5 +1,7 @@
-package ast;
+package ast.declaration;
 
+import ast.Declaration;
+import ast.Expression;
 import ast.type.StructUnionType;
 import com.google.common.collect.Sets;
 import lombok.Value;
@@ -11,35 +13,41 @@ import java.util.Set;
  * Created by ooee on 11/5/16.
  */
 @Value
-public class StructDeclaration implements Declaration {
+public class StructDefinition implements TypeDefinition {
     private StructUnionType structUnionType;
+
+    @Override
+    public String definition() {
+        return structUnionType.expandedStructUnion();
+    }
+
     @Override
     public String toCode() {
-        return structUnionType.expandedStructUnion() + ";";
+        return null;
     }
 
     @Override
     public boolean isCritical() {
-        return true;
+        return false;
     }
 
     @Override
     public Set<String> getDependantVariables() {
-        return Sets.newHashSet();
+        return null;
     }
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return Sets.newHashSet();
+        return null;
     }
 
     @Override
     public Set<String> getPotentiallyChangedVariables() {
-        return Sets.newHashSet();
+        return null;
     }
 
     @Override
     public void visitAllExpressions(Visitor<Expression> visitor) {
-        return;
+
     }
 }

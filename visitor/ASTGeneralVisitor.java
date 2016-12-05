@@ -1,6 +1,7 @@
 package visitor;
 
 import ast.*;
+import ast.declaration.TypedefDeclaration;
 import ast.type.Type;
 import lombok.Data;
 

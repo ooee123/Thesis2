@@ -22,6 +22,37 @@ public class Preprocess {
         return tempFile;
     }
 
+    private static String removeFunctionAttributes(String string) {
+        string = string.replaceAll("__attribute__", "");
+        string = string.replaceAll("\\(\\(__packed__\\)\\)", "");
+        return string;
+    }
+
+    private void removeFunctionAttributes(Scanner scanner) {
+        StringBuilder builder = new StringBuilder();
+        String attribute = scanner.findInLine("__attribute__");
+        while (attribute != null) {
+            scanner.next("__attribute__");
+            int remaining = 0;
+            while (remaining < 2) {
+                char c = scanner.next(".").charAt(0);
+                if (c == '(') {
+                    remaining++;
+                } else if (c == ')') {
+                    remaining--;
+                }
+            }
+            while (remaining > 0) {
+                char c = scanner.next(".").charAt(0);
+                if (c == '(') {
+                    remaining++;
+                } else if (c == ')') {
+                    remaining--;
+                }
+            }
+        }
+    }
+
     public static void moveScannerToRealCode(Scanner scanner, File file, int firstLine) {
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -57,8 +88,8 @@ public class Preprocess {
                 buffer.append(line);
             }
         }
-        System.out.println(buffer.toString());
-        return buffer.toString();
+        String finalString = removeFunctionAttributes(buffer.toString());
+        return finalString;
     }
 
     public static int getFirstLine(File file) throws FileNotFoundException {

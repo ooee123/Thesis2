@@ -1,6 +1,8 @@
 package visitor;
 
 import ast.*;
+import ast.declaration.StructDefinition;
+import ast.declaration.TypedefDeclaration;
 import ast.type.PointerType;
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
@@ -188,16 +190,10 @@ public class PDGGenerationVisitor {
     }
 
     private Returns<? extends BlockItem> visit(BlockItem blockItem) {
-        System.err.println(blockItem.toCode());
-        if (blockItem.toCode().equals("config.port = (int)parseArgs(PORT, argv);")) {
-            System.err.println("hello");
-        }
         if (blockItem instanceof VariableDeclaration) {
             return visit(((VariableDeclaration) blockItem));
         } else if (blockItem instanceof TypedefDeclaration) {
             throw new IllegalArgumentException("Typedefs should not be in a function");
-        } else if (blockItem instanceof StructDeclaration) {
-            throw new IllegalArgumentException("Struct declarations... could be in a function");
         } else {
             return visit((Statement) blockItem);
         }

@@ -2,13 +2,12 @@ package visitor;
 
 import ast.*;
 import ast.Function;
+import ast.declaration.StructDefinition;
+import ast.declaration.TypedefDeclaration;
 import ast.type.*;
-import com.google.common.collect.Sets;
-import com.sun.corba.se.spi.orbutil.fsm.State;
 import org.antlr.v4.runtime.tree.*;
 import parser.CParser;
 
-import java.sql.Struct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -133,16 +132,19 @@ public class TreeToASTVisitor {
         }
     }
 
-    private Declaration visit(CParser.DeclarationContext ctx) {
-        boolean isTypeDef = false;
-        for (CParser.DeclarationSpecifierContext declarationSpecifierContext : ctx.declarationSpecifiers().declarationSpecifier()) {
+    private boolean isTypedef(CParser.DeclarationSpecifiersContext ctx) {
+        for (CParser.DeclarationSpecifierContext declarationSpecifierContext : ctx.declarationSpecifier()) {
             if (declarationSpecifierContext.storageClassSpecifier() != null) {
                 if (declarationSpecifierContext.storageClassSpecifier().getText().equals("typedef")) {
-                    isTypeDef = true;
+                    return true;
                 }
             }
         }
+        return false;
+    }
 
+    private Declaration visit(CParser.DeclarationContext ctx) {
+        boolean isTypeDef = isTypedef(ctx.declarationSpecifiers());
         Type type = visit(ctx.declarationSpecifiers());
         if (ctx.initDeclaratorList() != null) {
             CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
@@ -153,13 +155,36 @@ public class TreeToASTVisitor {
                     throw new IllegalArgumentException("Too many declared variables for Struct typedef");
                 }
                 String typedefName = declaredVariables.stream().findAny().get().getIdentifier().getIdentifier();
-                typedefMapper.put(typedefName, (StructUnionType) type);
-                return new TypedefDeclaration((StructUnionType) type, typedefName);
+                TypedefType typedefType = (TypedefType) type;
+                typedefMapper.put(typedefName, typedefType);
+                return new TypedefDeclaration(typedefType, typedefName);
             }
             return new VariableDeclaration(declaredVariables);
         } else {
-            return new StructDeclaration(((StructUnionType) type));
+            if (!(type instanceof StructUnionType)) {
+                throw new IllegalArgumentException();
+            }
+            return new StructDefinition(((StructUnionType) type));
         }
+    }
+
+    private void processTypedef(CParser.DeclarationContext ctx) {
+    }
+
+
+    private String getTypedefName(CParser.DeclarationContext ctx) {
+        /*
+        CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
+        List<CParser.InitDeclaratorContext> initDeclaratorContexts = initDeclaratorListContext.initDeclarator();
+        List<VariableDeclaration.DeclaredVariable> declaredVariables = initDeclaratorContexts.stream().map(init -> visit(init, type)).collect(Collectors.toList());
+        if (false) {
+            if (declaredVariables.size() != 1) {
+                throw new IllegalArgumentException("Too many declared variables for Struct typedef");
+            }
+            String typedefName = declaredVariables.stream().findAny().get().getIdentifier().getIdentifier();
+        }
+        */
+        return "";
     }
 
     private VariableDeclaration.DeclaredVariable visit(CParser.InitDeclaratorContext ctx, Type type) {
@@ -186,9 +211,8 @@ public class TreeToASTVisitor {
         } else {
             List<AssignmentExpression> assignmentExpressions = new ArrayList<>();
             CParser.InitializerListContext initializerListContext = ctx.initializerList();
-            while (initializerListContext != null) {
-                assignmentExpressions.add(visit(initializerListContext.initializer()));
-                initializerListContext = initializerListContext.initializerList();
+            for (CParser.InitializerContext initializerContext : initializerListContext.initializer()) {
+                assignmentExpressions.add(visit(initializerContext));
             }
             return new InitializerList(assignmentExpressions);
         }
@@ -687,7 +711,7 @@ public class TreeToASTVisitor {
         } else if (ctx.structOrUnionSpecifier() != null) {
             return visit(ctx.structOrUnionSpecifier());
         } else if (ctx.enumSpecifier() != null) {
-            throw new UnsupportedOperationException("Enum has been visited. Please implement");
+            return visit(ctx.enumSpecifier());
         } else if (ctx.typedefName() != null) {
             if (!typedefMapper.containsKey(ctx.typedefName().getText())) {
                 typedefMapper.put(ctx.typedefName().getText(), new TypedefType() {
@@ -695,11 +719,44 @@ public class TreeToASTVisitor {
                     public String toCode() {
                         return ctx.typedefName().getText();
                     }
+
+                    @Override
+                    public String expandedStructUnion() {
+                        return ctx.typedefName().getText();
+                    }
+
+                    @Override
+                    public void setTypedefName(String name) {
+                        throw new IllegalArgumentException("Not supposed");
+                    }
                 });
+                //throw new IllegalArgumentException("This type hasn't been recorded yet...");
             }
             return typedefMapper.get(ctx.typedefName().getText());
         } else {
             return new PrimitiveType(ctx.getChild(0).getText());
+        }
+    }
+
+    private Type visit(CParser.EnumSpecifierContext ctx) {
+        String identifier = null;
+        if (ctx.Identifier() != null) {
+            identifier = ctx.Identifier().getSymbol().getText();
+        }
+        if (typedefMapper.containsKey(identifier)) {
+            return typedefMapper.get(identifier);
+        } else {
+            EnumType enumType = new EnumType(identifier);
+            for (CParser.EnumeratorContext enumeratorContext : ctx.enumeratorList().enumerator()) {
+                String enumString = enumeratorContext.enumerationConstant().Identifier().getSymbol().getText();
+                ConditionalExpression enumValue = null;
+                if (enumeratorContext.constantExpression() != null) {
+                    enumValue = visit(enumeratorContext.constantExpression().conditionalExpression());
+                }
+                enumType.addEnumValue(enumString, enumValue);
+            }
+            //typedefMapper.put(identifier, enumType);
+            return enumType;
         }
     }
 
@@ -755,9 +812,32 @@ public class TreeToASTVisitor {
             if (typeSpecifierContext.typedefName() != null) {
                 if (typedefMapper.containsKey(typeSpecifierContext.typedefName().getText())) {
                     return typedefMapper.get(typeSpecifierContext.typedefName().getText());
+                } else {
+                    TypedefType typedefType = new TypedefType() {
+                        @Override
+                        public String expandedStructUnion() {
+                            return typeSpecifierContext.typedefName().getText();
+                        }
+
+                        @Override
+                        public void setTypedefName(String name) {
+                            throw new IllegalArgumentException();
+                        }
+
+                        @Override
+                        public String toCode() {
+                            return typeSpecifierContext.typedefName().getText();
+                        }
+                    };
+                    String typp = typeSpecifierContext.typedefName().getText();
+                    typedefMapper.put(typeSpecifierContext.typedefName().getText(), typedefType);
+                    return typedefType;
                 }
             } else {
                 visit = visit(typeSpecifierContext);
+                if (visit != null) {
+                    return visit;
+                }
             }
         }
         if (visit == null) {
