@@ -54,6 +54,8 @@ public class Preprocess {
     }
 
     public static void moveScannerToRealCode(Scanner scanner, File file, int firstLine) {
+        return;
+        /*
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             if (line.startsWith("#") && line.contains(file.getName())) {
@@ -67,12 +69,13 @@ public class Preprocess {
                 }
             }
         }
+        */
     }
 
-    public static String proprocess(File file) throws IOException {
-        File uncommented = uncomment(file);
-
-        int firstLine = getFirstLine(uncommented);
+    public static String preprocess(File file) throws IOException {
+        //File uncommented = uncomment(file);
+        File uncommented = file;
+        //int firstLine = getFirstLine(uncommented);
         //ProcessBuilder processBuilder = new ProcessBuilder("gcc", "-E", "-xc", "-");
         //processBuilder.redirectInput(uncommented);
         //Process process = processBuilder.start();
@@ -80,7 +83,8 @@ public class Preprocess {
         processBuilder.directory(file.getParentFile());
         Process process = processBuilder.start();
         Scanner scanner = new Scanner(process.getInputStream());
-        moveScannerToRealCode(scanner, file, firstLine);
+        //Scanner scanner = new Scanner(file);
+        //moveScannerToRealCode(scanner, file, firstLine);
         StringBuffer buffer = new StringBuffer();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -88,7 +92,9 @@ public class Preprocess {
                 buffer.append(line);
             }
         }
-        String finalString = removeFunctionAttributes(buffer.toString());
+        String finalString = buffer.toString();
+        //String finalString = removeFunctionAttributes(buffer.toString());
+        System.out.println(finalString);
         return finalString;
     }
 

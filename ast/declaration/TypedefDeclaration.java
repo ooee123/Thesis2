@@ -18,17 +18,14 @@ import java.util.Set;
 public class TypedefDeclaration implements Declaration {
 
     private TypedefType typedefType;
-    private String typedefName;
 
-    public TypedefDeclaration(TypedefType typedefType, String typedefName) {
+    public TypedefDeclaration(TypedefType typedefType) {
         this.typedefType = typedefType;
-        this.typedefName = typedefName;
-        typedefType.setTypedefName(typedefName);
     }
 
     @Override
     public String toCode() {
-        return "typedef " + typedefType.expandedStructUnion() + " " + typedefName + ";";
+        return "typedef " + typedefType.getOriginalType().toCode() + " " + typedefType.getTypedefName() + ";";
     }
 
     @Override

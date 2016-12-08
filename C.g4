@@ -171,7 +171,7 @@ typeDefinition
     ;
 
 declaration
-    :   declarationSpecifiers initDeclaratorList? ';'
+    :   '__extension__'? declarationSpecifiers initDeclaratorList? ';'
     |   staticAssertDeclaration
     ;
 
@@ -180,11 +180,11 @@ typedefDefinition
     ;
 
 declarationSpecifiers
-    :   declarationSpecifier* typeSpecifier
+    :   declarationSpecifier* typeSpecifier+ gccAttributeSpecifier?
     ;
 
 declarationSpecifiers2
-    :   declarationSpecifier* typeSpecifier
+    :   declarationSpecifier* typeSpecifier+ gccAttributeSpecifier?
     ;
 
 declarationSpecifier
@@ -244,8 +244,8 @@ typeSpecifier
     ;
 
 structOrUnionSpecifier
-    :   structOrUnion Identifier? '{' structDeclarationList '}'
-    |   structOrUnion Identifier
+    :   structOrUnion gccAttributeSpecifier? Identifier? '{' structDeclarationList '}'
+    |   structOrUnion gccAttributeSpecifier? Identifier
     ;
 
 structOrUnion
@@ -258,7 +258,7 @@ structDeclarationList
     ;
 
 structDeclaration
-    :   specifierQualifierList structDeclaratorList? ';'
+    :   '__extension__'? specifierQualifierList structDeclaratorList? ';'
     |   staticAssertDeclaration
     ;
 
@@ -299,6 +299,7 @@ atomicTypeSpecifier
 
 typeQualifier
     :   'const'
+    |   '__restrict'
     |   'restrict'
     |   'volatile'
     |   '_Atomic'
@@ -334,6 +335,7 @@ directDeclarator
 
 gccDeclaratorExtension
     :   '__asm' '(' StringLiteral+ ')'
+    |   '__asm__' '(' StringLiteral+ ')'
     |   gccAttributeSpecifier
     ;
 
@@ -379,7 +381,8 @@ parameterList
     ;
 
 parameterDeclaration
-    :   declarationSpecifiers declarator
+    :   fg
+     declarator
     |   declarationSpecifiers2 abstractDeclarator?
     ;
 

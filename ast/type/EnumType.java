@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * Created by ooee on 12/4/16.
  */
 @Data
-public class EnumType extends TypedefType {
+public class EnumType implements ActualType {
     private String tag;
     @NonNull private String name;
     @NonNull private List<EnumValue> enumValues;
@@ -66,7 +66,6 @@ public class EnumType extends TypedefType {
         }
     }
 
-    @Override
     public String expandedStructUnion() {
         StringBuilder builder = new StringBuilder();
         builder.append("enum");

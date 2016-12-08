@@ -8,14 +8,12 @@ import parser.CLexer;
 import parser.CParser;
 import pdg.*;
 import visitor.FunctionArgumentOrderVisitor;
-import IdentifierNormalizer.FunctionIdentifierNormalizerVisitor;
 import visitor.PDGGenerationVisitor;
 import visitor.TreeToASTVisitor;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Scanner;
 
 /**
  * Created by ooee on 10/20/16.
@@ -27,7 +25,7 @@ public class Main {
             System.exit(-1);
         }
         try {
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Preprocess.proprocess(new File(args[0])).getBytes());
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Preprocess.preprocess(new File(args[0])).getBytes());
             CLexer lexer = new CLexer(new ANTLRInputStream(byteArrayInputStream));
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             System.err.println("Begin parsing");
@@ -42,7 +40,7 @@ public class Main {
             PDGGenerationVisitor pdgGenerationVisitor = new PDGGenerationVisitor(program);
 
             //pdgGenerationVisitor.visit(program);
-            FunctionArgumentOrderVisitor functionArgumentOrderVisitor = new FunctionArgumentOrderVisitor();
+            //FunctionArgumentOrderVisitor functionArgumentOrderVisitor = new FunctionArgumentOrderVisitor();
             //functionArgumentOrderVisitor.visit(program);
             for (Function function : program.getFunction()) {
                 System.err.println("Begin PDG generation for function " + function.getIdentifier());

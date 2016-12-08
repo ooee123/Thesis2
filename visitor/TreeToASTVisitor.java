@@ -145,46 +145,50 @@ public class TreeToASTVisitor {
 
     private Declaration visit(CParser.DeclarationContext ctx) {
         boolean isTypeDef = isTypedef(ctx.declarationSpecifiers());
-        Type type = visit(ctx.declarationSpecifiers());
-        if (ctx.initDeclaratorList() != null) {
-            CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
-            List<CParser.InitDeclaratorContext> initDeclaratorContexts = initDeclaratorListContext.initDeclarator();
-            List<VariableDeclaration.DeclaredVariable> declaredVariables = initDeclaratorContexts.stream().map(init -> visit(init, type)).collect(Collectors.toList());
-            if (isTypeDef) {
-                if (declaredVariables.size() != 1) {
-                    throw new IllegalArgumentException("Too many declared variables for Struct typedef");
-                }
-                String typedefName = declaredVariables.stream().findAny().get().getIdentifier().getIdentifier();
-                TypedefType typedefType = (TypedefType) type;
-                typedefMapper.put(typedefName, typedefType);
-                return new TypedefDeclaration(typedefType, typedefName);
-            }
-            return new VariableDeclaration(declaredVariables);
+        if (isTypeDef) {
+            return processTypedef(ctx);
         } else {
-            if (!(type instanceof StructUnionType)) {
-                throw new IllegalArgumentException();
+            /* Not a typedef: either a struct declaration, enum declaration, or variable declaration
+             */
+            Type type = visit(ctx.declarationSpecifiers());
+            if (ctx.initDeclaratorList() != null) {
+                CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
+                List<CParser.InitDeclaratorContext> initDeclaratorContexts = initDeclaratorListContext.initDeclarator();
+                List<VariableDeclaration.DeclaredVariable> declaredVariables = initDeclaratorContexts.stream().map(init -> visit(init, type)).collect(Collectors.toList());
+                return new VariableDeclaration(declaredVariables);
+            } else {
+                if (!(type instanceof StructUnionType)) {
+                    throw new IllegalArgumentException();
+                }
+                return new StructDefinition(((StructUnionType) type));
             }
-            return new StructDefinition(((StructUnionType) type));
         }
     }
 
-    private void processTypedef(CParser.DeclarationContext ctx) {
+    private TypedefDeclaration processTypedef(CParser.DeclarationContext ctx) {
+        String typedefName = getTypedefName(ctx);
+        // Get all the inner parts
+        List<CParser.TypeSpecifierContext> theTypeWithoutTypedefName = ctx.declarationSpecifiers().typeSpecifier().subList(0, ctx.declarationSpecifiers().typeSpecifier().size() - 1);
+        Type originalType = visit(theTypeWithoutTypedefName);
+        TypedefType typedefType = new TypedefType(originalType, typedefName);
+        return new TypedefDeclaration(typedefType);
     }
 
 
     private String getTypedefName(CParser.DeclarationContext ctx) {
-        /*
-        CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
-        List<CParser.InitDeclaratorContext> initDeclaratorContexts = initDeclaratorListContext.initDeclarator();
-        List<VariableDeclaration.DeclaredVariable> declaredVariables = initDeclaratorContexts.stream().map(init -> visit(init, type)).collect(Collectors.toList());
-        if (false) {
-            if (declaredVariables.size() != 1) {
-                throw new IllegalArgumentException("Too many declared variables for Struct typedef");
+        String name = null;
+        for (CParser.TypeSpecifierContext typeSpecifierContext : ctx.declarationSpecifiers().typeSpecifier()) {
+            if (typeSpecifierContext.typedefName() != null) {
+                if (name != null) {
+                    throw new IllegalArgumentException("2 Type specifiers of typedefname");
+                }
+                name = typeSpecifierContext.typedefName().getText();
             }
-            String typedefName = declaredVariables.stream().findAny().get().getIdentifier().getIdentifier();
         }
-        */
-        return "";
+        if (name == null) {
+            throw new IllegalArgumentException("Doesn't have a typedef name");
+        }
+        return name;
     }
 
     private VariableDeclaration.DeclaredVariable visit(CParser.InitDeclaratorContext ctx, Type type) {
@@ -232,7 +236,7 @@ public class TreeToASTVisitor {
         } else if (ctx.jumpStatement() != null) {
             return visit(ctx.jumpStatement());
         }
-        throw new UnsupportedOperationException("What kind of statement is this?");
+        throw new UnsupportedOperationException("What kind of statement is this?\n" + ctx.getText());
     }
 
     private LabeledStatement visit(CParser.LabeledStatementContext ctx) {
@@ -706,35 +710,35 @@ public class TreeToASTVisitor {
     }
 
     private Type visit(CParser.TypeSpecifierContext ctx) {
-        if (ctx.atomicTypeSpecifier() != null) {
-            return visit(ctx.atomicTypeSpecifier().typeName());
-        } else if (ctx.structOrUnionSpecifier() != null) {
-            return visit(ctx.structOrUnionSpecifier());
-        } else if (ctx.enumSpecifier() != null) {
-            return visit(ctx.enumSpecifier());
-        } else if (ctx.typedefName() != null) {
-            if (!typedefMapper.containsKey(ctx.typedefName().getText())) {
-                typedefMapper.put(ctx.typedefName().getText(), new TypedefType() {
-                    @Override
-                    public String toCode() {
-                        return ctx.typedefName().getText();
-                    }
-
-                    @Override
-                    public String expandedStructUnion() {
-                        return ctx.typedefName().getText();
-                    }
-
-                    @Override
-                    public void setTypedefName(String name) {
-                        throw new IllegalArgumentException("Not supposed");
-                    }
-                });
-                //throw new IllegalArgumentException("This type hasn't been recorded yet...");
+            if (ctx.atomicTypeSpecifier() != null) {
+                return visit(ctx.atomicTypeSpecifier().typeName());
+            } else if (ctx.structOrUnionSpecifier() != null) {
+                return visit(ctx.structOrUnionSpecifier());
+            } else if (ctx.enumSpecifier() != null) {
+                return visit(ctx.enumSpecifier());
+            } else if (ctx.typedefName() != null) {
+                if (!typedefMapper.containsKey(ctx.typedefName().getText())) {
+                    //typedefMapper.put(ctx.typedefName().getText(), new TypedefType());
+                    throw new IllegalArgumentException("This type hasn't been recorded yet...");
+                }
+                return typedefMapper.get(ctx.typedefName().getText());
+            } else {
+                return new PrimitiveType(ctx.getChild(0).getText());
             }
-            return typedefMapper.get(ctx.typedefName().getText());
+    }
+
+    // Gets the type from a list of type specifiers
+    // Ex. unsigned long int
+    private Type visit(List<CParser.TypeSpecifierContext> ctx) {
+        if (ctx.size() == 1) {
+            return visit(ctx.get(0));
         } else {
-            return new PrimitiveType(ctx.getChild(0).getText());
+            List<PrimitiveType> primitiveTypes = new ArrayList<>();
+            for (CParser.TypeSpecifierContext typeSpecifierContext : ctx) {
+                Type visit = visit(typeSpecifierContext);
+                primitiveTypes.add((PrimitiveType)visit);
+            }
+            return new MultiplePrimitiveType(primitiveTypes);
         }
     }
 
@@ -807,39 +811,7 @@ public class TreeToASTVisitor {
 
     // Gets the type! and the type only!
     private Type visit(CParser.SpecifierQualifierListContext ctx) {
-        Type visit = null;
-        for (CParser.TypeSpecifierContext typeSpecifierContext : ctx.typeSpecifier()) {
-            if (typeSpecifierContext.typedefName() != null) {
-                if (typedefMapper.containsKey(typeSpecifierContext.typedefName().getText())) {
-                    return typedefMapper.get(typeSpecifierContext.typedefName().getText());
-                } else {
-                    TypedefType typedefType = new TypedefType() {
-                        @Override
-                        public String expandedStructUnion() {
-                            return typeSpecifierContext.typedefName().getText();
-                        }
-
-                        @Override
-                        public void setTypedefName(String name) {
-                            throw new IllegalArgumentException();
-                        }
-
-                        @Override
-                        public String toCode() {
-                            return typeSpecifierContext.typedefName().getText();
-                        }
-                    };
-                    String typp = typeSpecifierContext.typedefName().getText();
-                    typedefMapper.put(typeSpecifierContext.typedefName().getText(), typedefType);
-                    return typedefType;
-                }
-            } else {
-                visit = visit(typeSpecifierContext);
-                if (visit != null) {
-                    return visit;
-                }
-            }
-        }
+        Type visit = visit(ctx.typeSpecifier());
         if (visit == null) {
             throw new IllegalArgumentException();
         }

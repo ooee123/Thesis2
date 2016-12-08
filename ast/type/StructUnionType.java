@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(exclude = {"declarations"})
-public class StructUnionType extends TypedefType {
+public class StructUnionType implements ActualType {
     public enum StructUnion {
         STRUCT("struct"),
         UNION("union");
@@ -43,7 +43,6 @@ public class StructUnionType extends TypedefType {
     @NonNull private final List<VariableDeclaration> declarations;
     @Setter private String typedefName;
 
-    @Override
     public String expandedStructUnion() {
         StringBuilder builder = new StringBuilder();
         builder.append(structUnion.token);
