@@ -1,5 +1,6 @@
 package ast;
 
+import com.google.common.collect.Sets;
 import lombok.Value;
 import pdg.PDGUselessCodeRemover;
 import visitor.Visitor;
@@ -17,27 +18,46 @@ public class ExpressionStatement implements Statement {
 
     @Override
     public String toCode() {
-        return expression.toCode() + ";";
+        if (expression != null) {
+            return expression.toCode() + ";";
+        } else {
+            return ";";
+        }
     }
 
     @Override
     public Set<String> getDependantVariables() {
-        return expression.getDependentVariables();
+        if (expression != null) {
+            return expression.getDependentVariables();
+        } else {
+            return Sets.newHashSet();
+        }
     }
 
     @Override
     public boolean isCritical() {
-        return !expression.getInvocations().isEmpty() || (PDGUselessCodeRemover.TREAT_MEMORY_WRITES_AS_CRITICAL_AUTOMATICALLY && writesMemory());
+        if (expression != null) {
+            return !expression.getInvocations().isEmpty() || (PDGUselessCodeRemover.TREAT_MEMORY_WRITES_AS_CRITICAL_AUTOMATICALLY && writesMemory());
+        } else {
+            return false;
+        }
     }
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return expression.getGuaranteedChangedVariables();
+        if (expression != null) {
+            return expression.getGuaranteedChangedVariables();
+        }
+        return Sets.newHashSet();
     }
 
     @Override
     public Set<String> getPotentiallyChangedVariables() {
-        return expression.getPotentiallyChangedVariables();
+        if (expression != null) {
+            return expression.getPotentiallyChangedVariables();
+        } else {
+            return Sets.newHashSet();
+        }
     }
 
     @Override
@@ -47,6 +67,8 @@ public class ExpressionStatement implements Statement {
 
     @Override
     public void visitAllExpressions(Visitor<Expression> visitor) {
-        visitor.visit(expression);
+        if (expression != null) {
+            visitor.visit(expression);
+        }
     }
 }

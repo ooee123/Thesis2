@@ -33,9 +33,10 @@ public class CParser extends Parser {
 		StarAssign=92, DivAssign=93, ModAssign=94, PlusAssign=95, MinusAssign=96, 
 		LeftShiftAssign=97, RightShiftAssign=98, AndAssign=99, XorAssign=100, 
 		OrAssign=101, Equal=102, NotEqual=103, Arrow=104, Dot=105, Ellipsis=106, 
-		Identifier=107, Constant=108, StringLiteral=109, ComplexDefine=110, AsmBlock=111, 
-		LineAfterPreprocessing=112, LineDirective=113, PragmaDirective=114, Whitespace=115, 
-		Newline=116, BlockComment=117, LineComment=118;
+		Identifier=107, Constant=108, IntegerConstant=109, FloatingConstant=110, 
+		CharacterConstant=111, StringLiteral=112, ComplexDefine=113, AsmBlock=114, 
+		LineAfterPreprocessing=115, LineDirective=116, PragmaDirective=117, Whitespace=118, 
+		Newline=119, BlockComment=120, LineComment=121;
 	public static final int
 		RULE_primaryExpression = 0, RULE_genericSelection = 1, RULE_genericAssocList = 2, 
 		RULE_genericAssociation = 3, RULE_postfixExpression = 4, RULE_argumentExpressionList = 5, 
@@ -130,9 +131,10 @@ public class CParser extends Parser {
 		"Question", "Colon", "Semi", "Comma", "Assign", "StarAssign", "DivAssign", 
 		"ModAssign", "PlusAssign", "MinusAssign", "LeftShiftAssign", "RightShiftAssign", 
 		"AndAssign", "XorAssign", "OrAssign", "Equal", "NotEqual", "Arrow", "Dot", 
-		"Ellipsis", "Identifier", "Constant", "StringLiteral", "ComplexDefine", 
-		"AsmBlock", "LineAfterPreprocessing", "LineDirective", "PragmaDirective", 
-		"Whitespace", "Newline", "BlockComment", "LineComment"
+		"Ellipsis", "Identifier", "Constant", "IntegerConstant", "FloatingConstant", 
+		"CharacterConstant", "StringLiteral", "ComplexDefine", "AsmBlock", "LineAfterPreprocessing", 
+		"LineDirective", "PragmaDirective", "Whitespace", "Newline", "BlockComment", 
+		"LineComment"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -4690,6 +4692,9 @@ public class CParser extends Parser {
 			case Ellipsis:
 			case Identifier:
 			case Constant:
+			case IntegerConstant:
+			case FloatingConstant:
+			case CharacterConstant:
 			case StringLiteral:
 			case ComplexDefine:
 			case AsmBlock:
@@ -4783,7 +4788,7 @@ public class CParser extends Parser {
 			setState(875);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << T__8) | (1L << T__9) | (1L << T__10) | (1L << T__11) | (1L << T__12) | (1L << T__13) | (1L << T__14) | (1L << T__15) | (1L << Auto) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Const) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Else) | (1L << Enum) | (1L << Extern) | (1L << Float) | (1L << For) | (1L << Goto) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Long) | (1L << Register) | (1L << Restrict) | (1L << Return) | (1L << Short) | (1L << Signed) | (1L << Sizeof) | (1L << Static) | (1L << Struct) | (1L << Switch) | (1L << Typedef) | (1L << Union) | (1L << Unsigned) | (1L << Void) | (1L << Volatile) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Generic) | (1L << Imaginary) | (1L << Noreturn) | (1L << StaticAssert) | (1L << ThreadLocal) | (1L << LeftParen) | (1L << LeftBracket))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (RightBracket - 64)) | (1L << (LeftBrace - 64)) | (1L << (RightBrace - 64)) | (1L << (Less - 64)) | (1L << (LessEqual - 64)) | (1L << (Greater - 64)) | (1L << (GreaterEqual - 64)) | (1L << (LeftShift - 64)) | (1L << (RightShift - 64)) | (1L << (Plus - 64)) | (1L << (PlusPlus - 64)) | (1L << (Minus - 64)) | (1L << (MinusMinus - 64)) | (1L << (Star - 64)) | (1L << (Div - 64)) | (1L << (Mod - 64)) | (1L << (And - 64)) | (1L << (Or - 64)) | (1L << (AndAnd - 64)) | (1L << (OrOr - 64)) | (1L << (Caret - 64)) | (1L << (Not - 64)) | (1L << (Tilde - 64)) | (1L << (Question - 64)) | (1L << (Colon - 64)) | (1L << (Semi - 64)) | (1L << (Comma - 64)) | (1L << (Assign - 64)) | (1L << (StarAssign - 64)) | (1L << (DivAssign - 64)) | (1L << (ModAssign - 64)) | (1L << (PlusAssign - 64)) | (1L << (MinusAssign - 64)) | (1L << (LeftShiftAssign - 64)) | (1L << (RightShiftAssign - 64)) | (1L << (AndAssign - 64)) | (1L << (XorAssign - 64)) | (1L << (OrAssign - 64)) | (1L << (Equal - 64)) | (1L << (NotEqual - 64)) | (1L << (Arrow - 64)) | (1L << (Dot - 64)) | (1L << (Ellipsis - 64)) | (1L << (Identifier - 64)) | (1L << (Constant - 64)) | (1L << (StringLiteral - 64)) | (1L << (ComplexDefine - 64)) | (1L << (AsmBlock - 64)) | (1L << (LineAfterPreprocessing - 64)) | (1L << (LineDirective - 64)) | (1L << (PragmaDirective - 64)) | (1L << (Whitespace - 64)) | (1L << (Newline - 64)) | (1L << (BlockComment - 64)) | (1L << (LineComment - 64)))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__3) | (1L << T__4) | (1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << T__8) | (1L << T__9) | (1L << T__10) | (1L << T__11) | (1L << T__12) | (1L << T__13) | (1L << T__14) | (1L << T__15) | (1L << Auto) | (1L << Break) | (1L << Case) | (1L << Char) | (1L << Const) | (1L << Continue) | (1L << Default) | (1L << Do) | (1L << Double) | (1L << Else) | (1L << Enum) | (1L << Extern) | (1L << Float) | (1L << For) | (1L << Goto) | (1L << If) | (1L << Inline) | (1L << Int) | (1L << Long) | (1L << Register) | (1L << Restrict) | (1L << Return) | (1L << Short) | (1L << Signed) | (1L << Sizeof) | (1L << Static) | (1L << Struct) | (1L << Switch) | (1L << Typedef) | (1L << Union) | (1L << Unsigned) | (1L << Void) | (1L << Volatile) | (1L << While) | (1L << Alignas) | (1L << Alignof) | (1L << Atomic) | (1L << Bool) | (1L << Complex) | (1L << Generic) | (1L << Imaginary) | (1L << Noreturn) | (1L << StaticAssert) | (1L << ThreadLocal) | (1L << LeftParen) | (1L << LeftBracket))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (RightBracket - 64)) | (1L << (LeftBrace - 64)) | (1L << (RightBrace - 64)) | (1L << (Less - 64)) | (1L << (LessEqual - 64)) | (1L << (Greater - 64)) | (1L << (GreaterEqual - 64)) | (1L << (LeftShift - 64)) | (1L << (RightShift - 64)) | (1L << (Plus - 64)) | (1L << (PlusPlus - 64)) | (1L << (Minus - 64)) | (1L << (MinusMinus - 64)) | (1L << (Star - 64)) | (1L << (Div - 64)) | (1L << (Mod - 64)) | (1L << (And - 64)) | (1L << (Or - 64)) | (1L << (AndAnd - 64)) | (1L << (OrOr - 64)) | (1L << (Caret - 64)) | (1L << (Not - 64)) | (1L << (Tilde - 64)) | (1L << (Question - 64)) | (1L << (Colon - 64)) | (1L << (Semi - 64)) | (1L << (Comma - 64)) | (1L << (Assign - 64)) | (1L << (StarAssign - 64)) | (1L << (DivAssign - 64)) | (1L << (ModAssign - 64)) | (1L << (PlusAssign - 64)) | (1L << (MinusAssign - 64)) | (1L << (LeftShiftAssign - 64)) | (1L << (RightShiftAssign - 64)) | (1L << (AndAssign - 64)) | (1L << (XorAssign - 64)) | (1L << (OrAssign - 64)) | (1L << (Equal - 64)) | (1L << (NotEqual - 64)) | (1L << (Arrow - 64)) | (1L << (Dot - 64)) | (1L << (Ellipsis - 64)) | (1L << (Identifier - 64)) | (1L << (Constant - 64)) | (1L << (IntegerConstant - 64)) | (1L << (FloatingConstant - 64)) | (1L << (CharacterConstant - 64)) | (1L << (StringLiteral - 64)) | (1L << (ComplexDefine - 64)) | (1L << (AsmBlock - 64)) | (1L << (LineAfterPreprocessing - 64)) | (1L << (LineDirective - 64)) | (1L << (PragmaDirective - 64)) | (1L << (Whitespace - 64)) | (1L << (Newline - 64)) | (1L << (BlockComment - 64)) | (1L << (LineComment - 64)))) != 0)) {
 				{
 				setState(873);
 				switch (_input.LA(1)) {
@@ -4893,6 +4898,9 @@ public class CParser extends Parser {
 				case Ellipsis:
 				case Identifier:
 				case Constant:
+				case IntegerConstant:
+				case FloatingConstant:
+				case CharacterConstant:
 				case StringLiteral:
 				case ComplexDefine:
 				case AsmBlock:
@@ -7885,7 +7893,7 @@ public class CParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3x\u0512\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3{\u0512\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -8004,7 +8012,7 @@ public class CParser extends Parser {
 		"\2\2\u00ac\u04cf\3\2\2\2\u00ae\u04dc\3\2\2\2\u00b0\u04de\3\2\2\2\u00b2"+
 		"\u04e0\3\2\2\2\u00b4\u04f2\3\2\2\2\u00b6\u04f5\3\2\2\2\u00b8\u04fa\3\2"+
 		"\2\2\u00ba\u0501\3\2\2\2\u00bc\u0504\3\2\2\2\u00be\u050d\3\2\2\2\u00c0"+
-		"\u00e2\7m\2\2\u00c1\u00e2\7n\2\2\u00c2\u00c4\7o\2\2\u00c3\u00c2\3\2\2"+
+		"\u00e2\7m\2\2\u00c1\u00e2\7n\2\2\u00c2\u00c4\7r\2\2\u00c3\u00c2\3\2\2"+
 		"\2\u00c4\u00c5\3\2\2\2\u00c5\u00c3\3\2\2\2\u00c5\u00c6\3\2\2\2\u00c6\u00e2"+
 		"\3\2\2\2\u00c7\u00c8\7?\2\2\u00c8\u00c9\5.\30\2\u00c9\u00ca\7@\2\2\u00ca"+
 		"\u00e2\3\2\2\2\u00cb\u00e2\5\4\3\2\u00cc\u00ce\7\3\2\2\u00cd\u00cc\3\2"+
@@ -8211,9 +8219,9 @@ public class CParser extends Parser {
 		"\3\2\2\2\u0331\u031f\3\2\2\2\u0331\u0326\3\2\2\2\u0331\u032b\3\2\2\2\u0332"+
 		"\u0335\3\2\2\2\u0333\u0331\3\2\2\2\u0333\u0334\3\2\2\2\u0334g\3\2\2\2"+
 		"\u0335\u0333\3\2\2\2\u0336\u0337\7\17\2\2\u0337\u0339\7?\2\2\u0338\u033a"+
-		"\7o\2\2\u0339\u0338\3\2\2\2\u033a\u033b\3\2\2\2\u033b\u0339\3\2\2\2\u033b"+
+		"\7r\2\2\u0339\u0338\3\2\2\2\u033a\u033b\3\2\2\2\u033b\u0339\3\2\2\2\u033b"+
 		"\u033c\3\2\2\2\u033c\u033d\3\2\2\2\u033d\u0348\7@\2\2\u033e\u033f\7\20"+
-		"\2\2\u033f\u0341\7?\2\2\u0340\u0342\7o\2\2\u0341\u0340\3\2\2\2\u0342\u0343"+
+		"\2\2\u033f\u0341\7?\2\2\u0340\u0342\7r\2\2\u0341\u0340\3\2\2\2\u0342\u0343"+
 		"\3\2\2\2\u0343\u0341\3\2\2\2\u0343\u0344\3\2\2\2\u0344\u0345\3\2\2\2\u0345"+
 		"\u0348\7@\2\2\u0346\u0348\5j\66\2\u0347\u0336\3\2\2\2\u0347\u033e\3\2"+
 		"\2\2\u0347\u0346\3\2\2\2\u0348i\3\2\2\2\u0349\u034a\7\21\2\2\u034a\u034b"+
@@ -8301,7 +8309,7 @@ public class CParser extends Parser {
 		"\3\2\2\2\u043c\u043d\7A\2\2\u043d\u043e\5\60\31\2\u043e\u043f\7B\2\2\u043f"+
 		"\u0443\3\2\2\2\u0440\u0441\7k\2\2\u0441\u0443\7m\2\2\u0442\u043c\3\2\2"+
 		"\2\u0442\u0440\3\2\2\2\u0443\u008f\3\2\2\2\u0444\u0445\7=\2\2\u0445\u0446"+
-		"\7?\2\2\u0446\u0447\5\60\31\2\u0447\u0449\7\\\2\2\u0448\u044a\7o\2\2\u0449"+
+		"\7?\2\2\u0446\u0447\5\60\31\2\u0447\u0449\7\\\2\2\u0448\u044a\7r\2\2\u0449"+
 		"\u0448\3\2\2\2\u044a\u044b\3\2\2\2\u044b\u0449\3\2\2\2\u044b\u044c\3\2"+
 		"\2\2\u044c\u044d\3\2\2\2\u044d\u044e\7@\2\2\u044e\u044f\7[\2\2\u044f\u0091"+
 		"\3\2\2\2\u0450\u0476\5\u0094K\2\u0451\u0476\5\u0096L\2\u0452\u0476\5\u009c"+

@@ -292,8 +292,13 @@ public class PDGGenerationVisitor {
     }
 
     private Returns<ExpressionStatement> visit(ExpressionStatement statement) {
-        boolean hasInvocations = !statement.getExpression().getInvocations().isEmpty();
-        return new Returns<>(visit(statement.getExpression()), new PDGNodeExpressionStatement(statement, hasInvocations));
+        boolean hasInvocations = false;
+        if (statement.getExpression() != null) {
+            hasInvocations = !statement.getExpression().getInvocations().isEmpty();
+            return new Returns<>(visit(statement.getExpression()), new PDGNodeExpressionStatement(statement, hasInvocations));
+        } else {
+            return new Returns<>(new Dependencies(), new PDGNodeExpressionStatement(statement, false));
+        }
     }
 
     private Dependencies visit(Expression expression) {

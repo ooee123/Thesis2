@@ -7,6 +7,7 @@ import ast.declaration.FunctionPrototypeDeclaration;
 import ast.declaration.StructDefinition;
 import ast.declaration.TypedefDeclaration;
 import ast.type.*;
+import com.google.common.collect.Lists;
 import org.antlr.v4.runtime.tree.*;
 import parser.CParser;
 
@@ -238,9 +239,18 @@ public class TreeToASTVisitor {
     }
 
     private List<BlockItem> visit(CParser.BlockItemListContext ctx) {
+        List<BlockItem> blockItems = new ArrayList<>();
         if (ctx.blockItem() != null) {
             List<CParser.BlockItemContext> blockItemContexts = ctx.blockItem();
-            return blockItemContexts.stream().map(bl -> visit(bl)).collect(Collectors.toList());
+            for (CParser.BlockItemContext blockItemContext : blockItemContexts) {
+                BlockItem visit = visit(blockItemContext);
+                if (visit instanceof FunctionPrototypeDeclaration) {
+                    VariableDeclaration.DeclaredVariable declaredVariable = new VariableDeclaration.DeclaredVariable(new FunctionPointer(((FunctionPrototypeDeclaration) visit).getReturnType(), ((FunctionPrototypeDeclaration) visit).getParameterList()), new PrimaryExpressionIdentifier(((FunctionPrototypeDeclaration) visit).getIdentifier()));
+                    visit = new VariableDeclaration(Lists.newArrayList(declaredVariable));
+                }
+                blockItems.add(visit);
+            }
+            return blockItems;
         } else {
             return Collections.emptyList();
         }
@@ -304,7 +314,8 @@ public class TreeToASTVisitor {
              */
             boolean isFunctionPrototype = isFunctionPrototype(ctx);
             if (isFunctionPrototype) {
-                return processFunctionPrototype(ctx);
+                FunctionPrototypeDeclaration functionPrototypeDeclaration = processFunctionPrototype(ctx);
+                return functionPrototypeDeclaration;
             }
             Type type = visit(ctx.declarationSpecifiers());
             if (ctx.initDeclaratorList() != null) {
@@ -419,8 +430,9 @@ public class TreeToASTVisitor {
         if (ctx.expression() != null) {
             Expression expression = visit(ctx.expression());
             return new ExpressionStatement(expression);
+        } else {
+            return new ExpressionStatement(null);
         }
-        throw new IllegalArgumentException("ExpressionStatement returning null");
     }
 
     private SelectionStatement visit(CParser.SelectionStatementContext ctx) {
@@ -794,22 +806,22 @@ public class TreeToASTVisitor {
     }
 
     private List<AssignmentExpression> visit(CParser.ArgumentExpressionListContext ctx) {
-        List<CParser.AssignmentExpressionContext> assignmentExpressionContexts = ctx.assignmentExpression();
-        return assignmentExpressionContexts.stream().map(asgn -> visit(asgn)).collect(Collectors.toList());
+        if (ctx != null) {
+            List<CParser.AssignmentExpressionContext> assignmentExpressionContexts = ctx.assignmentExpression();
+            return assignmentExpressionContexts.stream().map(asgn -> visit(asgn)).collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     private PrimaryExpression visit(CParser.PrimaryExpressionContext ctx) {
         if (ctx.Identifier() != null) {
             return new PrimaryExpressionIdentifier(ctx.Identifier().getSymbol().getText());
+
         } else if (ctx.Constant() != null) {
             String token = ctx.Constant().getSymbol().getText();
             try {
                 return new PrimaryExpressionConstant(Long.valueOf(token));
-            } catch (NumberFormatException e) {
-
-            }
-            try {
-                return new PrimaryExpressionConstant(Double.valueOf(token));
             } catch (NumberFormatException e) {
 
             }
@@ -819,13 +831,74 @@ public class TreeToASTVisitor {
 
             }
             try {
-                if (token.length() == 1) {
-                    return new PrimaryExpressionConstant(Character.valueOf(token.charAt(0)));
+                return new PrimaryExpressionConstant(Double.valueOf(token));
+            } catch (NumberFormatException e) {
+
+            }
+            try {
+                if (token.length() == 3) {
+                    return new PrimaryExpressionConstant(Character.valueOf(token.charAt(1)));
                 }
             } catch (NumberFormatException e) {
 
             }
-            throw new IllegalArgumentException("Didn't work");
+            System.out.println("Replacing token: " + token);
+            token = token.replaceAll("u", "");
+            token = token.replaceAll("U", "");
+            token = token.replaceAll("l", "");
+            token = token.replaceAll("L", "");
+            System.out.println("Got: " + token);
+            try {
+                return new PrimaryExpressionConstant(Long.valueOf(token));
+            } catch (NumberFormatException e) {
+
+            }
+            try {
+                return new PrimaryExpressionConstant(Long.decode(token));
+            } catch (NumberFormatException e) {
+
+            }
+            /*
+            if (ctx.constant().integerConstant() != null) {
+                String token;
+                if (ctx.constant().integerConstant().DecimalConstant() != null) {
+                    token = ctx.constant().integerConstant().DecimalConstant().getSymbol().getText();
+                } else if (ctx.constant().integerConstant().HexadecimalConstant() != null) {
+                    token = ctx.constant().integerConstant().HexadecimalConstant().getSymbol().getText();
+                } else if (ctx.constant().integerConstant().OctalConstant() != null) {
+                    token = ctx.constant().integerConstant().OctalConstant().getSymbol().getText();
+                } else {
+                    token = ctx.constant().integerConstant().BinaryConstant().getSymbol().getText();
+                }
+                try {
+                    return new PrimaryExpressionConstant(Long.valueOf(token));
+                } catch (NumberFormatException e) {
+
+                }
+                try {
+                    return new PrimaryExpressionConstant(Long.decode(token));
+                } catch (NumberFormatException e) {
+
+                }
+            } else if (ctx.constant().floatingConstant() != null) {
+                String token = ctx.constant().floatingConstant().getText();
+                try {
+                    return new PrimaryExpressionConstant(Double.valueOf(token));
+                } catch (NumberFormatException e) {
+
+                }
+            } else if (ctx.constant().characterConstant() != null) {
+                String token = ctx.constant().characterConstant().getText();
+                try {
+                    if (token.length() == 1) {
+                        return new PrimaryExpressionConstant(Character.valueOf(token.charAt(0)));
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+            }
+            */
+            throw new IllegalArgumentException("Didn't work with token: " + ctx.Constant().getText());
         } else if (ctx.StringLiteral() != null && ctx.StringLiteral().size() > 0) {
             List<TerminalNode> terminalNodes = ctx.StringLiteral();
             for (TerminalNode terminalNode : terminalNodes) {

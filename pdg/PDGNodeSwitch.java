@@ -50,9 +50,11 @@ public class PDGNodeSwitch extends PDGNodeContainsStatementNode<SelectionStateme
                 }
             }
         }
-        for (PDGNode<? extends BlockItem> pdgNode : defaultCase) {
-            if (pdgNode.blockItem instanceof Statement) {
-                statements.add((PDGNode<? extends Statement>) pdgNode);
+        if (defaultCase != null) {
+            for (PDGNode<? extends BlockItem> pdgNode : defaultCase) {
+                if (pdgNode.blockItem instanceof Statement) {
+                    statements.add((PDGNode<? extends Statement>) pdgNode);
+                }
             }
         }
         return statements;
