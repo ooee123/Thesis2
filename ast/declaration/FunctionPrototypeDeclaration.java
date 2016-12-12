@@ -1,27 +1,28 @@
 package ast.declaration;
 
-import ast.Expression;
-import ast.type.EnumType;
+import ast.*;
+import ast.type.Type;
 import lombok.Value;
 import visitor.Visitor;
 
 import java.util.Set;
 
 /**
- * Created by ooee on 12/4/16.
+ * Created by ooee on 12/8/16.
  */
 @Value
-public class EnumDefinition implements TypeDefinition {
-    private EnumType enumType;
-
+public class FunctionPrototypeDeclaration implements Declaration {
+    private Type returnType;
+    private String identifier;
+    private AbstractParameterList parameterList;
     @Override
     public String toCode() {
-        return enumType.toCode() + ";";
+        return returnType.toCode() + " " + identifier + "(" + parameterList.toCode() + ");";
     }
 
     @Override
     public boolean isCritical() {
-        return false;
+        return true;
     }
 
     @Override
@@ -41,12 +42,6 @@ public class EnumDefinition implements TypeDefinition {
 
     @Override
     public void visitAllExpressions(Visitor<Expression> visitor) {
-
-    }
-
-    @Override
-    public String definition() {
-        return enumType.expandedStructUnion();
 
     }
 }

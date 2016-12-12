@@ -149,7 +149,7 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
         }
         variableMap.get(s).add(t);
         for (String s1 : variableMap.keySet()) {
-            if (s1.equals(s) || s1.startsWith(s + ".")) {
+            if (!s1.equals(s) || s1.startsWith(s + ".")) {
                 if (variableMap.containsKey(s1)) {
                     variableMap.put(s1, Sets.newIdentityHashSet());
                 }

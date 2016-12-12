@@ -2,6 +2,7 @@ package ast.declaration;
 
 import ast.Declaration;
 import ast.Expression;
+import ast.type.EnumType;
 import ast.type.StructUnionType;
 import ast.type.TypedefType;
 import com.google.common.collect.Sets;
@@ -25,7 +26,15 @@ public class TypedefDeclaration implements Declaration {
 
     @Override
     public String toCode() {
-        return "typedef " + typedefType.getOriginalType().toCode() + " " + typedefType.getTypedefName() + ";";
+        String originalTypeCode;
+        if (typedefType.getOriginalType() instanceof StructUnionType) {
+            originalTypeCode = ((StructUnionType) typedefType.getOriginalType()).expandedStructUnion();
+        } else if (typedefType.getOriginalType() instanceof EnumType) {
+            originalTypeCode = ((EnumType) typedefType.getOriginalType()).expandedStructUnion();
+        } else {
+            originalTypeCode = typedefType.getOriginalType().toCode();
+        }
+        return "typedef " + originalTypeCode + " " + typedefType.getTypedefName() + ";";
     }
 
     @Override

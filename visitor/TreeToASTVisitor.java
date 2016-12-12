@@ -2,6 +2,8 @@ package visitor;
 
 import ast.*;
 import ast.Function;
+import ast.declaration.EnumDefinition;
+import ast.declaration.FunctionPrototypeDeclaration;
 import ast.declaration.StructDefinition;
 import ast.declaration.TypedefDeclaration;
 import ast.type.*;
@@ -21,10 +23,15 @@ public class TreeToASTVisitor {
     public static final boolean ELSE_IF_CHAIN_WITHOUT_COMPOUND_STATEMENTS = true;
 
     private Map<String, StructUnionType> tagMapper = new HashMap<>();
+    private Map<String, EnumType> enumTagMapper = new HashMap<>();
     private Map<String, TypedefType> typedefMapper = new HashMap<>();
     private Map<String, Function> functions = new LinkedHashMap<>();
 
     public Program visit(CParser.CompilationUnitContext ctx) {
+        /* Init */
+        typedefMapper.put("__builtin_va_list", new TypedefType(new PrimitiveType("__builtin_va_list"), "__builtin_va_list"));
+
+
         Collection<Declaration> variableDeclarations = new ArrayList<>();
         CParser.TranslationUnitContext translationUnitContext = ctx.translationUnit();
         List<CParser.ExternalDeclarationContext> externalDeclarationContexts = translationUnitContext.externalDeclaration();
@@ -42,13 +49,46 @@ public class TreeToASTVisitor {
     private String visit(CParser.DeclaratorContext ctx) {
         CParser.DirectDeclaratorContext currentContext = ctx.directDeclarator();
         while (currentContext.Identifier() == null) {
-            currentContext = currentContext.directDeclarator();
+            if (currentContext.directDeclarator() == null) {
+                currentContext = currentContext.declarator().directDeclarator();
+            } else {
+                currentContext = currentContext.directDeclarator();
+            }
         }
         return currentContext.Identifier().getSymbol().getText();
     }
 
+    private String getIdentifier(CParser.DeclaratorWithoutDeclaratorContext ctx) {
+        CParser.DirectDeclaratorWithoutDeclaratorContext currentContext = ctx.directDeclaratorWithoutDeclarator();
+        String name = null;
+
+        if (currentContext.Identifier() == null) {
+            CParser.DirectDeclaratorContext directDeclaratorContext = currentContext.directDeclarator();
+            while (directDeclaratorContext.Identifier() == null) {
+                if (directDeclaratorContext.directDeclarator() != null) {
+                    directDeclaratorContext = directDeclaratorContext.directDeclarator();
+                } else {
+                    return visit(directDeclaratorContext.declarator());
+                }
+            }
+            if (name != null) {
+                throw new IllegalArgumentException("Name already assigned");
+            }
+            name = directDeclaratorContext.Identifier().getSymbol().getText();
+        } else {
+            if (name != null) {
+                throw new IllegalArgumentException("Name already assigned");
+            }
+            name = currentContext.Identifier().getSymbol().getText();
+        }
+        if (name == null) {
+            throw new IllegalArgumentException("Name not found");
+        }
+        return name;
+    }
+
     private Function visit(CParser.FunctionDefinitionContext ctx) {
-        Type type = getType(ctx.declarationSpecifiers(), ctx.declarator());
+        Type type = getType(ctx.declarationSpecifiers(), ctx.declarator().pointer());
         String identifier = visit(ctx.declarator());
         ParameterList parameterList = visit(ctx.declarator().directDeclarator().parameterTypeList());
         CompoundStatement compoundStatement = visit(ctx.compoundStatement());
@@ -58,6 +98,16 @@ public class TreeToASTVisitor {
     }
 
     private boolean hasArray(CParser.DirectDeclaratorContext ctx) {
+        if (ctx.directDeclarator() != null) {
+            if (ctx.getChild(1).getText().equals("[")) {
+                return true;
+            }
+            return hasArray(ctx.directDeclarator());
+        }
+        return false;
+    }
+
+    private boolean hasArray(CParser.DirectDeclaratorWithoutDeclaratorContext ctx) {
         if (ctx.directDeclarator() != null) {
             if (ctx.getChild(1).getText().equals("[")) {
                 return true;
@@ -78,8 +128,53 @@ public class TreeToASTVisitor {
         throw new IllegalArgumentException("Doesn't have an array. Please run hasArray first");
     }
 
+    private AssignmentExpression visitGetArray(CParser.DirectDeclaratorWithoutDeclaratorContext ctx) {
+        if (hasArray(ctx)) {
+            if (ctx.assignmentExpression() != null) {
+                return visit(ctx.assignmentExpression());
+            } else {
+                return null;
+            }
+        }
+        throw new IllegalArgumentException("Doesn't have an array. Please run hasArray first");
+    }
+
     private Type visit(CParser.DeclarationSpecifiersContext ctx) {
-        return visit(ctx.typeSpecifier());
+        List<CParser.TypeSpecifierContext> typeSpecifierContexts = new ArrayList<>();
+        for (CParser.DeclarationSpecifierContext declarationSpecifierContext : ctx.declarationSpecifier()) {
+            if (declarationSpecifierContext.typeSpecifier() != null) {
+                typeSpecifierContexts.add(declarationSpecifierContext.typeSpecifier());
+            }
+        }
+        List<PrimitiveType> primitiveTypes = new ArrayList<>();
+        for (CParser.TypeSpecifierContext typeSpecifierContext : typeSpecifierContexts) {
+            if (typeSpecifierContext.typedefName() != null || typeSpecifierContext.structOrUnionSpecifier() != null || typeSpecifierContext.enumSpecifier() != null) {
+                if (typeSpecifierContexts.size() > 1) {
+                    throw new IllegalArgumentException("Typedef name with extra stuff " + ctx.getText());
+                } else {
+                    if (typeSpecifierContext.typedefName() != null) {
+                        if (!typedefMapper.containsKey(typeSpecifierContext.typedefName().getText())) {
+                            System.err.println("Not in");
+                        }
+                        return typedefMapper.get(typeSpecifierContext.typedefName().getText());
+                    } else if (typeSpecifierContext.structOrUnionSpecifier() != null) {
+                        if (!tagMapper.containsKey(typeSpecifierContext.structOrUnionSpecifier().Identifier().getText())) {
+                            System.err.println("Not in");
+                        }
+                        return tagMapper.get(typeSpecifierContext.structOrUnionSpecifier().Identifier().getText());
+                    } else {
+                        throw new IllegalArgumentException("Enum encountered");
+                    }
+                }
+            } else {
+                PrimitiveType primitiveType = new PrimitiveType(typeSpecifierContext.getText());
+                primitiveTypes.add(primitiveType);
+            }
+        }
+        if (primitiveTypes.size() > 1) {
+            return new MultiplePrimitiveType(primitiveTypes);
+        }
+        return primitiveTypes.get(0);
     }
 
     private ParameterList visit(CParser.ParameterTypeListContext ctx) {
@@ -90,17 +185,47 @@ public class TreeToASTVisitor {
         }
     }
 
-    private ParameterList visit(CParser.ParameterListContext ctx) {
+    private AbstractParameterList abstractVisit(CParser.ParameterListContext ctx) {
+        List<AbstractParameter> abstractParameters = new ArrayList<>();
         List<CParser.ParameterDeclarationContext> parameterDeclarationContexts = ctx.parameterDeclaration();
-        List<Parameter> parameters = parameterDeclarationContexts.stream().map(para -> visit(para)).collect(Collectors.toList());
-        return new ParameterList(parameters);
+        for (CParser.ParameterDeclarationContext parameterDeclarationContext : parameterDeclarationContexts) {
+            AbstractParameter visit = visit(parameterDeclarationContext);
+            abstractParameters.add(visit);
+        }
+        return new AbstractParameterList(abstractParameters);
     }
 
-    private Parameter visit(CParser.ParameterDeclarationContext ctx) {
+    private ParameterList visit(CParser.ParameterListContext ctx) {
+        List<Parameter> abstractParameters = new ArrayList<>();
+        List<CParser.ParameterDeclarationContext> parameterDeclarationContexts = ctx.parameterDeclaration();
+        for (CParser.ParameterDeclarationContext parameterDeclarationContext : parameterDeclarationContexts) {
+            Parameter visit = parameterVisit(parameterDeclarationContext);
+            abstractParameters.add(visit);
+        }
+        return new ParameterList(abstractParameters);
+    }
 
-        Type type = getType(ctx.declarationSpecifiers(), ctx.declarator());
-        PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(visit(ctx.declarator()));
-        return new Parameter(type, identifier);
+    private AbstractParameter visit(CParser.ParameterDeclarationContext ctx) {
+        if (ctx.declarator() != null) {
+            return parameterVisit(ctx);
+        } else {
+            if (ctx.abstractDeclarator() != null) {
+                Type type = getType(ctx.declarationSpecifiers(), ctx.abstractDeclarator().pointer());
+                return new AbstractParameter(type);
+            } else {
+                return new AbstractParameter(getType(ctx.declarationSpecifiers(), null));
+            }
+        }
+    }
+
+    private Parameter parameterVisit(CParser.ParameterDeclarationContext ctx) {
+        if (ctx.declarator() != null) {
+            Type type = getType(ctx.declarationSpecifiers(), ctx.declarator().pointer());
+            PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(visit(ctx.declarator()));
+            return new Parameter(type, identifier);
+        } else {
+            throw new IllegalArgumentException("Not a strongly defiend parameter");
+        }
     }
 
     private CompoundStatement visit(CParser.CompoundStatementContext ctx) {
@@ -143,13 +268,44 @@ public class TreeToASTVisitor {
         return false;
     }
 
+    private boolean isFunctionPrototype(CParser.DeclarationContext ctx) {
+        for (CParser.InitDeclaratorContext initDeclaratorContext : ctx.initDeclaratorList().initDeclarator()) {
+            if (initDeclaratorContext.declaratorWithoutDeclarator() != null) {
+                if (initDeclaratorContext.declaratorWithoutDeclarator().directDeclaratorWithoutDeclarator() != null) {
+                    if (initDeclaratorContext.declaratorWithoutDeclarator().directDeclaratorWithoutDeclarator().parameterTypeList() != null) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private FunctionPrototypeDeclaration processFunctionPrototype(CParser.DeclarationContext ctx) {
+        Type type = visit(ctx.declarationSpecifiers());
+        String functionName = getIdentifier(ctx.initDeclaratorList().initDeclarator().get(0).declaratorWithoutDeclarator());
+        AbstractParameterList parameterList = abstractVisit(ctx.initDeclaratorList().initDeclarator().get(0).declaratorWithoutDeclarator().directDeclaratorWithoutDeclarator().parameterTypeList().parameterList());
+        return new FunctionPrototypeDeclaration(type, functionName, parameterList);
+    }
+
     private Declaration visit(CParser.DeclarationContext ctx) {
+        if (ctx.structOrUnionSpecifier() != null) {
+            StructUnionType visit = visit(ctx.structOrUnionSpecifier());
+            return new StructDefinition(visit);
+        } else if (ctx.enumSpecifier() != null) {
+            EnumType visit = visit(ctx.enumSpecifier());
+            return new EnumDefinition(visit);
+        }
         boolean isTypeDef = isTypedef(ctx.declarationSpecifiers());
         if (isTypeDef) {
             return processTypedef(ctx);
         } else {
-            /* Not a typedef: either a struct declaration, enum declaration, or variable declaration
+            /* Not a typedef: either a struct declaration, enum declaration, or variable declaration or function prototype
              */
+            boolean isFunctionPrototype = isFunctionPrototype(ctx);
+            if (isFunctionPrototype) {
+                return processFunctionPrototype(ctx);
+            }
             Type type = visit(ctx.declarationSpecifiers());
             if (ctx.initDeclaratorList() != null) {
                 CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
@@ -165,42 +321,51 @@ public class TreeToASTVisitor {
         }
     }
 
+    private List<CParser.TypeSpecifierContext> filterDeclarationContext(CParser.DeclarationContext ctx) {
+        List<CParser.TypeSpecifierContext> typeSpecifierContexts = new ArrayList<>();
+        for (CParser.DeclarationSpecifierContext declarationSpecifierContext : ctx.declarationSpecifiers().declarationSpecifier()) {
+            if (declarationSpecifierContext.typeSpecifier() != null) {
+                typeSpecifierContexts.add(declarationSpecifierContext.typeSpecifier());
+            }
+        }
+        return typeSpecifierContexts;
+    }
+
     private TypedefDeclaration processTypedef(CParser.DeclarationContext ctx) {
         String typedefName = getTypedefName(ctx);
         // Get all the inner parts
-        List<CParser.TypeSpecifierContext> theTypeWithoutTypedefName = ctx.declarationSpecifiers().typeSpecifier().subList(0, ctx.declarationSpecifiers().typeSpecifier().size() - 1);
-        Type originalType = visit(theTypeWithoutTypedefName);
+        Type originalType;
+        List<CParser.TypeSpecifierContext> typeSpecifierContexts = filterDeclarationContext(ctx);
+        if (ctx.initDeclaratorList().initDeclarator().get(0).declaratorWithoutDeclarator().pointer() == null) {
+            originalType = visit(typeSpecifierContexts);
+        } else {
+            visit(typeSpecifierContexts);
+            originalType = getType(ctx.declarationSpecifiers(), ctx.initDeclaratorList().initDeclarator().get(0).declaratorWithoutDeclarator().pointer());
+        }
         TypedefType typedefType = new TypedefType(originalType, typedefName);
+        typedefMapper.putIfAbsent(typedefName, typedefType);
         return new TypedefDeclaration(typedefType);
     }
 
 
     private String getTypedefName(CParser.DeclarationContext ctx) {
-        String name = null;
-        for (CParser.TypeSpecifierContext typeSpecifierContext : ctx.declarationSpecifiers().typeSpecifier()) {
-            if (typeSpecifierContext.typedefName() != null) {
-                if (name != null) {
-                    throw new IllegalArgumentException("2 Type specifiers of typedefname");
-                }
-                name = typeSpecifierContext.typedefName().getText();
-            }
+        for (CParser.InitDeclaratorContext initDeclaratorContext : ctx.initDeclaratorList().initDeclarator()) {
+            CParser.DeclaratorWithoutDeclaratorContext declaratorWithoutDeclaratorContext = initDeclaratorContext.declaratorWithoutDeclarator();
+            return getIdentifier(declaratorWithoutDeclaratorContext);
         }
-        if (name == null) {
-            throw new IllegalArgumentException("Doesn't have a typedef name");
-        }
-        return name;
+        throw new IllegalArgumentException("No typedef identifier found?");
     }
 
     private VariableDeclaration.DeclaredVariable visit(CParser.InitDeclaratorContext ctx, Type type) {
-        PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(visit(ctx.declarator()));
-        if (ctx.declarator().pointer() != null) {
-            int nestedPointers = visit(ctx.declarator().pointer());
+        PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(getIdentifier(ctx.declaratorWithoutDeclarator()));
+        if (ctx.declaratorWithoutDeclarator().pointer() != null) {
+            int nestedPointers = visit(ctx.declaratorWithoutDeclarator().pointer());
             type = new PointerType(nestedPointers, (ActualType)type);
         }
         AssignmentExpression arrayInitialSize = null;
-        boolean hasArray = hasArray(ctx.declarator().directDeclarator());
+        boolean hasArray = hasArray(ctx.declaratorWithoutDeclarator().directDeclaratorWithoutDeclarator());
         if (hasArray) {
-            arrayInitialSize = visitGetArray(ctx.declarator().directDeclarator());
+            arrayInitialSize = visitGetArray(ctx.declaratorWithoutDeclarator().directDeclaratorWithoutDeclarator());
         }
         AssignmentExpression assignmentExpression = null;
         if (ctx.initializer() != null) {
@@ -629,7 +794,6 @@ public class TreeToASTVisitor {
     }
 
     private List<AssignmentExpression> visit(CParser.ArgumentExpressionListContext ctx) {
-        List<AssignmentExpression> assignmentExpressions = new ArrayList<>();
         List<CParser.AssignmentExpressionContext> assignmentExpressionContexts = ctx.assignmentExpression();
         return assignmentExpressionContexts.stream().map(asgn -> visit(asgn)).collect(Collectors.toList());
     }
@@ -699,13 +863,13 @@ public class TreeToASTVisitor {
         return nestedPointers;
     }
 
-    private Type getType(CParser.DeclarationSpecifiersContext declarationSpecifiersContext, CParser.DeclaratorContext declaratorContext) {
+    private Type getType(CParser.DeclarationSpecifiersContext declarationSpecifiersContext, CParser.PointerContext pointerContext) {
         Type type = visit(declarationSpecifiersContext);
-        if (declaratorContext.pointer() != null) {
-            int nestedPointers = visit(declaratorContext.pointer());
-            return new PointerType(nestedPointers, (ActualType)type);
-        } else {
+        if (pointerContext == null) {
             return type;
+        } else {
+            int nestedPointers = visit(pointerContext);
+            return new PointerType(nestedPointers, (ActualType) type);
         }
     }
 
@@ -742,13 +906,13 @@ public class TreeToASTVisitor {
         }
     }
 
-    private Type visit(CParser.EnumSpecifierContext ctx) {
+    private EnumType visit(CParser.EnumSpecifierContext ctx) {
         String identifier = null;
         if (ctx.Identifier() != null) {
             identifier = ctx.Identifier().getSymbol().getText();
         }
         if (typedefMapper.containsKey(identifier)) {
-            return typedefMapper.get(identifier);
+            return enumTagMapper.get(identifier);
         } else {
             EnumType enumType = new EnumType(identifier);
             for (CParser.EnumeratorContext enumeratorContext : ctx.enumeratorList().enumerator()) {
@@ -759,9 +923,18 @@ public class TreeToASTVisitor {
                 }
                 enumType.addEnumValue(enumString, enumValue);
             }
-            //typedefMapper.put(identifier, enumType);
+            enumTagMapper.put(identifier, enumType);
             return enumType;
         }
+    }
+
+    private VariableDeclaration.DeclaredVariable grabSpecialStructField(CParser.StructDeclarationContext ctx) {
+
+        List<CParser.TypeSpecifierContext> realTypeTypeSpecifierContexts = ctx.specifierQualifierList().typeSpecifier().subList(0, ctx.specifierQualifierList().typeSpecifier().size() - 1);
+        Type visit = visit(realTypeTypeSpecifierContexts);
+        CParser.TypeSpecifierContext identifierTypeSpecifierContext = ctx.specifierQualifierList().typeSpecifier().get(ctx.specifierQualifierList().typeSpecifier().size() - 1);
+        String identifier = identifierTypeSpecifierContext.typedefName().Identifier().getSymbol().getText();
+        return new VariableDeclaration.DeclaredVariable(visit, new PrimaryExpressionIdentifier(identifier));
     }
 
     private StructUnionType visit(CParser.StructOrUnionSpecifierContext ctx) {
@@ -777,20 +950,24 @@ public class TreeToASTVisitor {
             tagMapper.put(tag, structUnionType);
             for (CParser.StructDeclarationContext structDeclarationContext : ctx.structDeclarationList().structDeclaration()) {
                 List<VariableDeclaration.DeclaredVariable> structMembers = new ArrayList<>();
-                Type visit = visit(structDeclarationContext.specifierQualifierList());
-                if (structDeclarationContext.specifierQualifierList().typeSpecifier().size() == 2) {
-                    // If there's 2 things, then the second one is an identifier name
-                    CParser.TypeSpecifierContext typeSpecifierContext = structDeclarationContext.specifierQualifierList().typeSpecifier().get(1);
-                    String identifier = typeSpecifierContext.typedefName().Identifier().getSymbol().getText();
-                    structMembers.add(new VariableDeclaration.DeclaredVariable(visit, new PrimaryExpressionIdentifier(identifier)));
-                }
-                if (structDeclarationContext.structDeclaratorList() != null) {
+                // Invoke special parsing rule if: structDeclarator.size() == 1 AND it has ":"
+                if (structDeclarationContext.structDeclaratorList().structDeclarator().get(0).constantExpression() != null) {
+                    CParser.TypedefNameContext lastIdentifier = structDeclarationContext.specifierQualifierList().typeSpecifier().get(structDeclarationContext.specifierQualifierList().typeSpecifier().size() - 1).typedefName();
+                    if (lastIdentifier == null) {
+                        // If it's a dummy space, an unnamed bit flag to fill up space
+                        continue;
+                    }
+                    // So this is now a bit field
+                    VariableDeclaration.DeclaredVariable declaredVariable1 = grabSpecialStructField(structDeclarationContext);
+                    structMembers.add(declaredVariable1);
+                } else {
+                    Type visit = visit(structDeclarationContext.specifierQualifierList());
                     for (CParser.StructDeclaratorContext structDeclaratorContext : structDeclarationContext.structDeclaratorList().structDeclarator()) {
                         CParser.DeclaratorContext declarator = structDeclaratorContext.declarator();
                         String id = visit(structDeclaratorContext.declarator());
                         if (declarator.pointer() != null) {
                             int nestedPointers = visit(declarator.pointer());
-                            visit = new PointerType(nestedPointers, (ActualType)visit);
+                            visit = new PointerType(nestedPointers, (ActualType) visit);
                         }
                         VariableDeclaration.DeclaredVariable declaredVariable = new VariableDeclaration.DeclaredVariable(visit, new PrimaryExpressionIdentifier(id));
                         structMembers.add(declaredVariable);
@@ -802,7 +979,7 @@ public class TreeToASTVisitor {
             return structUnionType;
         } else {
             if (!tagMapper.containsKey(tag)) {
-                tagMapper.putIfAbsent(tag, new StructUnionType(tag, StructUnionType.StructUnion.STRUCT, new ArrayList<>()));
+                tagMapper.putIfAbsent(tag, new StructUnionType(tag, StructUnionType.StructUnion.STRUCT, null));
             }
             StructUnionType structUnionType = tagMapper.get(tag);
             return structUnionType;

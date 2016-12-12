@@ -45,7 +45,8 @@ genericSelection
     ;
 
 genericAssocList
-    :   genericAssociation (',' genericAssociation)*
+    :   genericAssociation
+    |   genericAssocList ',' genericAssociation
     ;
 
 genericAssociation
@@ -166,29 +167,24 @@ constantExpression
     :   conditionalExpression
     ;
 
-typeDefinition
-    :   storageClassSpecifier* structOrUnionSpecifier
-    ;
-
 declaration
-    :   '__extension__'? declarationSpecifiers initDeclaratorList? ';'
+    :   '__extension__'? declarationSpecifiers initDeclaratorList ';'
+    |   structOrUnionSpecifier ';'
+    |   enumSpecifier ';'
     |   staticAssertDeclaration
     ;
 
-typedefDefinition
-    :   'typedef' (structOrUnionSpecifier | enumSpecifier) typedefName?
-    ;
-
 declarationSpecifiers
-    :   declarationSpecifier* typeSpecifier+ gccAttributeSpecifier?
+    :   declarationSpecifier+
     ;
 
 declarationSpecifiers2
-    :   declarationSpecifier* typeSpecifier+ gccAttributeSpecifier?
+    :   declarationSpecifier+
     ;
 
 declarationSpecifier
     :   storageClassSpecifier
+    |   typeSpecifier
     |   typeQualifier
     |   functionSpecifier
     |   alignmentSpecifier
@@ -199,8 +195,8 @@ initDeclaratorList
     ;
 
 initDeclarator
-    :   declarator
-    |   declarator '=' initializer
+    :   declaratorWithoutDeclarator
+    |   declaratorWithoutDeclarator '=' initializer
     ;
 
 storageClassSpecifier
@@ -228,14 +224,6 @@ typeSpecifier
     |   '__m128d'
     |   '__m128i')
     |   '__extension__' '(' ('__m128' | '__m128d' | '__m128i') ')'
-    |   'uint64_t'
-    |   'uint32_t'
-    |   'uint16_t'
-    |   'uint8_t'
-    |   'int64_t'
-    |   'int32_t'
-    |   'int16_t'
-    |   'int8_t'
     |   atomicTypeSpecifier
     |   structOrUnionSpecifier
     |   enumSpecifier
@@ -258,7 +246,7 @@ structDeclarationList
     ;
 
 structDeclaration
-    :   '__extension__'? specifierQualifierList structDeclaratorList? ';'
+    :   '__extension__'? specifierQualifierList structDeclaratorList ';'
     |   staticAssertDeclaration
     ;
 
@@ -299,8 +287,8 @@ atomicTypeSpecifier
 
 typeQualifier
     :   'const'
-    |   '__restrict'
     |   'restrict'
+    |   '__restrict'
     |   'volatile'
     |   '_Atomic'
     ;
@@ -309,6 +297,7 @@ functionSpecifier
     :   ('inline'
     |   '_Noreturn'
     |   '__inline__' // GCC extension
+    |   '__inline' // GCC extension
     |   '__stdcall')
     |   gccAttributeSpecifier
     |   '__declspec' '(' Identifier ')'
@@ -323,8 +312,23 @@ declarator
     :   pointer? directDeclarator gccDeclaratorExtension*
     ;
 
+declaratorWithoutDeclarator
+    :   pointer? directDeclaratorWithoutDeclarator gccDeclaratorExtension*
+    ;
+
+directDeclaratorWithoutDeclarator
+    :   Identifier
+    |   directDeclarator '[' typeQualifierList? assignmentExpression? ']'
+    |   directDeclarator '[' 'static' typeQualifierList? assignmentExpression ']'
+    |   directDeclarator '[' typeQualifierList 'static' assignmentExpression ']'
+    |   directDeclarator '[' typeQualifierList? '*' ']'
+    |   directDeclarator '(' parameterTypeList ')'
+    |   directDeclarator '(' identifierList? ')'
+    ;
+
 directDeclarator
     :   Identifier
+    |   '(' declarator ')'
     |   directDeclarator '[' typeQualifierList? assignmentExpression? ']'
     |   directDeclarator '[' 'static' typeQualifierList? assignmentExpression ']'
     |   directDeclarator '[' typeQualifierList 'static' assignmentExpression ']'
@@ -381,9 +385,8 @@ parameterList
     ;
 
 parameterDeclaration
-    :   fg
-     declarator
-    |   declarationSpecifiers2 abstractDeclarator?
+    :   declarationSpecifiers declarator
+    |   declarationSpecifiers abstractDeclarator?
     ;
 
 identifierList
@@ -544,7 +547,6 @@ translationUnit
 externalDeclaration
     :   functionDefinition
     |   declaration
-    |   typeDefinition
     |   ';' // stray ;
     ;
 

@@ -11,6 +11,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(exclude = {"declarations"})
 public class StructUnionType implements ActualType {
+
+
+
     public enum StructUnion {
         STRUCT("struct"),
         UNION("union");
@@ -31,16 +34,18 @@ public class StructUnionType implements ActualType {
         }
     }
 
-    public StructUnionType(String tag, @NonNull StructUnion structUnion, @NonNull List<VariableDeclaration> declarations) {
+    public StructUnionType(String tag, @NonNull StructUnion structUnion, List<VariableDeclaration> declarations) {
         this.tag = tag;
         this.structUnion = structUnion;
         this.declarations = declarations;
         this.typedefName = null;
+        this.wasToCoded = false;
     }
 
+    private boolean wasToCoded;
     private final String tag;
     @NonNull private final StructUnion structUnion;
-    @NonNull private final List<VariableDeclaration> declarations;
+    private final List<VariableDeclaration> declarations;
     @Setter private String typedefName;
 
     public String expandedStructUnion() {
@@ -49,11 +54,16 @@ public class StructUnionType implements ActualType {
         if (tag != null) {
             builder.append(" " + tag);
         }
-        builder.append(" {\n");
-        for (VariableDeclaration declaration : declarations) {
-            builder.append(declaration.toCode() + "\n");
+        if (declarations != null) {
+            if (!wasToCoded) {
+                wasToCoded = true;
+                builder.append(" {\n");
+                for (VariableDeclaration declaration : declarations) {
+                    builder.append(declaration.toCode() + "\n");
+                }
+                builder.append("}");
+            }
         }
-        builder.append("}");
         return builder.toString();
     }
 
@@ -61,8 +71,8 @@ public class StructUnionType implements ActualType {
     public String toCode() {
         if (typedefName != null) {
             return typedefName;
-        } else if (tag != null) {
-            return "struct " + tag;
+        } else if (tag != null && wasToCoded) {
+            return structUnion.token + " " + tag;
         } else {
             return expandedStructUnion();
         }
@@ -74,15 +84,21 @@ public class StructUnionType implements ActualType {
         builder.append("StructUnionType=(");
         builder.append("tag=" + tag);
         builder.append(", structUnion=" + structUnion);
-        builder.append("declarations={");
-        for (VariableDeclaration declaration : declarations) {
-            for (VariableDeclaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
-                String variableType = declaredVariable.getType().toCode();
-                String identifier = declaredVariable.getIdentifier().getIdentifier();
-                builder.append(variableType + ":" + identifier + ",");
+        builder.append("declarations=");
+        if (declarations != null) {
+            builder.append("{");
+            for (VariableDeclaration declaration : declarations) {
+                for (VariableDeclaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+                    String variableType = declaredVariable.getType().toCode();
+                    String identifier = declaredVariable.getIdentifier().getIdentifier();
+                    builder.append(variableType + ":" + identifier + ",");
+                }
             }
+            builder.append("}");
+        } else {
+            builder.append("null");
         }
-        builder.append("})");
+        builder.append(")");
         return builder.toString();
     }
 }

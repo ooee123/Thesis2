@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
  */
 @Data
 public class EnumType implements ActualType {
+    private boolean wasToCode;
     private String tag;
-    @NonNull private String name;
     @NonNull private List<EnumValue> enumValues;
     @Setter private String typedefName;
 
@@ -37,14 +37,10 @@ public class EnumType implements ActualType {
         }
     }
 
-    public EnumType(String name) {
-        this(null, name);
-    }
-
-    public EnumType(String tag, String name) {
+    public EnumType(String tag) {
+        this.wasToCode = false;
         this.tag = tag;
-        this.name = name;
-        enumValues = new ArrayList<>();
+        this.enumValues = new ArrayList<>();
     }
 
     public void addEnumValue(String name) {
@@ -59,8 +55,8 @@ public class EnumType implements ActualType {
     public String toCode() {
         if (typedefName != null) {
             return typedefName;
-        } else if (tag != null) {
-            return "struct " + tag;
+        } else if (tag != null && wasToCode) {
+            return "enum " + tag;
         } else {
             return expandedStructUnion();
         }
@@ -72,10 +68,13 @@ public class EnumType implements ActualType {
         if (tag != null) {
             builder.append(" " + tag);
         }
-        builder.append(" {");
-        List<String> enumCodes = enumValues.stream().map(ev -> ev.toCode()).collect(Collectors.toList());
-        builder.append(String.join(",", enumCodes));
-        builder.append("}");
+        if (!wasToCode) {
+            wasToCode = true;
+            builder.append(" {");
+            List<String> enumCodes = enumValues.stream().map(ev -> ev.toCode()).collect(Collectors.toList());
+            builder.append(String.join(",", enumCodes));
+            builder.append("}");
+        }
         return builder.toString();
     }
 }

@@ -195,7 +195,16 @@ public class PDGGenerationVisitor {
         } else if (blockItem instanceof TypedefDeclaration) {
             throw new IllegalArgumentException("Typedefs should not be in a function");
         } else {
-            return visit((Statement) blockItem);
+            if (blockItem instanceof Statement) {
+                return visit((Statement) blockItem);
+            } else {
+                return new Returns<>(new Dependencies(), new PDGNode<BlockItem>(blockItem) {
+                    @Override
+                    public BlockItem sort(PDGSorter sorter) {
+                        return blockItem;
+                    }
+                });
+            }
         }
     }
 
@@ -321,7 +330,7 @@ public class PDGGenerationVisitor {
         Set<String> dependentVariables = new HashSet<>();
         Set<String> locallyDeclaredVariables = new HashSet<>();
         for (BlockItem blockItem : statement.getBlockItems()) {
-            Returns returns = visit(blockItem);
+            Returns<? extends BlockItem> returns = visit(blockItem);
             boolean required = false;
             PDGNode<? extends BlockItem> pdgNode = returns.getPdgNode();
             allNodes.put(blockItem, pdgNode);
@@ -417,16 +426,17 @@ public class PDGGenerationVisitor {
                         PDGNode<VariableDeclaration> declarationPDGNode = variableDeclarations.get(potentiallyChangedVariable);
                         declarationPDGNode.linkVariableDependency(pdgNode);
                     }
-                    if (!lastAssigned.containsKey(potentiallyChangedVariable)) {
-                        lastAssigned.clearVariable(potentiallyChangedVariable);
-                        //lastAssigned.put(potentiallyChangedVariable, new ArrayList<>());
-                    } else {
+                    if (lastAssigned.containsKey(potentiallyChangedVariable)) {
                         for (Collection<PDGNode<? extends BlockItem>> previouslyPotentiallyAssigneds : lastAssigned.getAllAssociated(potentiallyChangedVariable)) {
                             for (PDGNode<? extends BlockItem> previouslyPotentiallyAssigned : previouslyPotentiallyAssigneds) {
                                 //previouslyPotentiallyAssigned.linkVariableDependency(pdgNode);
                                 previouslyPotentiallyAssigned.linkOrderDependency(pdgNode);
                             }
                         }
+                    } else {
+                        lastAssigned.clearVariable(potentiallyChangedVariable);
+                        //lastAssigned.put(potentiallyChangedVariable, new ArrayList<>());
+                        //lastAssigned.augment(potentiallyChangedVariable, pdgNode);
                     }
                     lastAssigned.augment(potentiallyChangedVariable, pdgNode);
                     //lastAssigned.get(potentiallyChangedVariable).add(pdgNode);

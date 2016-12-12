@@ -14,8 +14,8 @@ public class Program implements BaseElement {
 
     @Override
     public String toCode() {
-        List<String> functionCodes = collectionToCode(function);
         List<String> declarationCodes = collectionToCode(declarations);
+        List<String> functionCodes = collectionToCode(function);
 
         return String.join("\n", declarationCodes) + "\n\n" + String.join("\n", functionCodes);
     }

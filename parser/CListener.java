@@ -248,16 +248,6 @@ public interface CListener extends ParseTreeListener {
 	 */
 	void exitConstantExpression(CParser.ConstantExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CParser#typeDefinition}.
-	 * @param ctx the parse tree
-	 */
-	void enterTypeDefinition(CParser.TypeDefinitionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CParser#typeDefinition}.
-	 * @param ctx the parse tree
-	 */
-	void exitTypeDefinition(CParser.TypeDefinitionContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link CParser#declaration}.
 	 * @param ctx the parse tree
 	 */
@@ -267,16 +257,6 @@ public interface CListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDeclaration(CParser.DeclarationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link CParser#typedefDefinition}.
-	 * @param ctx the parse tree
-	 */
-	void enterTypedefDefinition(CParser.TypedefDefinitionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link CParser#typedefDefinition}.
-	 * @param ctx the parse tree
-	 */
-	void exitTypedefDefinition(CParser.TypedefDefinitionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CParser#declarationSpecifiers}.
 	 * @param ctx the parse tree
@@ -507,6 +487,26 @@ public interface CListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDeclarator(CParser.DeclaratorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CParser#declaratorWithoutDeclarator}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclaratorWithoutDeclarator(CParser.DeclaratorWithoutDeclaratorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#declaratorWithoutDeclarator}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclaratorWithoutDeclarator(CParser.DeclaratorWithoutDeclaratorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link CParser#directDeclaratorWithoutDeclarator}.
+	 * @param ctx the parse tree
+	 */
+	void enterDirectDeclaratorWithoutDeclarator(CParser.DirectDeclaratorWithoutDeclaratorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CParser#directDeclaratorWithoutDeclarator}.
+	 * @param ctx the parse tree
+	 */
+	void exitDirectDeclaratorWithoutDeclarator(CParser.DirectDeclaratorWithoutDeclaratorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CParser#directDeclarator}.
 	 * @param ctx the parse tree

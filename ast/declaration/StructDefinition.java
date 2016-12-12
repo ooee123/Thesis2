@@ -23,7 +23,7 @@ public class StructDefinition implements TypeDefinition {
 
     @Override
     public String toCode() {
-        return null;
+        return structUnionType.expandedStructUnion() + ";";
     }
 
     @Override

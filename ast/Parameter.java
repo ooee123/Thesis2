@@ -2,23 +2,28 @@ package ast;
 
 import ast.type.PointerType;
 import ast.type.Type;
+import lombok.Data;
 import lombok.NonNull;
 import lombok.Value;
 
 /**
  * Created by ooee on 9/24/16.
  */
-@Value
-public class Parameter implements BaseElement {
-    @NonNull private Type type;
+@Data
+public class Parameter extends AbstractParameter {
     @NonNull private PrimaryExpressionIdentifier formalParameterName;
+
+    public Parameter(Type type, PrimaryExpressionIdentifier identifier) {
+        super(type);
+        this.formalParameterName = identifier;
+    }
 
     @Override
     public String toCode() {
-        if (type instanceof PointerType) {
-            return type.toCode() + formalParameterName.toCode();
+        if (super.getType() instanceof PointerType) {
+            return super.getType().toCode() + formalParameterName.toCode();
         } else {
-            return type.toCode() + " " + formalParameterName.toCode();
+            return super.getType().toCode() + " " + formalParameterName.toCode();
         }
     }
 }
