@@ -1,5 +1,7 @@
 package main;
 
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+
 import java.io.*;
 import java.util.Scanner;
 
@@ -69,16 +71,34 @@ public class Preprocess {
         }
     }
 
-    public static String proprocess(File file) throws IOException {
-        File uncommented = uncomment(file);
+    public static String fileToString(File file) throws IOException {
+        InputStream inputStream = new FileInputStream(file);
+        ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+        int byteRead;
+        while ((byteRead = inputStream.read()) != -1) {
+            byteOutputStream.write(byteRead);
+        }
+        byteOutputStream.close();
+        return byteOutputStream.toString();
+    }
 
-        int firstLine = getFirstLine(uncommented);
+    public static String proprocess(File file) throws IOException {
+        //File uncommented = uncomment(file);
+        File uncommented = file;
+        String fileString = fileToString(file);
+        int firstLine = getFirstLine(fileString);
+        fileString = insertUndefs(fileString, firstLine);
         //ProcessBuilder processBuilder = new ProcessBuilder("gcc", "-E", "-xc", "-");
         //processBuilder.redirectInput(uncommented);
         //Process process = processBuilder.start();
-        ProcessBuilder processBuilder = new ProcessBuilder("gcc", "-I.", "-E", uncommented.getAbsolutePath());
+        //ProcessBuilder processBuilder = new ProcessBuilder("gcc", "-I.", "-E", uncommented.getAbsolutePath());
+        ProcessBuilder processBuilder = new ProcessBuilder("gcc", "-E", "-xc", "-");
+        processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
         processBuilder.directory(file.getParentFile());
         Process process = processBuilder.start();
+        OutputStream pipeToProcessStdin = process.getOutputStream();
+        pipeToProcessStdin.write(fileString.getBytes());
+        pipeToProcessStdin.close();
         Scanner scanner = new Scanner(process.getInputStream());
         moveScannerToRealCode(scanner, file, firstLine);
         StringBuffer buffer = new StringBuffer();
@@ -88,14 +108,15 @@ public class Preprocess {
                 buffer.append(line);
             }
         }
-        String finalString = removeFunctionAttributes(buffer.toString());
-        return finalString;
+        //String finalString = removeFunctionAttributes(buffer.toString());
+        return buffer.toString();
     }
 
-    public static int getFirstLine(File file) throws FileNotFoundException {
-        Scanner scanner = new Scanner(file);
-        scanner.next();
-        int startNumber = scanner.nextInt();
+    public static int getFirstLine(String string) throws FileNotFoundException {
+        Scanner scanner = new Scanner(string);
+        // Why next?
+        //scanner.next();
+        //int startNumber = scanner.nextInt();
         int lineNumber = 0;
         int firstLineNumber = 0;
         while (scanner.hasNextLine()) {
@@ -105,6 +126,29 @@ public class Preprocess {
                 firstLineNumber = lineNumber;
             }
         }
-        return firstLineNumber + startNumber - 1;
+        return firstLineNumber;
+    }
+
+    public static String insertUndefs(String string, int firstLine) {
+        Scanner scanner = new Scanner(string);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        PrintWriter printer = new PrintWriter(byteArrayOutputStream);
+        // Print until end of preprocessor directives
+        for (int i = 0; i < firstLine; i++) {
+            printer.println(scanner.nextLine());
+        }
+        /*
+        while (scanner.hasNextLine()) {
+            printer.println(scanner.nextLine());
+        }
+        */
+        printer.println("#undef FD_SET");
+        printer.println("#undef FD_ISSET");
+        printer.println("#undef FD_ZERO");
+        while (scanner.hasNextLine()) {
+            printer.println(scanner.nextLine());
+        }
+        printer.close();
+        return byteArrayOutputStream.toString();
     }
 }
