@@ -45,6 +45,12 @@ public class VariableMap {
         return false;
     }
 
+    /**
+     *
+     * @param variableName
+     * @param map
+     * @return
+     */
     public boolean containsKey(String variableName, Map<String, Type> map) {
         if (containsKey(variableName)) {
             return true;
@@ -60,9 +66,17 @@ public class VariableMap {
                     return true;
                 } else {
                     for (int i = 1; i < split.size(); i++) {
-                        PrimaryExpressionIdentifier field = ((StructUnionType) type).getField(split.get(i));
-                        Type unionField = field.getType();
-                        if (unionField instanceof StructUnionType && ((StructUnionType) unionField).getStructUnion().equals(StructUnionType.StructUnion.UNION)) {
+                        type = ((StructUnionType) type).getField(split.get(i));
+                        while (type instanceof TypedefType) {
+                            type = ((TypedefType) type).getOriginalType();
+                        }
+                        if (type instanceof StructUnionType && ((StructUnionType) type).getStructUnion().equals(StructUnionType.StructUnion.UNION)) {
+                            /*
+                            List<String> sSplit = Arrays.asList(s.split("\\."));
+                            if (sSplit.subList(0, sSplit.size() - 1).equals(split.subList(0, split.size() - 1))) {
+                                return true;
+                            }
+                            */
                             return true;
                         }
                     }
@@ -100,6 +114,7 @@ public class VariableMap {
             }
         }
         List<String> split = Arrays.asList(variableName.split("\\."));
+
         for (int i = split.size(); i > 0; i--) {
             String key = String.join(".", split.subList(0, i));
             if (variableMap.containsKey(key)) {
@@ -131,11 +146,14 @@ public class VariableMap {
                 associated.addAll(getAllAssociated(variableIdentifier));
             } else {
                 for (int i = 1; i < split.size(); i++) {
-                    PrimaryExpressionIdentifier field = ((StructUnionType) type).getField(split.get(i));
-                    if (field.getType() instanceof StructUnionType) {
-                        if (((StructUnionType) field.getType()).getStructUnion().equals(StructUnionType.StructUnion.UNION)) {
+                    type = ((StructUnionType) type).getField(split.get(i));
+                    while (type instanceof TypedefType) {
+                        type = ((TypedefType) type).getOriginalType();
+                    }
+                    if (type instanceof StructUnionType) {
+                        if (((StructUnionType) type).getStructUnion().equals(StructUnionType.StructUnion.UNION) && i == split.size() - 2) {
                             //associated.addAll(getAllAssociated(new PrimaryExpressionIdentifier(variableIdentifier + "." + String.join(".", split.subList(1, i + 1)), field.getType()));
-                            associated.addAll(getAllAssociated(variableIdentifier + "." + String.join(".", split.subList(1, i + 1))));
+                            associated.addAll(getAllAssociated(variableIdentifier + "." + String.join(".", split.subList(0, i))));
                             i = split.size();
                         }
                     }

@@ -914,7 +914,8 @@ public class TreeToASTVisitor {
         } else if (ctx.StringLiteral() != null && ctx.StringLiteral().size() > 0) {
             List<TerminalNode> terminalNodes = ctx.StringLiteral();
             for (TerminalNode terminalNode : terminalNodes) {
-                return new PrimaryExpressionConstant(terminalNode.getSymbol().getText());
+                String substring = terminalNode.getSymbol().getText().substring(1, terminalNode.getSymbol().getText().length() - 1);
+                return new PrimaryExpressionConstant(substring);
             }
             throw new IllegalArgumentException("Uh oh");
         } else if (ctx.expression() != null) {

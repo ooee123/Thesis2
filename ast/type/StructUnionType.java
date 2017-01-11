@@ -102,11 +102,11 @@ public class StructUnionType implements ActualType {
         return builder.toString();
     }
 
-    public PrimaryExpressionIdentifier getField(String fieldName) {
+    public Type getField(String fieldName) {
         for (VariableDeclaration declaration : declarations) {
             for (VariableDeclaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
                 if (declaredVariable.getIdentifier().getIdentifier().equals(fieldName)) {
-                    return declaredVariable.getIdentifier();
+                    return declaredVariable.getType();
                 }
             }
         }

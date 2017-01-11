@@ -374,12 +374,13 @@ public class PDGGenerationVisitor {
                 }
                 // Set statement as one that depends on things outside of scope?
             } else {
+
                 for (String usedVariable : returns.dependencies.getDependentVariables()) {
                     if (variableDeclarations.containsKey(usedVariable)) {
                         PDGNode<VariableDeclaration> declarationPDGNode = variableDeclarations.get(usedVariable);
                         declarationPDGNode.linkVariableDependency(pdgNode);
                     }
-                    if (!lastAssigned.containsKey(usedVariable)) {
+                    if (!lastAssigned.containsKey(usedVariable, identityTypeMapper.get(blockItem))) {
                         dependentVariables.add(usedVariable);
                     } else {
                         for (Collection<PDGNode<? extends BlockItem>> pdgNodes : lastAssigned.getAllAssociated(usedVariable, identityTypeMapper.get(blockItem))) {
@@ -448,7 +449,7 @@ public class PDGGenerationVisitor {
                         PDGNode<VariableDeclaration> declarationPDGNode = variableDeclarations.get(potentiallyChangedVariable);
                         declarationPDGNode.linkVariableDependency(pdgNode);
                     }
-                    if (lastAssigned.containsKey(potentiallyChangedVariable)) {
+                    if (lastAssigned.containsKey(potentiallyChangedVariable, identityTypeMapper.get(blockItem))) {
                         for (Collection<PDGNode<? extends BlockItem>> previouslyPotentiallyAssigneds : lastAssigned.getAllAssociated(potentiallyChangedVariable, identityTypeMapper.get(blockItem))) {
                             for (PDGNode<? extends BlockItem> previouslyPotentiallyAssigned : previouslyPotentiallyAssigneds) {
                                 //previouslyPotentiallyAssigned.linkVariableDependency(pdgNode);
