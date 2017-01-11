@@ -1,14 +1,9 @@
 package pdg;
 
 import ast.BlockItem;
-import ast.CompoundStatement;
-import ast.Statement;
-import lombok.Value;
+import ast.statement.impl.CompoundStatement;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by ooee on 10/14/16.

@@ -1,9 +1,14 @@
 package pdg;
 
 import ast.*;
+import ast.expression.Expression;
+import ast.expression.impl.PostfixExpressionInvocationImpl;
+import ast.expression.impl.PrimaryExpressionConstant;
+import ast.expression.impl.PrimaryExpressionIdentifier;
+import ast.statement.Statement;
+import ast.statement.impl.*;
 import lombok.Data;
 import lombok.Value;
-import pdg.PDGNode;
 import visitor.Visitor;
 
 import java.util.*;
@@ -93,7 +98,7 @@ public class PDGNodeComparator implements Comparator<PDGNode<? extends BlockItem
 
         @Override
         public void visit(Statement statement) {
-            statement.visitAllExpressions(visitor);
+            statement.visitOwnedExpressions(visitor);
         }
     }
 
@@ -212,20 +217,20 @@ public class PDGNodeComparator implements Comparator<PDGNode<? extends BlockItem
                 return s1.compareTo(s2);
             } else if (b1 instanceof Statement) {
                 ShallowExpressionVisitor v1 = new ShallowExpressionVisitor();
-                b1.visitAllExpressions(v1);
+                b1.visitOwnedExpressions(v1);
                 Score score1 = v1.getScore();
 
                 ShallowExpressionVisitor v2 = new ShallowExpressionVisitor();
-                b2.visitAllExpressions(v2);
+                b2.visitOwnedExpressions(v2);
                 Score score2 = v2.getScore();
 
                 if (score1.compareTo(score2) == 0) {
                     DeepExpressionVisitor vv1 = new DeepExpressionVisitor();
-                    b1.visitAllExpressions(vv1);
+                    b1.visitOwnedExpressions(vv1);
                     score1 = vv1.getScore();
 
                     DeepExpressionVisitor vv2 = new DeepExpressionVisitor();
-                    b2.visitAllExpressions(vv2);
+                    b2.visitOwnedExpressions(vv2);
                     score2 = vv2.getScore();
                     return score1.compareTo(score2);
                 }

@@ -1,5 +1,6 @@
 package ast;
 
+import ast.statement.impl.CompoundStatement;
 import ast.type.Type;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package pdg;
 
-import ast.JumpReturnStatement;
+import ast.statement.impl.JumpReturnStatement;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 

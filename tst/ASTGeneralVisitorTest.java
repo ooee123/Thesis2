@@ -1,19 +1,16 @@
 package tst;
 
 import ast.*;
+import ast.statement.impl.CompoundStatement;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.junit.Test;
 import parser.CLexer;
 import parser.CParser;
-import pdg.PDGNode;
 import pdg.PDGNodeCompoundStatement;
 import pdg.PDGSorterDefault;
 import visitor.PDGGenerationVisitor;
 import visitor.TreeToASTVisitor;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by ooee on 10/8/16.

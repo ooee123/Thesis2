@@ -1,6 +1,9 @@
 package ast;
 
-import com.google.common.collect.Lists;
+import ast.expression.impl.PrimaryExpressionIdentifier;
+import ast.type.StructUnionType;
+import ast.type.Type;
+import ast.type.TypedefType;
 import com.google.common.collect.Sets;
 import pdg.PDGNode;
 
@@ -9,7 +12,7 @@ import java.util.*;
 /**
  * Created by ooee on 11/7/16.
  */
-public class VariableMap implements Map<String, Collection<PDGNode<? extends BlockItem>>> {
+public class VariableMap {
 
     private Map<String, Collection<PDGNode<? extends BlockItem>>> variableMap;
 
@@ -19,12 +22,14 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
 
     /**
      * If I'm asking if a.b is in by checking a.b and a as well.
+     * I'm asking if variableName is in any part of anyone in this VariableMap
      * @param variableName
      * @return
      */
     public boolean containsKey(String variableName) {
+        //String variableName = identifier.getIdentifier();
+        List<String> split = Arrays.asList(variableName.split("\\."));
         if (variableName.contains(".")) {
-            List<String> split = Arrays.asList(variableName.split("\\."));
             for (int i = split.size(); i > 0; i--) {
                 String key = String.join(".", split.subList(0, i));
                 if (variableMap.containsKey(key)) {
@@ -40,12 +45,40 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
         return false;
     }
 
+    public boolean containsKey(String variableName, Map<String, Type> map) {
+        if (containsKey(variableName)) {
+            return true;
+        }
+        List<String> split = Arrays.asList(variableName.split("\\."));
+        Type type = map.get(split.get(0));
+        while (type instanceof TypedefType) {
+            type = ((TypedefType) type).getOriginalType();
+        }
+        for (String s : variableMap.keySet()) {
+            if (s.startsWith(split.get(0)) && type instanceof StructUnionType) {
+                if (((StructUnionType) type).getStructUnion().equals(StructUnionType.StructUnion.UNION)) {
+                    return true;
+                } else {
+                    for (int i = 1; i < split.size(); i++) {
+                        PrimaryExpressionIdentifier field = ((StructUnionType) type).getField(split.get(i));
+                        Type unionField = field.getType();
+                        if (unionField instanceof StructUnionType && ((StructUnionType) unionField).getStructUnion().equals(StructUnionType.StructUnion.UNION)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Grabs the most specific level of change. If a.b is not available, return a.
      * @param variableName
      * @return
      */
     public Collection<PDGNode<? extends BlockItem>> get(String variableName) {
+        //String variableName = identifier.getIdentifier();
         if (variableName.contains(".")) {
             List<String> split = Arrays.asList(variableName.split("\\."));
             for (int i = split.size(); i > 0; i--) {
@@ -57,14 +90,10 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
         }
         return variableMap.get(variableName);
     }
-    /**
-     * Used to change variables. So if I want to modify the variable a, then a.b, a.c, etc. will also be changed.
-     * Also get parents of a
-     * @param variableName
-     * @return
-     */
+
     public Collection<Collection<PDGNode<? extends BlockItem>>> getAllAssociated(String variableName) {
-        Collection<Collection<PDGNode<? extends BlockItem>>> associated = new ArrayList<>();
+        //String variableName = identifier.getIdentifier();
+        Collection<Collection<PDGNode<? extends BlockItem>>> associated = Sets.newIdentityHashSet();
         for (String s : variableMap.keySet()) {
             if (s.equals(variableName) || s.startsWith(variableName + ".")) {
                 associated.add(variableMap.get(s));
@@ -80,29 +109,45 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
         return associated;
     }
 
-    @Override
+    /**
+     * Used to change variables. So if I want to modify the variable a, then a.b, a.c, etc. will also be changed.
+     * Also get parents of a
+     * @param variableName
+     * @return Returns all variables that get modified if identifier is reassigned.
+     */
+    public Collection<Collection<PDGNode<? extends BlockItem>>> getAllAssociated(String variableName, Map<String, Type> map) {
+        Collection<Collection<PDGNode<? extends BlockItem>>> associated = Sets.newIdentityHashSet();
+        associated.addAll(getAllAssociated(variableName));
+        List<String> split = Arrays.asList(variableName.split("\\."));
+        String variableIdentifier = split.get(0);
+        Type type = map.get(split.get(0));
+        while (type instanceof TypedefType) {
+            type = ((TypedefType) type).getOriginalType();
+        }
+        if (type instanceof StructUnionType) {
+            if (((StructUnionType) type).getStructUnion().equals(StructUnionType.StructUnion.UNION)) {
+                // All of variable is affected
+                //associated.addAll(getAllAssociated(new PrimaryExpressionIdentifier(variableIdentifier, variableType)));
+                associated.addAll(getAllAssociated(variableIdentifier));
+            } else {
+                for (int i = 1; i < split.size(); i++) {
+                    PrimaryExpressionIdentifier field = ((StructUnionType) type).getField(split.get(i));
+                    if (field.getType() instanceof StructUnionType) {
+                        if (((StructUnionType) field.getType()).getStructUnion().equals(StructUnionType.StructUnion.UNION)) {
+                            //associated.addAll(getAllAssociated(new PrimaryExpressionIdentifier(variableIdentifier + "." + String.join(".", split.subList(1, i + 1)), field.getType()));
+                            associated.addAll(getAllAssociated(variableIdentifier + "." + String.join(".", split.subList(1, i + 1))));
+                            i = split.size();
+                        }
+                    }
+                }
+
+            }
+        }
+        return associated;
+    }
+
     public int size() {
         return variableMap.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return variableMap.isEmpty();
-    }
-
-    /**
-     * Strict o
-     * @param o
-     * @return
-     */
-    @Override
-    public boolean containsKey(Object o) {
-        return variableMap.containsKey(o);
-    }
-
-    @Override
-    public boolean containsValue(Object o) {
-        return variableMap.containsValue(o);
     }
 
     /**
@@ -110,7 +155,6 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
      * @param o
      * @return
      */
-    @Override
     public Collection<PDGNode<? extends BlockItem>> get(Object o) {
         return variableMap.get(o);
     }
@@ -122,6 +166,7 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
      * @return
      */
     public Collection<PDGNode<? extends BlockItem>> replace(String s, PDGNode<? extends BlockItem> t) {
+        //String s = identifier.getIdentifier();
         Collection<PDGNode<? extends BlockItem>> ret = get(s);
         Set<PDGNode<? extends BlockItem>> set = Sets.newIdentityHashSet();
         set.add(t);
@@ -143,16 +188,15 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
      * @return
      */
     public Collection<PDGNode<? extends BlockItem>> augment(String s, PDGNode<? extends BlockItem> t) {
+        //String s = identifier.getIdentifier();
         Collection<PDGNode<? extends BlockItem>> ret = get(s);
         if (!variableMap.containsKey(s)) {
             variableMap.put(s, Sets.newIdentityHashSet());
         }
         variableMap.get(s).add(t);
         for (String s1 : variableMap.keySet()) {
-            if (!s1.equals(s) || s1.startsWith(s + ".")) {
-                if (variableMap.containsKey(s1)) {
-                    variableMap.put(s1, Sets.newIdentityHashSet());
-                }
+            if (!s1.equals(s) && s1.startsWith(s + ".")) { // Or or and?
+                variableMap.putIfAbsent(s1, Sets.newIdentityHashSet());
                 variableMap.get(s1).add(t);
             }
         }
@@ -167,31 +211,19 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
         return pdgNodes;
     }
 
-    public void variablePotentiallyChanged(String s, PDGNode<? extends BlockItem> t) {
-        Collection<Collection<PDGNode<? extends BlockItem>>> allAssociated = getAllAssociated(s);
+    public void variablePotentiallyChanged(String identifier, PDGNode<? extends BlockItem> t) {
+        Collection<Collection<PDGNode<? extends BlockItem>>> allAssociated = getAllAssociated(identifier);
         for (Collection<PDGNode<? extends BlockItem>> pdgNodes : allAssociated) {
             pdgNodes.add(t);
         }
     }
 
-    public void variableGuaranteedChanged(String s, PDGNode<? extends BlockItem> t) {
-        Collection<Collection<PDGNode<? extends BlockItem>>> allAssociated = getAllAssociated(s);
+    public void variableGuaranteedChanged(String identifier, PDGNode<? extends BlockItem> t) {
+        Collection<Collection<PDGNode<? extends BlockItem>>> allAssociated = getAllAssociated(identifier);
         for (Collection<PDGNode<? extends BlockItem>> pdgNodes : allAssociated) {
             pdgNodes.clear();
             pdgNodes.add(t);
         }
-    }
-
-    @Override
-    public Collection<PDGNode<? extends BlockItem>> remove(Object o) {
-        throw new UnsupportedOperationException();
-        //return variableMap.remove(o);
-    }
-
-    @Override
-    public void putAll(Map<? extends String, ? extends Collection<PDGNode<? extends BlockItem>>> map) {
-        throw new UnsupportedOperationException();
-        //variableMap.putAll(map);
     }
 
     public void clearVariable(String variable) {
@@ -200,28 +232,11 @@ public class VariableMap implements Map<String, Collection<PDGNode<? extends Blo
         }
     }
 
-    @Override
-    public void clear() {
-        variableMap.clear();
-    }
-
-    @Override
     public Set<String> keySet() {
         return variableMap.keySet();
     }
 
-    @Override
     public Collection<Collection<PDGNode<? extends BlockItem>>> values() {
         return variableMap.values();
-    }
-
-    @Override
-    public Set<Entry<String, Collection<PDGNode<? extends BlockItem>>>> entrySet() {
-        return variableMap.entrySet();
-    }
-
-    @Override
-    public Collection<PDGNode<? extends BlockItem>> put(String s, Collection<PDGNode<? extends BlockItem>> nodes) {
-        throw new UnsupportedOperationException();
     }
 }

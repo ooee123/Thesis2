@@ -6,6 +6,11 @@ import ast.declaration.EnumDefinition;
 import ast.declaration.FunctionPrototypeDeclaration;
 import ast.declaration.StructDefinition;
 import ast.declaration.TypedefDeclaration;
+import ast.expression.*;
+import ast.expression.impl.*;
+import ast.statement.*;
+import ast.statement.impl.*;
+import ast.statement.IterationStatement;
 import ast.type.*;
 import com.google.common.collect.Lists;
 import org.antlr.v4.runtime.tree.*;
@@ -222,7 +227,7 @@ public class TreeToASTVisitor {
     private Parameter parameterVisit(CParser.ParameterDeclarationContext ctx) {
         if (ctx.declarator() != null) {
             Type type = getType(ctx.declarationSpecifiers(), ctx.declarator().pointer());
-            PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(visit(ctx.declarator()));
+            PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(visit(ctx.declarator()), type);
             return new Parameter(type, identifier);
         } else {
             throw new IllegalArgumentException("Not a strongly defiend parameter");
@@ -245,7 +250,10 @@ public class TreeToASTVisitor {
             for (CParser.BlockItemContext blockItemContext : blockItemContexts) {
                 BlockItem visit = visit(blockItemContext);
                 if (visit instanceof FunctionPrototypeDeclaration) {
-                    VariableDeclaration.DeclaredVariable declaredVariable = new VariableDeclaration.DeclaredVariable(new FunctionPointer(((FunctionPrototypeDeclaration) visit).getReturnType(), ((FunctionPrototypeDeclaration) visit).getParameterList()), new PrimaryExpressionIdentifier(((FunctionPrototypeDeclaration) visit).getIdentifier()));
+                    Type returnType = ((FunctionPrototypeDeclaration) visit).getReturnType();
+                    AbstractParameterList parameterList = ((FunctionPrototypeDeclaration) visit).getParameterList();
+                    FunctionPointer functionPointer = new FunctionPointer(returnType, parameterList);
+                    VariableDeclaration.DeclaredVariable declaredVariable = new VariableDeclaration.DeclaredVariable(functionPointer, new PrimaryExpressionIdentifier(((FunctionPrototypeDeclaration) visit).getIdentifier(), functionPointer));
                     visit = new VariableDeclaration(Lists.newArrayList(declaredVariable));
                 }
                 blockItems.add(visit);
@@ -368,7 +376,7 @@ public class TreeToASTVisitor {
     }
 
     private VariableDeclaration.DeclaredVariable visit(CParser.InitDeclaratorContext ctx, Type type) {
-        PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(getIdentifier(ctx.declaratorWithoutDeclarator()));
+        PrimaryExpressionIdentifier identifier = new PrimaryExpressionIdentifier(getIdentifier(ctx.declaratorWithoutDeclarator()), type);
         if (ctx.declaratorWithoutDeclarator().pointer() != null) {
             int nestedPointers = visit(ctx.declaratorWithoutDeclarator().pointer());
             type = new PointerType(nestedPointers, (ActualType)type);
@@ -1033,10 +1041,11 @@ public class TreeToASTVisitor {
                     if (lastIdentifier == null) {
                         // If it's a dummy space, an unnamed bit flag to fill up space
                         continue;
+                    } else {
+                        // So this is now a bit field
+                        VariableDeclaration.DeclaredVariable declaredVariable1 = grabSpecialStructField(structDeclarationContext);
+                        structMembers.add(declaredVariable1);
                     }
-                    // So this is now a bit field
-                    VariableDeclaration.DeclaredVariable declaredVariable1 = grabSpecialStructField(structDeclarationContext);
-                    structMembers.add(declaredVariable1);
                 } else {
                     Type visit = visit(structDeclarationContext.specifierQualifierList());
                     for (CParser.StructDeclaratorContext structDeclaratorContext : structDeclarationContext.structDeclaratorList().structDeclarator()) {

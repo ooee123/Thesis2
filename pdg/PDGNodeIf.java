@@ -1,7 +1,7 @@
 package pdg;
 
-import ast.SelectionStatementIf;
-import ast.Statement;
+import ast.statement.impl.SelectionStatementIf;
+import ast.statement.Statement;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Value;

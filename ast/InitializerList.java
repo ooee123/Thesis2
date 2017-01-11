@@ -1,5 +1,8 @@
 package ast;
 
+import ast.expression.AssignmentExpression;
+import ast.expression.Expression;
+import ast.expression.impl.PostfixExpressionInvocationImpl;
 import lombok.Value;
 import visitor.Visitor;
 

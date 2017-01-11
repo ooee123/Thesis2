@@ -1,6 +1,13 @@
 package visitor;
 
 import ast.*;
+import ast.expression.impl.AssignmentExpressionImpl;
+import ast.expression.impl.PrimaryExpressionIdentifier;
+import ast.statement.CanContainStatements;
+import ast.statement.Statement;
+import ast.statement.impl.CompoundStatement;
+import ast.statement.impl.CompoundStatementGroups;
+import ast.statement.impl.ExpressionStatement;
 
 import java.util.ArrayList;
 import java.util.List;

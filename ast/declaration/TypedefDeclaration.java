@@ -1,7 +1,7 @@
 package ast.declaration;
 
 import ast.Declaration;
-import ast.Expression;
+import ast.expression.Expression;
 import ast.type.EnumType;
 import ast.type.StructUnionType;
 import ast.type.TypedefType;
@@ -9,7 +9,6 @@ import com.google.common.collect.Sets;
 import lombok.Value;
 import visitor.Visitor;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -58,7 +57,12 @@ public class TypedefDeclaration implements Declaration {
     }
 
     @Override
-    public void visitAllExpressions(Visitor<Expression> visitor) {
+    public void visitOwnedExpressions(Visitor<Expression> visitor) {
         return;
+    }
+
+    @Override
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        visitOwnedExpressions(visitor);
     }
 }

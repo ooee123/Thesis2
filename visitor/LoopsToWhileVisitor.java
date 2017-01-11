@@ -1,6 +1,9 @@
 package visitor;
 
 import ast.*;
+import ast.statement.Statement;
+import ast.statement.impl.*;
+import ast.statement.IterationStatement;
 
 import java.util.ArrayList;
 import java.util.Arrays;

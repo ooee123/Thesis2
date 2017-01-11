@@ -1,6 +1,7 @@
 package ast.declaration;
 
 import ast.*;
+import ast.expression.Expression;
 import ast.type.Type;
 import lombok.Value;
 import visitor.Visitor;
@@ -41,7 +42,12 @@ public class FunctionPrototypeDeclaration implements Declaration {
     }
 
     @Override
-    public void visitAllExpressions(Visitor<Expression> visitor) {
+    public void visitOwnedExpressions(Visitor<Expression> visitor) {
+        return;
+    }
 
+    @Override
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        visitOwnedExpressions(visitor);
     }
 }

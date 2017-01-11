@@ -1,6 +1,7 @@
 package IdentifierNormalizer;
 
 import ast.*;
+import ast.expression.impl.PrimaryExpressionIdentifier;
 import com.google.common.collect.Sets;
 
 import java.util.*;

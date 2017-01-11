@@ -2,13 +2,14 @@ package main;
 
 import IdentifierNormalizer.ProgramIdentifierNormalizerVisitor;
 import ast.*;
+import ast.statement.impl.CompoundStatement;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import parser.CLexer;
 import parser.CParser;
 import pdg.*;
-import visitor.FunctionArgumentOrderVisitor;
 import visitor.PDGGenerationVisitor;
+import visitor.PrimaryExpressionTypeAssignerVisitor;
 import visitor.TreeToASTVisitor;
 
 import java.io.ByteArrayInputStream;
@@ -36,6 +37,10 @@ public class Main {
             System.err.println("Begin AST building");
             Program program = visitor.visit(compilationUnit);
             System.err.println("Finish AST building");
+
+            System.err.println("Assigning types to primary expressions");
+            new PrimaryExpressionTypeAssignerVisitor(program);
+            System.err.println("Finish assigning types to primary expressions");
 
             PDGGenerationVisitor pdgGenerationVisitor = new PDGGenerationVisitor(program);
 

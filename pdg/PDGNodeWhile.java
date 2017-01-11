@@ -1,8 +1,8 @@
 package pdg;
 
-import ast.Expression;
-import ast.IterationStatementWhile;
-import ast.Statement;
+import ast.expression.Expression;
+import ast.statement.impl.IterationStatementWhile;
+import ast.statement.Statement;
 import com.google.common.collect.Lists;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;

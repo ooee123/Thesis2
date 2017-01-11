@@ -1,6 +1,12 @@
 package visitor;
 
 import ast.*;
+import ast.expression.AssignmentExpression;
+import ast.expression.impl.CommaExpression;
+import ast.expression.Expression;
+import ast.statement.Statement;
+import ast.statement.impl.*;
+import ast.statement.IterationStatement;
 import lombok.Value;
 
 import java.util.*;

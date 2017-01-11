@@ -1,7 +1,6 @@
 package pdg;
 
-import ast.LabeledCaseStatement;
-import ast.LabeledDefaultStatement;
+import ast.statement.impl.LabeledDefaultStatement;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 

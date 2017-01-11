@@ -1,6 +1,6 @@
 package ast.declaration;
 
-import ast.Expression;
+import ast.expression.Expression;
 import ast.type.EnumType;
 import lombok.Value;
 import visitor.Visitor;
@@ -40,13 +40,17 @@ public class EnumDefinition implements TypeDefinition {
     }
 
     @Override
-    public void visitAllExpressions(Visitor<Expression> visitor) {
+    public void visitOwnedExpressions(Visitor<Expression> visitor) {
+        return;
+    }
 
+    @Override
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        visitOwnedExpressions(visitor);
     }
 
     @Override
     public String definition() {
         return enumType.expandedStructUnion();
-
     }
 }

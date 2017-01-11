@@ -1,10 +1,10 @@
 package ast;
 
+import ast.expression.impl.PrimaryExpressionIdentifier;
 import ast.type.PointerType;
 import ast.type.Type;
 import lombok.Data;
 import lombok.NonNull;
-import lombok.Value;
 
 /**
  * Created by ooee on 9/24/16.

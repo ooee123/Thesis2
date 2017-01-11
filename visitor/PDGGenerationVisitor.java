@@ -1,18 +1,26 @@
 package visitor;
 
 import ast.*;
-import ast.declaration.StructDefinition;
 import ast.declaration.TypedefDeclaration;
+import ast.expression.Expression;
+import ast.statement.Statement;
+import ast.statement.impl.*;
 import ast.type.PointerType;
+import ast.type.StructUnionType;
+import ast.type.Type;
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import pdg.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Value
+@Data
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class PDGGenerationVisitor {
 
     @Value
@@ -83,10 +91,12 @@ public class PDGGenerationVisitor {
 
     private Set<String> globalVariables;
     private Program program;
-
+    private ScopeVisitor scopeVisitor;
+    private Map<BlockItem, Map<String, Type>> identityTypeMapper;
     public PDGGenerationVisitor(Program p) {
         program = p;
         globalVariables = new HashSet<>();
+        scopeVisitor = new ScopeVisitor(p);
         for (Declaration declaration : program.getDeclarations()) {
             if (declaration instanceof VariableDeclaration) {
                 for (VariableDeclaration.DeclaredVariable declaredVariable : ((VariableDeclaration) declaration).getDeclaredVariables()) {
@@ -94,9 +104,11 @@ public class PDGGenerationVisitor {
                 }
             }
         }
+        identityTypeMapper = null;
     }
 
     public PDGNodeCompoundStatement visit(Function function) {
+        identityTypeMapper = scopeVisitor.process(function);
         Returns<CompoundStatement> returns = visit(function.getCompoundStatement());
         Set<String> changedVariables = new HashSet<>();
         changedVariables.addAll(returns.getDependencies().getGuaranteedChangedVariables());
@@ -353,6 +365,11 @@ public class PDGGenerationVisitor {
                     pdgNodes.add(pdgNode);
                 }
                 for (String s : returns.getDependencies().getDependentVariables()) {
+                    /*
+                    if (!usedSinceLastAssignment.containsKey(s)) {
+                        usedSinceLastAssignment.addNewVariable(s, );
+                    }
+                    */
                     usedSinceLastAssignment.augment(s, pdgNode);
                 }
                 // Set statement as one that depends on things outside of scope?
@@ -365,7 +382,7 @@ public class PDGGenerationVisitor {
                     if (!lastAssigned.containsKey(usedVariable)) {
                         dependentVariables.add(usedVariable);
                     } else {
-                        for (Collection<PDGNode<? extends BlockItem>> pdgNodes : lastAssigned.getAllAssociated(usedVariable)) {
+                        for (Collection<PDGNode<? extends BlockItem>> pdgNodes : lastAssigned.getAllAssociated(usedVariable, identityTypeMapper.get(blockItem))) {
                             for (PDGNode<? extends BlockItem> node : pdgNodes) {
                                 //node.linkOrderDependency(pdgNode);
                                 node.linkVariableDependency(pdgNode);
@@ -403,8 +420,8 @@ public class PDGGenerationVisitor {
                         PDGNode<VariableDeclaration> declarationPDGNode = variableDeclarations.get(guaranteedChangedVariable);
                         declarationPDGNode.linkVariableDependency(pdgNode);
                     }
-                    if (lastAssigned.containsKey(guaranteedChangedVariable)) {
-                        for (Collection<PDGNode<? extends BlockItem>> nodes : lastAssigned.getAllAssociated(guaranteedChangedVariable)) {
+                    if (lastAssigned.containsKey(guaranteedChangedVariable, identityTypeMapper.get(blockItem))) {
+                        for (Collection<PDGNode<? extends BlockItem>> nodes : lastAssigned.getAllAssociated(guaranteedChangedVariable, identityTypeMapper.get(blockItem))) {
                             for (PDGNode<? extends BlockItem> node : nodes) {
                                 node.linkOrderDependency(pdgNode);
                             }
@@ -412,8 +429,8 @@ public class PDGGenerationVisitor {
                     }
                     lastAssigned.replace(guaranteedChangedVariable, pdgNode);
                     //lastAssigned.put(guaranteedChangedVariable, Sets.newHashSet(pdgNode));
-                    if (usedSinceLastAssignment.containsKey(guaranteedChangedVariable)) {
-                        for (Collection<PDGNode<? extends BlockItem>> usedSinceLastAssignmentNodes : usedSinceLastAssignment.getAllAssociated(guaranteedChangedVariable)) {
+                    if (usedSinceLastAssignment.containsKey(guaranteedChangedVariable, identityTypeMapper.get(blockItem))) {
+                        for (Collection<PDGNode<? extends BlockItem>> usedSinceLastAssignmentNodes : usedSinceLastAssignment.getAllAssociated(guaranteedChangedVariable, identityTypeMapper.get(blockItem))) {
                             for (PDGNode<? extends BlockItem> usedSinceLastAssignmentNode : usedSinceLastAssignmentNodes) {
                                 usedSinceLastAssignmentNode.linkOrderDependency(pdgNode);
                             }
@@ -432,7 +449,7 @@ public class PDGGenerationVisitor {
                         declarationPDGNode.linkVariableDependency(pdgNode);
                     }
                     if (lastAssigned.containsKey(potentiallyChangedVariable)) {
-                        for (Collection<PDGNode<? extends BlockItem>> previouslyPotentiallyAssigneds : lastAssigned.getAllAssociated(potentiallyChangedVariable)) {
+                        for (Collection<PDGNode<? extends BlockItem>> previouslyPotentiallyAssigneds : lastAssigned.getAllAssociated(potentiallyChangedVariable, identityTypeMapper.get(blockItem))) {
                             for (PDGNode<? extends BlockItem> previouslyPotentiallyAssigned : previouslyPotentiallyAssigneds) {
                                 //previouslyPotentiallyAssigned.linkVariableDependency(pdgNode);
                                 previouslyPotentiallyAssigned.linkOrderDependency(pdgNode);
@@ -446,7 +463,7 @@ public class PDGGenerationVisitor {
                     lastAssigned.augment(potentiallyChangedVariable, pdgNode);
                     //lastAssigned.get(potentiallyChangedVariable).add(pdgNode);
 
-                    for (Collection<PDGNode<? extends BlockItem>> usedSinceLastAssignmentNodes : usedSinceLastAssignment.getAllAssociated(potentiallyChangedVariable)) {
+                    for (Collection<PDGNode<? extends BlockItem>> usedSinceLastAssignmentNodes : usedSinceLastAssignment.getAllAssociated(potentiallyChangedVariable, identityTypeMapper.get(blockItem))) {
                         for (PDGNode<? extends BlockItem> usedSinceLastAssignmentNode : usedSinceLastAssignmentNodes) {
                             usedSinceLastAssignmentNode.linkOrderDependency(pdgNode);
                         }

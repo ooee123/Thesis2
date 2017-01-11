@@ -2,6 +2,10 @@ package visitor;
 
 import ast.*;
 import ast.declaration.TypedefDeclaration;
+import ast.expression.*;
+import ast.expression.impl.*;
+import ast.statement.Statement;
+import ast.statement.impl.*;
 import ast.type.Type;
 import lombok.Data;
 
@@ -114,6 +118,7 @@ public class ASTGeneralVisitor {
     public void walk(Statement statement) {
         if (statement instanceof ExpressionStatement) {
             Expression expression = ((ExpressionStatement) statement).getExpression();
+            return;
         } else if (statement instanceof IterationStatementFor) {
             IterationStatementFor iterationStatementFor = (IterationStatementFor) statement;
             if (iterationStatementFor.getInitial() != null) {

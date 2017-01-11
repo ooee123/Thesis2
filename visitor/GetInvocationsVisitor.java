@@ -1,6 +1,7 @@
 package visitor;
 
-import ast.*;
+import ast.expression.Expression;
+import ast.expression.impl.PostfixExpressionInvocationImpl;
 import lombok.Value;
 
 import java.util.ArrayList;

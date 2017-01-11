@@ -1,5 +1,6 @@
 package ast.type;
 
+import ast.expression.impl.PrimaryExpressionIdentifier;
 import ast.VariableDeclaration;
 import lombok.*;
 
@@ -11,7 +12,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(exclude = {"declarations"})
 public class StructUnionType implements ActualType {
-
 
 
     public enum StructUnion {
@@ -100,5 +100,16 @@ public class StructUnionType implements ActualType {
         }
         builder.append(")");
         return builder.toString();
+    }
+
+    public PrimaryExpressionIdentifier getField(String fieldName) {
+        for (VariableDeclaration declaration : declarations) {
+            for (VariableDeclaration.DeclaredVariable declaredVariable : declaration.getDeclaredVariables()) {
+                if (declaredVariable.getIdentifier().getIdentifier().equals(fieldName)) {
+                    return declaredVariable.getIdentifier();
+                }
+            }
+        }
+        throw new IllegalArgumentException("Field name of " + fieldName + " not found in " + toString());
     }
 }

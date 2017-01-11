@@ -1,8 +1,9 @@
 package ast;
 
+import ast.expression.*;
+import ast.expression.impl.*;
 import visitor.Visitor;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,7 +50,7 @@ public interface BlockItem extends BaseElement {
                 expression.visitNestedExpressions(this);
             }
         };
-        visitAllExpressions(visitor);
+        visitOwnedExpressions(visitor);
         return modifiesMemory[0];
     }
 */
@@ -146,5 +147,17 @@ public interface BlockItem extends BaseElement {
         }
     }
 
+    /**
+     * Applies a visitor to all the expressions that this block items owns. Does not apply the visitor to any expression
+     * inside any statement besides THIS blockItem.
+     * @param visitor
+     */
+    void visitOwnedExpressions(Visitor<Expression> visitor);
+
+    /**
+     * Applies a visitor to all the expressions that this block items owns. Does not apply the visitor to any expression
+     * inside any statement besides THIS blockItem.
+     * @param visitor
+     */
     void visitAllExpressions(Visitor<Expression> visitor);
 }

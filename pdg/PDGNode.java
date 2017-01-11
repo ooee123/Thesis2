@@ -1,11 +1,8 @@
 package pdg;
 
 import ast.BlockItem;
-import ast.Statement;
 import lombok.*;
-import visitor.PDGGenerationVisitor;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 

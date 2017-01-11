@@ -38,4 +38,24 @@ public class TypeScope {
          return null;
       }
    }
+
+   private void flatten(Map<String, Type> soFar) {
+      for (Map.Entry<String, Type> stringTypeEntry : types.entrySet()) {
+         if (!soFar.containsKey(stringTypeEntry.getKey())) {
+            soFar.put(stringTypeEntry.getKey(), stringTypeEntry.getValue());
+         }
+      }
+      if (parent != null) {
+         parent.flatten(soFar);
+      }
+   }
+
+   public Map<String, Type> flatten() {
+      Map<String, Type> types = new HashMap<>();
+      types.putAll(this.types);
+      if (parent != null) {
+         parent.flatten(types);
+      }
+      return types;
+   }
 }

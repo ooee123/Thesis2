@@ -1,7 +1,7 @@
 package ast.type;
 
 import ast.BaseElement;
-import ast.ConditionalExpression;
+import ast.expression.ConditionalExpression;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.Setter;
@@ -9,7 +9,6 @@ import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**

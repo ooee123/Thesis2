@@ -1,7 +1,12 @@
 package IdentifierNormalizer;
 
 import ast.*;
-import com.google.common.collect.Lists;
+import ast.expression.Expression;
+import ast.expression.impl.PrimaryExpressionIdentifier;
+import ast.statement.CanContainStatements;
+import ast.statement.Statement;
+import ast.statement.impl.CompoundStatement;
+import ast.statement.impl.IterationStatementDeclareFor;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.Value;
@@ -44,6 +49,7 @@ public class FunctionIdentifierNormalizerVisitor {
         }
         IdentifierFetcher identifierFetcher = new IdentifierFetcher();
         identifierFetcher.visit(function.getCompoundStatement());
+        // For all global variable references
         for (Map.Entry<String, Collection<PrimaryExpressionIdentifier>> stringCollectionEntry : identifierFetcher.getUndeclaredVariables().entrySet()) {
             functionScope.putIfAbsent(stringCollectionEntry.getKey(), Sets.newIdentityHashSet());
             functionScope.get(stringCollectionEntry.getKey()).addAll(stringCollectionEntry.getValue());
@@ -243,7 +249,7 @@ public class FunctionIdentifierNormalizerVisitor {
                 //this.identifiers.putAll(identifierFetcher.getUndeclaredVariables());
             } else {
                 Touchy touchy = new Touchy();
-                statement.visitAllExpressions(touchy);
+                statement.visitOwnedExpressions(touchy);
                 Map<String, Collection<PrimaryExpressionIdentifier>> identifiers = touchy.getIdentifiers();
                 for (Map.Entry<String, Collection<PrimaryExpressionIdentifier>> stringCollectionEntry : identifiers.entrySet()) {
                     this.identifiers.putIfAbsent(stringCollectionEntry.getKey(), Sets.newIdentityHashSet());

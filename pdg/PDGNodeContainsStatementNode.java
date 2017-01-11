@@ -1,6 +1,6 @@
 package pdg;
 
-import ast.Statement;
+import ast.statement.Statement;
 
 import java.util.Collection;
 

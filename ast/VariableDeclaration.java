@@ -1,14 +1,15 @@
 package ast;
 
+import ast.expression.AssignmentExpression;
+import ast.expression.Expression;
+import ast.expression.impl.PrimaryExpressionIdentifier;
 import ast.type.ActualType;
 import ast.type.PointerType;
-import ast.type.PrimitiveType;
 import ast.type.Type;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
-import visitor.PDGGenerationVisitor;
 import visitor.Visitor;
 
 import java.util.*;
@@ -125,11 +126,16 @@ public class VariableDeclaration implements Declaration {
     }
 
     @Override
-    public void visitAllExpressions(Visitor<Expression> visitor) {
+    public void visitOwnedExpressions(Visitor<Expression> visitor) {
         for (DeclaredVariable declaredVariable : declaredVariables) {
             if (declaredVariable.getInitializer() != null) {
                 visitor.visit(declaredVariable.getInitializer());
             }
         }
+    }
+
+    @Override
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        visitOwnedExpressions(visitor);
     }
 }

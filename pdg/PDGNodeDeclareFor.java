@@ -1,7 +1,7 @@
 package pdg;
 
-import ast.IterationStatementDeclareFor;
-import ast.Statement;
+import ast.statement.impl.IterationStatementDeclareFor;
+import ast.statement.Statement;
 import com.google.common.collect.Lists;
 import lombok.EqualsAndHashCode;
 import lombok.Value;

@@ -1,9 +1,7 @@
 package ast.declaration;
 
-import ast.Declaration;
-import ast.Expression;
+import ast.expression.Expression;
 import ast.type.StructUnionType;
-import com.google.common.collect.Sets;
 import lombok.Value;
 import visitor.Visitor;
 
@@ -47,7 +45,12 @@ public class StructDefinition implements TypeDefinition {
     }
 
     @Override
-    public void visitAllExpressions(Visitor<Expression> visitor) {
+    public void visitOwnedExpressions(Visitor<Expression> visitor) {
+        return;
+    }
 
+    @Override
+    public void visitAllExpressions(Visitor<Expression> visitor) {
+        visitOwnedExpressions(visitor);
     }
 }

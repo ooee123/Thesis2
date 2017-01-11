@@ -1,8 +1,6 @@
 package pdg;
 
 import ast.VariableDeclaration;
-import ast.ExpressionStatement;
-import ast.VariableDeclaration;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 

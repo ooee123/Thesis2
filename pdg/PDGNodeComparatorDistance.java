@@ -1,8 +1,6 @@
 package pdg;
 
 import ast.BlockItem;
-import ast.JumpStatementStrict;
-import com.google.common.collect.Lists;
 
 import java.util.Comparator;
 

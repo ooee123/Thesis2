@@ -1,6 +1,10 @@
 package visitor;
 
 import ast.*;
+import ast.expression.AssignmentExpression;
+import ast.expression.Expression;
+import ast.expression.impl.PostfixExpressionInvocationImpl;
+import ast.expression.impl.PrimaryExpressionIdentifier;
 
 import java.util.*;
 
@@ -47,7 +51,7 @@ public class FunctionArgumentOrderVisitor {
 
         for (Function function : p.getFunction()) {
             functionDefinition.put(function.getIdentifier(), function);
-            function.getCompoundStatement().visitAllExpressions(visitor);
+            function.getCompoundStatement().visitOwnedExpressions(visitor);
         }
         for (String functionName : functionDefinition.keySet()) {
             Collection<PostfixExpressionInvocationImpl> calls = new ArrayList<>();

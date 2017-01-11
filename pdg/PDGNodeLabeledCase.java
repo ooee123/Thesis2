@@ -1,8 +1,7 @@
 package pdg;
 
-import ast.*;
+import ast.statement.impl.LabeledCaseStatement;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.Value;
 
 /**

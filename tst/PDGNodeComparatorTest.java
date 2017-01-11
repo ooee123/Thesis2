@@ -1,6 +1,10 @@
 package tst;
 
 import ast.*;
+import ast.expression.*;
+import ast.expression.impl.*;
+import ast.statement.impl.ExpressionStatement;
+import ast.statement.impl.JumpBreakStatement;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,6 +1,10 @@
 package visitor;
 
 import ast.*;
+import ast.expression.impl.ConditionalExpressionImpl;
+import ast.statement.Statement;
+import ast.statement.impl.ExpressionStatement;
+import ast.statement.impl.SelectionStatementIf;
 
 /**
  * Created by ooee on 10/6/16.

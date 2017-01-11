@@ -1,14 +1,10 @@
 package pdg;
 
 import ast.BlockItem;
-import ast.CompoundStatement;
-import ast.Statement;
+import ast.statement.Statement;
 import com.google.common.collect.Sets;
-import lombok.Setter;
-import visitor.PDGGenerationVisitor;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 /**

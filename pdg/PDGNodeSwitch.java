@@ -1,8 +1,9 @@
 package pdg;
 
 import ast.*;
-import com.google.common.collect.Lists;
-import com.google.common.collect.SetMultimap;
+import ast.statement.Statement;
+import ast.statement.impl.CompoundStatement;
+import ast.statement.impl.SelectionStatementSwitch;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Value;

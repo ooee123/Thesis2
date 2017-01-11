@@ -1,8 +1,6 @@
 package pdg;
 
-import ast.Expression;
-import ast.JumpBreakStatement;
-import ast.Statement;
+import ast.statement.impl.JumpBreakStatement;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
