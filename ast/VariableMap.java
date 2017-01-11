@@ -1,6 +1,5 @@
 package ast;
 
-import ast.expression.impl.PrimaryExpressionIdentifier;
 import ast.type.StructUnionType;
 import ast.type.Type;
 import ast.type.TypedefType;

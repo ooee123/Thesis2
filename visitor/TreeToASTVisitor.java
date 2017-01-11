@@ -1,7 +1,6 @@
 package visitor;
 
 import ast.*;
-import ast.Function;
 import ast.declaration.EnumDefinition;
 import ast.declaration.FunctionPrototypeDeclaration;
 import ast.declaration.StructDefinition;
@@ -10,10 +9,10 @@ import ast.expression.*;
 import ast.expression.impl.*;
 import ast.statement.*;
 import ast.statement.impl.*;
-import ast.statement.IterationStatement;
 import ast.type.*;
 import com.google.common.collect.Lists;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import parser.CParser;
 
 import java.util.*;

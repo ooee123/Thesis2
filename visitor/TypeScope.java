@@ -1,11 +1,11 @@
 package visitor;
 
-import lombok.Value;
-import lombok.AllArgsConstructor;
-
-import java.util.*;
-import ast.*;
 import ast.type.Type;
+import lombok.AllArgsConstructor;
+import lombok.Value;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Value
 @AllArgsConstructor

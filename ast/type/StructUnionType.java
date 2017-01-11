@@ -1,8 +1,10 @@
 package ast.type;
 
-import ast.expression.impl.PrimaryExpressionIdentifier;
 import ast.VariableDeclaration;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+import lombok.Setter;
 
 import java.util.List;
 

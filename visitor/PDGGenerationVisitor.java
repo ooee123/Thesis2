@@ -6,7 +6,6 @@ import ast.expression.Expression;
 import ast.statement.Statement;
 import ast.statement.impl.*;
 import ast.type.PointerType;
-import ast.type.StructUnionType;
 import ast.type.Type;
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;

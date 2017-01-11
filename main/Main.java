@@ -1,7 +1,8 @@
 package main;
 
 import IdentifierNormalizer.ProgramIdentifierNormalizerVisitor;
-import ast.*;
+import ast.Function;
+import ast.Program;
 import ast.statement.impl.CompoundStatement;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
