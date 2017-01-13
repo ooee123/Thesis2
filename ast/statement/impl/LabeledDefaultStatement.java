@@ -19,8 +19,8 @@ public class LabeledDefaultStatement implements LabeledStatement, CanContainStat
     private Statement statement;
 
     @Override
-    public String toCode() {
-        return "default: " + statement.toCode();
+    public String toCode(boolean showOriginalLine) {
+        return "default: " + statement.toCode(showOriginalLine);
     }
 
     @Override

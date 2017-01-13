@@ -15,6 +15,10 @@ public class AbstractParameter implements BaseElement {
     @NonNull private Type type;
 
     @Override
+    public String toCode(boolean showOriginalLine) {
+        return type.toCode();
+    }
+
     public String toCode() {
         return type.toCode();
     }

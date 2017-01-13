@@ -27,6 +27,10 @@ public class EnumType implements ActualType {
         private ConditionalExpression value;
 
         @Override
+        public String toCode(boolean showOriginalLine) {
+            return toCode();
+        }
+
         public String toCode() {
             if (value != null) {
                 return name + "=" + value.toCode();

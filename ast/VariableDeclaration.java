@@ -18,6 +18,7 @@ import java.util.*;
  * Created by ooee on 9/24/16.
  */
 @Value
+@AllArgsConstructor
 public class VariableDeclaration implements Declaration {
 
     @Value
@@ -26,7 +27,7 @@ public class VariableDeclaration implements Declaration {
         @NonNull private Type type;
         @NonNull private PrimaryExpressionIdentifier identifier;
         private AssignmentExpression initializer;
-        @NonNull private boolean array;
+        private boolean array;
         private AssignmentExpression initialSize;
 
         public DeclaredVariable(Type type, PrimaryExpressionIdentifier identifier, AssignmentExpression assignmentExpression) {
@@ -38,12 +39,17 @@ public class VariableDeclaration implements Declaration {
         }
 
         @Override
-        public String toCode() {
+        public String toCode(boolean showOriginalLine) {
             throw new UnsupportedOperationException();
         }
     }
 
-    @Getter private List<DeclaredVariable> declaredVariables;
+    private List<DeclaredVariable> declaredVariables;
+    private String originalLine;
+
+    public VariableDeclaration(List<DeclaredVariable> declaredVariables) {
+        this(declaredVariables, toCommentTip(declaredVariables));
+    }
 
     @Override
     public Set<String> getDependantVariables() {
@@ -86,7 +92,15 @@ public class VariableDeclaration implements Declaration {
     }
 
     @Override
-    public String toCode() {
+    public String toCode(boolean showOriginalLine) {
+        if (showOriginalLine) {
+            return toCommentTip(this.declaredVariables) + " /* " + originalLine + " */";
+        } else {
+            return toCommentTip(this.declaredVariables);
+        }
+    }
+
+    private static String toCommentTip(List<DeclaredVariable> declaredVariables) {
         DeclaredVariable declaredVariable = declaredVariables.stream().findAny().get();
         ActualType actualType;
         if (declaredVariable.type instanceof PointerType) {
@@ -117,7 +131,8 @@ public class VariableDeclaration implements Declaration {
             }
             declaredVariableCode.add(builder.toString());
         }
-        return actualType.toCode() + " " + String.join(", ", declaredVariableCode) + ";";
+        String thusFar = actualType.toCode() + " " + String.join(", ", declaredVariableCode) + ";";
+        return thusFar;
     }
 
     @Override

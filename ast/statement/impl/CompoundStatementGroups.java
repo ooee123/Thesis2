@@ -40,9 +40,9 @@ public class CompoundStatementGroups implements Statement {
     }
 
     @Override
-    public String toCode() {
-        List<String> declarationCodes = collectionToCode(variableDeclarations);
-        List<String> statementCodes = collectionToCode(statements);
+    public String toCode(boolean showOriginalLine) {
+        List<String> declarationCodes = collectionToCode(variableDeclarations, showOriginalLine);
+        List<String> statementCodes = collectionToCode(statements, showOriginalLine);
         return "{\n" + String.join("\n", declarationCodes) + "\n" + String.join("\n", statementCodes) + "\n}";
     }
 /*

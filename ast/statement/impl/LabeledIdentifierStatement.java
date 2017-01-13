@@ -20,8 +20,8 @@ public class LabeledIdentifierStatement implements LabeledStatement, CanContainS
     private Statement statement;
 
     @Override
-    public String toCode() {
-        return identifier + ": " + statement.toCode();
+    public String toCode(boolean showOriginalLine) {
+        return identifier + ": " + statement.toCode(showOriginalLine);
     }
 
     @Override

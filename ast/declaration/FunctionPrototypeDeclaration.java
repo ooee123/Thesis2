@@ -3,6 +3,7 @@ package ast.declaration;
 import ast.*;
 import ast.expression.Expression;
 import ast.type.Type;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import visitor.Visitor;
 
@@ -12,13 +13,29 @@ import java.util.Set;
  * Created by ooee on 12/8/16.
  */
 @Value
+@AllArgsConstructor
 public class FunctionPrototypeDeclaration implements Declaration {
     private Type returnType;
     private String identifier;
     private AbstractParameterList parameterList;
+
+    private String originalLine;
+
+    public FunctionPrototypeDeclaration(Type returnType, String identifier, AbstractParameterList parameterList) {
+        this(returnType, identifier, parameterList, toCommentTip(returnType, identifier, parameterList));
+    }
+
     @Override
-    public String toCode() {
-        return returnType.toCode() + " " + identifier + "(" + parameterList.toCode() + ");";
+    public String toCode(boolean showOriginalLine) {
+        if (showOriginalLine) {
+            return toCommentTip(returnType, identifier, parameterList) + ";" + " /* " + originalLine + " */";
+        } else {
+            return toCommentTip(returnType, identifier, parameterList) + ";";
+        }
+    }
+
+    private static String toCommentTip(Type returnType, String identifier, AbstractParameterList parameterList) {
+        return returnType.toCode() + " " + identifier + "(" + parameterList.toCode() + ")";
     }
 
     @Override

@@ -11,6 +11,14 @@ import java.util.*;
  * Created by ooee on 9/25/16.
  */
 public interface Expression extends BaseElement {
+
+    @Override
+    default String toCode(boolean showOriginalLine) {
+        return toCode();
+    }
+
+    String toCode();
+
     Set<String> getVariables();
 
     Set<String> getDependentVariables();

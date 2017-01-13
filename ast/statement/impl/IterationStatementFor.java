@@ -24,13 +24,22 @@ public class IterationStatementFor implements IterationStatement, CanContainStat
     private Expression condition;
     private Expression iteration;
     @NonNull private Statement statement;
+    private String originalLine;
 
     public static String toCode(String initialCode, String conditionCode, String iterationCode, String statementCode) {
-        return String.format("for (%s; %s; %s) %s", initialCode, conditionCode, iterationCode, statementCode);
+        return String.format("%s %s", toCommentTip(initialCode, conditionCode, iterationCode), statementCode);
+    }
+
+    public IterationStatementFor(Expression initial, Expression condition, Expression iteration, Statement statement) {
+        this(initial, condition, iteration, statement, toCommentTip(initial.toCode(), condition.toCode(), iteration.toCode()));
+    }
+
+    private static String toCommentTip(String initial, String condition, String iteration) {
+        return String.format("for (%s; %s; %s)", initial, condition, iteration);
     }
 
     @Override
-    public String toCode() {
+    public String toCode(boolean showOriginalLine) {
         String initialString = "", conditionString = "", iterationString = "";
         if (initial != null) {
             initialString = initial.toCode();
@@ -41,7 +50,7 @@ public class IterationStatementFor implements IterationStatement, CanContainStat
         if (iteration != null) {
             iterationString = iteration.toCode();
         }
-        return toCode(initialString, conditionString, iterationString, statement.toCode());
+        return toCode(initialString, conditionString, iterationString, statement.toCode(showOriginalLine));
     }
 
     @Override

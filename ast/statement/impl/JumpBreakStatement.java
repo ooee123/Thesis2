@@ -15,7 +15,7 @@ import java.util.Set;
 @Value
 public class JumpBreakStatement implements JumpStatementStrict {
     @Override
-    public String toCode() {
+    public String toCode(boolean showOriginalLine) {
         return "break;";
     }
 

@@ -15,9 +15,22 @@ public class Function implements BaseElement {
     private String identifier;
     private ParameterList parameterList;
     private CompoundStatement compoundStatement;
+    private String originalLine;
+
+    public Function(Type returnType, String identifier, ParameterList parameterList, CompoundStatement compoundStatement) {
+        this(returnType, identifier, parameterList, compoundStatement, toCommentTip(returnType, identifier, parameterList));
+    }
 
     @Override
-    public String toCode() {
-        return returnType.toCode() + " " + identifier + "(" + parameterList.toCode() + ")" + compoundStatement.toCode();
+    public String toCode(boolean showOriginalLine) {
+        if (showOriginalLine) {
+            return toCommentTip(returnType, identifier, parameterList) + " /* " + originalLine + " */" + compoundStatement.toCode(showOriginalLine);
+        } else {
+            return toCommentTip(returnType, identifier, parameterList) + compoundStatement.toCode(showOriginalLine);
+        }
+    }
+
+    public static String toCommentTip(Type returnType, String identifier, ParameterList parameterList) {
+        return returnType.toCode() + " " + identifier + "(" + parameterList.toCode() + ")";
     }
 }

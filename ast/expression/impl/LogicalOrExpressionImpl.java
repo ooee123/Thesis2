@@ -19,7 +19,7 @@ public class LogicalOrExpressionImpl implements LogicalOrExpression {
 
     @Override
     public String toCode() {
-        List<String> codes = collectionToCode(logicalAndExpressions);
+        List<String> codes = collectionToCode(logicalAndExpressions, false);
         return String.join(" " + OR + " ", codes);
     }
 

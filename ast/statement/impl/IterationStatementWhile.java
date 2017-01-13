@@ -22,10 +22,19 @@ import java.util.Set;
 public class IterationStatementWhile implements IterationStatement, CanContainStatements {
     @NonNull private Expression condition;
     @NonNull private Statement statement;
+    private String originalString;
+
+    public IterationStatementWhile(Expression condition, Statement statement) {
+        this(condition, statement, toCommentTip(condition.toCode()));
+    }
 
     @Override
-    public String toCode() {
-        return toCode(condition.toCode(), statement.toCode());
+    public String toCode(boolean showOriginalLine) {
+        if (showOriginalLine) {
+            return String.format("%s /* %s */ %s", toCommentTip(condition.toCode()), originalString, statement.toCode(showOriginalLine));
+        } else {
+            return toCode(condition.toCode(), statement.toCode(showOriginalLine));
+        }
     }
 
     @Override
@@ -56,7 +65,11 @@ public class IterationStatementWhile implements IterationStatement, CanContainSt
     }
 
     public static String toCode(String conditionCode, String statementCode) {
-        return String.format("while (%s) %s", conditionCode, statementCode);
+        return String.format("%s %s", toCommentTip(conditionCode), statementCode);
+    }
+
+    private static String toCommentTip(String condition) {
+        return String.format("while (%s)", condition);
     }
 
     @Override

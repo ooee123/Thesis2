@@ -186,7 +186,7 @@ public class TreeToASTVisitor {
         if (ctx != null) {
             return visit(ctx.parameterList());
         } else {
-            return new ParameterList();
+            return new ParameterList(new ArrayList<>());
         }
     }
 

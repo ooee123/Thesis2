@@ -21,6 +21,8 @@ import java.io.IOException;
  * Created by ooee on 10/20/16.
  */
 public class Main {
+    public static final boolean SHOW_ORIGINAL_LINE = true;
+
     public static void main(String args[]) {
         if (args.length < 1) {
             System.err.println("Put C file as first parameter");
@@ -64,7 +66,7 @@ public class Main {
             }
             ProgramIdentifierNormalizerVisitor programIdentifierNormalizerVisitor = new ProgramIdentifierNormalizerVisitor();
             programIdentifierNormalizerVisitor.visit(program);
-            System.out.println(program.toCode());
+            System.out.println(program.toCode(SHOW_ORIGINAL_LINE));
         } catch (IOException e) {
             System.err.println(e);
         }

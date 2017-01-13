@@ -61,7 +61,7 @@ public class StructUnionType implements ActualType {
                 wasToCoded = true;
                 builder.append(" {\n");
                 for (VariableDeclaration declaration : declarations) {
-                    builder.append(declaration.toCode() + "\n");
+                    builder.append(declaration.toCode(false) + "\n");
                 }
                 builder.append("}");
             }

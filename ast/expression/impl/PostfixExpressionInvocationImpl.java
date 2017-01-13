@@ -56,7 +56,7 @@ public class PostfixExpressionInvocationImpl implements PostfixExpression {
     }
 
     public String toCode() {
-        List<String> args = collectionToCode(arguments);
+        List<String> args = collectionToCode(arguments, false);
         return postfixExpression.toCode() + "(" + String.join(", ", args) + ")";
     }
 

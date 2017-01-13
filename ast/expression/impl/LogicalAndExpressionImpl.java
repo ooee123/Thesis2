@@ -19,7 +19,7 @@ public class LogicalAndExpressionImpl implements LogicalAndExpression {
 
     @Override
     public String toCode() {
-        List<String> codes = collectionToCode(inclusiveBitwiseOrExpressions);
+        List<String> codes = collectionToCode(inclusiveBitwiseOrExpressions, false);
         return String.join(AND, codes);
     }
 

@@ -45,8 +45,8 @@ public class CompoundStatement implements Statement {
     }
 
     @Override
-    public String toCode() {
-        List<String> codes = collectionToCode(blockItems);
+    public String toCode(boolean showOriginalLine) {
+        List<String> codes = collectionToCode(blockItems, showOriginalLine);
         return toCode(String.join("\n", codes));
     }
 

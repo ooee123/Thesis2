@@ -5,6 +5,7 @@ import ast.expression.Expression;
 import ast.statement.SelectionStatement;
 import ast.statement.Statement;
 import com.google.common.collect.Lists;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 import visitor.Visitor;
@@ -17,29 +18,34 @@ import java.util.Set;
  * Created by ooee on 9/25/16.
  */
 @Data
+@AllArgsConstructor
 public class SelectionStatementIf implements SelectionStatement, CanContainStatements {
     @NonNull private Expression condition;
     @NonNull private Statement thenStatement;
     private Statement elseStatement;
+    private final String originalLine;
 
     public SelectionStatementIf(Expression condition, Statement thenStatement, Statement elseStatement) {
-        this.condition = condition;
-        this.thenStatement = thenStatement;
-        this.elseStatement = elseStatement;
-    }
-
-    public SelectionStatementIf(Expression condition, Statement thenStatement) {
-        this(condition, thenStatement, null);
+        this(condition, thenStatement, elseStatement, toCommentTip(condition));
     }
 
     @Override
-    public String toCode() {
-        String base = String.format("if (%s) %s", condition.toCode(), thenStatement.toCode());
+    public String toCode(boolean showOriginalLine) {
+        String base = String.format("%s", toCommentTip(condition));
+
+        if (showOriginalLine) {
+            base = String.format("%s /* %s */", base, originalLine);
+        }
+        base = String.format("%s %s", base, thenStatement.toCode(showOriginalLine));
         if (elseStatement != null) {
-            return String.format("%s else %s", base, elseStatement.toCode());
+            return String.format("%s else %s", base, elseStatement.toCode(showOriginalLine));
         } else {
             return base;
         }
+    }
+
+    private static String toCommentTip(Expression condition) {
+        return String.format("if (%s)", condition.toCode());
     }
 
     @Override

@@ -36,7 +36,7 @@ public class PDGGenerationVisitor {
         for (PDGNode pdgNode : allNodes.values()) {
             label = String.valueOf(Character.valueOf((char) ('A' + i)));
             labels.put(pdgNode, label);
-            System.out.println(label + " := " + pdgNode.getBlockItem().toCode());
+            System.out.println(label + " := " + pdgNode.getBlockItem().toCode(false));
             i++;
         }
 
@@ -532,7 +532,7 @@ public class PDGGenerationVisitor {
 
     private void printLastAssigned(Map<String, BlockItem> map) {
         for (Map.Entry<String, BlockItem> stringBlockItemEntry : map.entrySet()) {
-            System.out.println(stringBlockItemEntry.getKey() + ": " + stringBlockItemEntry.getValue().toCode());
+            System.out.println(stringBlockItemEntry.getKey() + ": " + stringBlockItemEntry.getValue().toCode(false));
         }
     }
 }

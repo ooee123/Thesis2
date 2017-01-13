@@ -26,9 +26,23 @@ public class SelectionStatementSwitch implements SelectionStatement, CanContainS
     private List<BlockItem> defaultCase;
     */
 
+    private final String originalLine;
+
+    public SelectionStatementSwitch(Expression expression, CompoundStatement compoundStatement) {
+        this(expression, compoundStatement, toCommentTip(expression));
+    }
+
+    private static String toCommentTip(Expression expression) {
+        return String.format("switch (%s)", expression.toCode());
+    }
+
     @Override
-    public String toCode() {
-        return String.format("switch (%s) %s", expression.toCode(), compoundStatement.toCode());
+    public String toCode(boolean showOriginalLine) {
+        String base = toCommentTip(expression);
+        if (showOriginalLine) {
+            base = base + " /* " + originalLine + " */";
+        }
+        return String.format("%s %s", base, compoundStatement.toCode(showOriginalLine));
         /*
         StringBuilder builder = new StringBuilder();
         builder.append(String.format("switch (%s) ", expression.toCode()));

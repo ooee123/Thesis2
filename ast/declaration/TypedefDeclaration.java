@@ -24,6 +24,10 @@ public class TypedefDeclaration implements Declaration {
     }
 
     @Override
+    public String toCode(boolean showOriginalLine) {
+        return toCode();
+    }
+
     public String toCode() {
         String originalTypeCode;
         if (typedefType.getOriginalType() instanceof StructUnionType) {

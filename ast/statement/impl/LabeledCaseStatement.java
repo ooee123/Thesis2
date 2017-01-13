@@ -6,6 +6,7 @@ import ast.expression.Expression;
 import ast.statement.LabeledStatement;
 import ast.statement.Statement;
 import com.google.common.collect.Lists;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import visitor.Visitor;
 
@@ -16,13 +17,23 @@ import java.util.*;
  */
 //TODO: This is incorrect, need to consider for switch statements
 @Value
+@AllArgsConstructor
 public class LabeledCaseStatement implements LabeledStatement, CanContainStatements {
     private ConditionalExpression conditionalExpression;
     private Statement statement;
+    private String originalLine;
+
+    public LabeledCaseStatement(ConditionalExpression conditionalExpression, Statement statement) {
+        this(conditionalExpression, statement, toCommentTip(conditionalExpression));
+    }
+
+    private static String toCommentTip(ConditionalExpression conditionalExpression) {
+        return "case " + conditionalExpression.toCode() + ": ";
+    }
 
     @Override
-    public String toCode() {
-        return "case " + conditionalExpression.toCode() + ": " + statement.toCode();
+    public String toCode(boolean showOriginalLine) {
+        return toCommentTip(conditionalExpression) + statement.toCode(showOriginalLine);
     }
 
     @Override

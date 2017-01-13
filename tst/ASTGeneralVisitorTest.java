@@ -33,7 +33,7 @@ public class ASTGeneralVisitorTest {
             CompoundStatement statement = sorter.sort(functionBody.getBody());
             function.setCompoundStatement(statement);
             System.out.println("Reprinted program");
-            System.out.println(function.toCode());
+            System.out.println(function.toCode(false));
         }
 
 

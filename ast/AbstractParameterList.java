@@ -20,6 +20,10 @@ public class AbstractParameterList implements BaseElement {
     }
 
     @Override
+    public String toCode(boolean showOriginalLine) {
+        return toCode();
+    }
+
     public String toCode() {
         List<String> codes = parameters.stream().map(para -> para.toCode()).collect(Collectors.toList());
         return String.join(", ", codes);

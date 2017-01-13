@@ -20,6 +20,10 @@ public class StructDefinition implements TypeDefinition {
     }
 
     @Override
+    public String toCode(boolean showOriginalLine) {
+        return toCode();
+    }
+
     public String toCode() {
         return structUnionType.expandedStructUnion() + ";";
     }

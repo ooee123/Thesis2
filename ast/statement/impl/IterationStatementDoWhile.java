@@ -22,10 +22,23 @@ import java.util.Set;
 public class IterationStatementDoWhile implements IterationStatement, CanContainStatements {
     @NonNull private Statement statement;
     @NonNull private Expression condition;
+    private String originalLine;
+
+    public IterationStatementDoWhile(Statement statement, Expression condition) {
+       this(statement, condition, toCommentTip(condition));
+    }
+
+    private static String toCommentTip(Expression expression) {
+        return String.format("while (%s)", expression.toCode());
+    }
 
     @Override
-    public String toCode() {
-        return String.format("do %s while (%s);", statement.toCode(), condition.toCode());
+    public String toCode(boolean showOriginalLine) {
+        if (showOriginalLine) {
+            return String.format("do %s %s; /* %s */", statement.toCode(showOriginalLine), toCommentTip(condition), originalLine);
+        } else {
+            return String.format("do %s %s;", statement.toCode(showOriginalLine), toCommentTip(condition));
+        }
     }
 
     @Override

@@ -1,10 +1,10 @@
 package ast.statement.impl;
 
-import ast.statement.CanContainStatements;
-import ast.expression.Expression;
-import ast.statement.Statement;
 import ast.VariableDeclaration;
+import ast.expression.Expression;
+import ast.statement.CanContainStatements;
 import ast.statement.IterationStatement;
+import ast.statement.Statement;
 import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,8 +25,13 @@ public class IterationStatementDeclareFor implements IterationStatement, CanCont
     private Expression condition;
     private Expression iteration;
     @NonNull private Statement statement;
+    @NonNull private String commentTip;
 
-    public String toCode() {
+    public IterationStatementDeclareFor(VariableDeclaration variableDeclaration, Expression condition, Expression iteration, Statement statement) {
+        this(variableDeclaration, condition, iteration, statement, toCommentTip(variableDeclaration, condition, iteration));
+    }
+
+    private static String toCommentTip(VariableDeclaration variableDeclaration, Expression condition, Expression iteration) {
         String conditionString = "", iterationString = "";
         if (condition != null) {
             conditionString = condition.toCode();
@@ -34,7 +39,19 @@ public class IterationStatementDeclareFor implements IterationStatement, CanCont
         if (iteration != null) {
             iterationString = iteration.toCode();
         }
-        return String.format("for (%s %s; %s) %s", variableDeclaration.toCode(), conditionString, iterationString, statement.toCode());
+        return String.format("for (%s %s; %s)", variableDeclaration.toCode(false), conditionString, iterationString);
+    }
+
+    @Override
+    public String toCode(boolean showOriginalLine) {
+        String conditionString = "", iterationString = "";
+        if (condition != null) {
+            conditionString = condition.toCode();
+        }
+        if (iteration != null) {
+            iterationString = iteration.toCode();
+        }
+        return String.format("for (%s %s; %s) %s", variableDeclaration.toCode(false), conditionString, iterationString, statement.toCode(showOriginalLine));
     }
 
     @Override
