@@ -34,7 +34,13 @@ public class PrimaryExpressionConstant implements PrimaryExpression {
 
     public String toCode() {
         if (value instanceof Character) {
-            return "'" + value.toString() + "'";
+            if (value.equals('\0')) {
+                return "'\\0'";
+            } else if (value.equals('\n')) {
+                return "'\\n'";
+            } else {
+                return "'" + value.toString() + "'";
+            }
         }
         if (value instanceof String) {
             return "\"" + value.toString() + "\"";

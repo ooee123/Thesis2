@@ -1,6 +1,7 @@
 package IdentifierNormalizer;
 
 import ast.*;
+import ast.declaration.VariableDeclaration;
 import ast.expression.Expression;
 import ast.expression.impl.PrimaryExpressionIdentifier;
 import ast.statement.CanContainStatements;

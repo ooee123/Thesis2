@@ -8,4 +8,9 @@ public class VoidType implements Type {
     public String toCode() {
         return "void";
     }
+
+    @Override
+    public String toExpandedCode() {
+        return toCode();
+    }
 }

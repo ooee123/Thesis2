@@ -1,6 +1,7 @@
 package pdg;
 
 import ast.*;
+import ast.declaration.VariableDeclaration;
 import ast.statement.impl.CompoundStatement;
 import ast.statement.JumpStatementStrict;
 import com.google.common.collect.Sets;

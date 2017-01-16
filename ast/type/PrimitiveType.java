@@ -14,4 +14,9 @@ public class PrimitiveType implements ActualType {
     public String toCode() {
         return typeName;
     }
+
+    @Override
+    public String toExpandedCode() {
+        return toCode();
+    }
 }

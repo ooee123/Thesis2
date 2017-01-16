@@ -1,6 +1,7 @@
 package main;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.Scanner;
 
 /**
@@ -43,17 +44,42 @@ public class Preprocess {
         */
     }
 
+    public static String stripUnderscore(String source, String word) {
+        String underscore = "__" + word + "__";
+        System.out.println(source.indexOf("__signed__"));
+        return source.replaceAll(underscore, word);
+    }
+
+    public static String fileToString(File file) throws IOException {
+        byte[] bytes = Files.readAllBytes(file.toPath());
+        return new String(bytes);
+    }
+
+    public static Process writeStringToProcess(ProcessBuilder processBuilder, String string) throws IOException {
+        processBuilder.redirectInput(ProcessBuilder.Redirect.PIPE);
+        Process process = processBuilder.start();
+        process.getOutputStream().write(string.getBytes());
+        process.getOutputStream().close();
+        return process;
+    }
+
     public static String preprocess(File file) throws IOException {
         //File uncommented = uncomment(file);
         File uncommented = file;
+
+        String string = fileToString(file);
+
         //int firstLine = getFirstLine(uncommented);
-        //ProcessBuilder processBuilder = new ProcessBuilder("gcc", "-E", "-xc", "-");
+        ProcessBuilder processBuilder = new ProcessBuilder("gcc", "-E", "-xc", "-");
+        processBuilder.directory(file.getParentFile());
+        Process process = writeStringToProcess(processBuilder, string);
         //processBuilder.redirectInput(uncommented);
         //Process process = processBuilder.start();
-        ProcessBuilder processBuilder = new ProcessBuilder("gcc", "-I.", "-E", uncommented.getAbsolutePath());
-        processBuilder.directory(file.getParentFile());
-        Process process = processBuilder.start();
+        //ProcessBuilder processBuilder = new ProcessBuilder("gcc", "-E", uncommented.getAbsolutePath());
+
+        //Process process = processBuilder.start();
         Scanner scanner = new Scanner(process.getInputStream());
+        Scanner scanner1 = new Scanner(process.getErrorStream());
         //Scanner scanner = new Scanner(file);
         //moveScannerToRealCode(scanner, file, firstLine);
         StringBuffer buffer = new StringBuffer();
@@ -63,9 +89,14 @@ public class Preprocess {
                 buffer.append(line + "\n");
             }
         }
+
+
+        while (scanner1.hasNextLine()) {
+            System.err.println(scanner1.nextLine());
+        }
         String finalString = buffer.toString();
+        finalString = stripUnderscore(finalString, "signed");
         //String finalString = removeFunctionAttributes(buffer.toString());
-        //System.out.println(finalString);
         return finalString;
     }
 

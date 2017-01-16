@@ -1,6 +1,6 @@
 package ast.statement.impl;
 
-import ast.VariableDeclaration;
+import ast.declaration.VariableDeclaration;
 import ast.expression.Expression;
 import ast.statement.CanContainStatements;
 import ast.statement.IterationStatement;

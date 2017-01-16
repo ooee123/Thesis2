@@ -20,4 +20,9 @@ public class FunctionPointer implements ActualType {
     public String toCode(String identifier) {
         return returnType.toCode() + " (" + identifier + ")" + abstractParameterList.toCode();
     }
+
+    @Override
+    public String toExpandedCode() {
+        return toCode();
+    }
 }

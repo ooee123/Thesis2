@@ -61,11 +61,12 @@ public class EnumType implements ActualType {
         } else if (tag != null && wasToCode) {
             return "enum " + tag;
         } else {
-            return expandedStructUnion();
+            return toExpandedCode();
         }
     }
 
-    public String expandedStructUnion() {
+    @Override
+    public String toExpandedCode() {
         StringBuilder builder = new StringBuilder();
         builder.append("enum");
         if (tag != null) {

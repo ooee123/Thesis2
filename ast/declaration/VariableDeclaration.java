@@ -1,5 +1,7 @@
-package ast;
+package ast.declaration;
 
+import ast.BaseElement;
+import ast.declaration.Declaration;
 import ast.expression.AssignmentExpression;
 import ast.expression.Expression;
 import ast.expression.impl.PrimaryExpressionIdentifier;
@@ -7,7 +9,6 @@ import ast.type.ActualType;
 import ast.type.PointerType;
 import ast.type.Type;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
 import visitor.Visitor;
@@ -46,11 +47,11 @@ public class VariableDeclaration implements Declaration {
 
     private List<DeclaredVariable> declaredVariables;
     private String originalLine;
-
+/*
     public VariableDeclaration(List<DeclaredVariable> declaredVariables) {
         this(declaredVariables, toCommentTip(declaredVariables));
     }
-
+*/
     @Override
     public Set<String> getDependantVariables() {
         Set<String> declaredVariables = new HashSet<>();

@@ -17,8 +17,8 @@ public class TernaryToIfVisitor {
     public SelectionStatementIf visit(ConditionalExpressionImpl exp) {
         Statement falseStatement = null;
         if (exp.getFalseExpression() != null) {
-            falseStatement = new ExpressionStatement(exp.getFalseExpression());
+            falseStatement = new ExpressionStatement(exp.getFalseExpression(), exp.toCode());
         }
-        return new SelectionStatementIf(exp.getLogicalOrExpression(), new ExpressionStatement(exp.getTrueExpression()), falseStatement);
+        return new SelectionStatementIf(exp.getLogicalOrExpression(), new ExpressionStatement(exp.getTrueExpression(), exp.toCode()), falseStatement);
     }
 }

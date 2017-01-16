@@ -1,6 +1,5 @@
 package ast.declaration;
 
-import ast.Declaration;
 import ast.expression.Expression;
 import ast.type.EnumType;
 import ast.type.StructUnionType;
@@ -31,9 +30,9 @@ public class TypedefDeclaration implements Declaration {
     public String toCode() {
         String originalTypeCode;
         if (typedefType.getOriginalType() instanceof StructUnionType) {
-            originalTypeCode = ((StructUnionType) typedefType.getOriginalType()).expandedStructUnion();
+            originalTypeCode = ((StructUnionType) typedefType.getOriginalType()).toExpandedCode();
         } else if (typedefType.getOriginalType() instanceof EnumType) {
-            originalTypeCode = ((EnumType) typedefType.getOriginalType()).expandedStructUnion();
+            originalTypeCode = ((EnumType) typedefType.getOriginalType()).toExpandedCode();
         } else {
             originalTypeCode = typedefType.getOriginalType().toCode();
         }

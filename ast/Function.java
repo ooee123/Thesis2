@@ -16,11 +16,11 @@ public class Function implements BaseElement {
     private ParameterList parameterList;
     private CompoundStatement compoundStatement;
     private String originalLine;
-
+/*
     public Function(Type returnType, String identifier, ParameterList parameterList, CompoundStatement compoundStatement) {
         this(returnType, identifier, parameterList, compoundStatement, toCommentTip(returnType, identifier, parameterList));
     }
-
+*/
     @Override
     public String toCode(boolean showOriginalLine) {
         if (showOriginalLine) {

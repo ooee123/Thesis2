@@ -1,6 +1,8 @@
 package IdentifierNormalizer;
 
 import ast.*;
+import ast.declaration.Declaration;
+import ast.declaration.VariableDeclaration;
 import ast.expression.impl.PrimaryExpressionIdentifier;
 import com.google.common.collect.Sets;
 

@@ -2,6 +2,7 @@ package visitor;
 
 import ast.*;
 import ast.declaration.TypedefDeclaration;
+import ast.declaration.VariableDeclaration;
 import ast.expression.Expression;
 import ast.expression.impl.PrimaryExpressionIdentifier;
 import ast.statement.Statement;
@@ -11,7 +12,7 @@ import lombok.Data;
 
 import java.util.*;
 
-import static ast.VariableDeclaration.DeclaredVariable;
+import static ast.declaration.VariableDeclaration.DeclaredVariable;
 
 @Data
 public class PrimaryExpressionTypeAssignerVisitor {

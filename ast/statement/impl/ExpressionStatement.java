@@ -18,11 +18,11 @@ import java.util.Set;
 public class ExpressionStatement implements Statement {
     private Expression expression;
     private String originalLine;
-
+/*
     public ExpressionStatement(Expression expression) {
         this(expression, toCommentTip(expression));
     }
-
+*/
     @Override
     public String toCode(boolean showOriginalLine) {
         if (showOriginalLine) {

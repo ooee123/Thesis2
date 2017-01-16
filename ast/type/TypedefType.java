@@ -23,4 +23,9 @@ public class TypedefType implements ActualType {
     public String toCode() {
         return typedefName;
     }
+
+    @Override
+    public String toExpandedCode() {
+        return originalType.toExpandedCode();
+    }
 }

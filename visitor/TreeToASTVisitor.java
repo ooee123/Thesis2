@@ -1,16 +1,16 @@
 package visitor;
 
 import ast.*;
-import ast.declaration.EnumDefinition;
-import ast.declaration.FunctionPrototypeDeclaration;
-import ast.declaration.StructDefinition;
-import ast.declaration.TypedefDeclaration;
+import ast.declaration.*;
 import ast.expression.*;
 import ast.expression.impl.*;
 import ast.statement.*;
 import ast.statement.impl.*;
 import ast.type.*;
 import com.google.common.collect.Lists;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import parser.CParser;
@@ -27,10 +27,19 @@ public class TreeToASTVisitor {
     public static final boolean LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS = true;
     public static final boolean ELSE_IF_CHAIN_WITHOUT_COMPOUND_STATEMENTS = true;
 
-    private Map<String, StructUnionType> tagMapper = new HashMap<>();
-    private Map<String, EnumType> enumTagMapper = new HashMap<>();
-    private Map<String, TypedefType> typedefMapper = new HashMap<>();
-    private Map<String, Function> functions = new LinkedHashMap<>();
+    private Map<String, StructUnionType> tagMapper;
+    private Map<String, EnumType> enumTagMapper;
+    private Map<String, TypedefType> typedefMapper;
+    private Map<String, Function> functions;
+    private CommonTokenStream tokenStream;
+
+    public TreeToASTVisitor(CommonTokenStream tokenStream) {
+        tagMapper = new HashMap<>();
+        enumTagMapper = new HashMap<>();
+        typedefMapper = new HashMap<>();
+        functions = new LinkedHashMap<>();
+        this.tokenStream = tokenStream;
+    }
 
     public Program visit(CParser.CompilationUnitContext ctx) {
         /* Init */
@@ -97,7 +106,11 @@ public class TreeToASTVisitor {
         String identifier = visit(ctx.declarator());
         ParameterList parameterList = visit(ctx.declarator().directDeclarator().parameterTypeList());
         CompoundStatement compoundStatement = visit(ctx.compoundStatement());
-        Function function = new Function(type, identifier, parameterList, compoundStatement);
+        Token start = ctx.getStart();
+        Token startOfCompoundStatement = ctx.compoundStatement().getStart();
+        List<Token> tokens = tokenStream.get(start.getTokenIndex(), startOfCompoundStatement.getTokenIndex());
+        List<String> collect = tokens.stream().map(tk -> tk.getText()).collect(Collectors.toList());
+        Function function = new Function(type, identifier, parameterList, compoundStatement, String.join(" ", collect));
         functions.put(identifier, function);
         return function;
     }
@@ -253,7 +266,8 @@ public class TreeToASTVisitor {
                     AbstractParameterList parameterList = ((FunctionPrototypeDeclaration) visit).getParameterList();
                     FunctionPointer functionPointer = new FunctionPointer(returnType, parameterList);
                     VariableDeclaration.DeclaredVariable declaredVariable = new VariableDeclaration.DeclaredVariable(functionPointer, new PrimaryExpressionIdentifier(((FunctionPrototypeDeclaration) visit).getIdentifier(), functionPointer));
-                    visit = new VariableDeclaration(Lists.newArrayList(declaredVariable));
+                    String originalString = String.join(" ", tokenStream.get(ctx.getStart().getStartIndex(), ctx.getStop().getStopIndex()).stream().map(tk -> tk.getText()).collect(Collectors.toList()));
+                    visit = new VariableDeclaration(Lists.newArrayList(declaredVariable), originalString);
                 }
                 blockItems.add(visit);
             }
@@ -323,18 +337,21 @@ public class TreeToASTVisitor {
             if (isFunctionPrototype) {
                 FunctionPrototypeDeclaration functionPrototypeDeclaration = processFunctionPrototype(ctx);
                 return functionPrototypeDeclaration;
-            }
-            Type type = visit(ctx.declarationSpecifiers());
-            if (ctx.initDeclaratorList() != null) {
-                CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
-                List<CParser.InitDeclaratorContext> initDeclaratorContexts = initDeclaratorListContext.initDeclarator();
-                List<VariableDeclaration.DeclaredVariable> declaredVariables = initDeclaratorContexts.stream().map(init -> visit(init, type)).collect(Collectors.toList());
-                return new VariableDeclaration(declaredVariables);
             } else {
-                if (!(type instanceof StructUnionType)) {
-                    throw new IllegalArgumentException();
+                Type type = visit(ctx.declarationSpecifiers());
+                if (ctx.initDeclaratorList() != null) {
+                    CParser.InitDeclaratorListContext initDeclaratorListContext = ctx.initDeclaratorList();
+                    List<CParser.InitDeclaratorContext> initDeclaratorContexts = initDeclaratorListContext.initDeclarator();
+                    List<VariableDeclaration.DeclaredVariable> declaredVariables = initDeclaratorContexts.stream().map(init -> visit(init, type)).collect(Collectors.toList());
+                    List<Token> tokens = tokenStream.get(ctx.getStart().getTokenIndex(), ctx.getStop().getTokenIndex());
+                    String originalString = String.join(" ", tokens.stream().map(tk -> tk.getText()).collect(Collectors.toList()));
+                    return new VariableDeclaration(declaredVariables, originalString);
+                } else {
+                    if (!(type instanceof StructUnionType)) {
+                        throw new IllegalArgumentException();
+                    }
+                    return new StructDefinition(((StructUnionType) type));
                 }
-                return new StructDefinition(((StructUnionType) type));
             }
         }
     }
@@ -440,9 +457,10 @@ public class TreeToASTVisitor {
     private ExpressionStatement visit(CParser.ExpressionStatementContext ctx) {
         if (ctx.expression() != null) {
             Expression expression = visit(ctx.expression());
-            return new ExpressionStatement(expression);
+            String original = String.join(" ", tokenStream.get(ctx.getStart().getTokenIndex(), ctx.getStop().getTokenIndex()).stream().map(tk -> tk.getText()).collect(Collectors.toList()));
+            return new ExpressionStatement(expression, original);
         } else {
-            return new ExpressionStatement(null);
+            return new ExpressionStatement(null, null);
         }
     }
 
@@ -849,6 +867,12 @@ public class TreeToASTVisitor {
             try {
                 if (token.length() == 3) {
                     return new PrimaryExpressionConstant(Character.valueOf(token.charAt(1)));
+                } else if (token.length() == 4 && token.charAt(1) == '\\') {
+                    if (token.charAt(2) == 'n') {
+                        return new PrimaryExpressionConstant(Character.valueOf('\n'));
+                    } else if (token.charAt(2) == '0') {
+                        return new PrimaryExpressionConstant((Character.valueOf('\0')));
+                    }
                 }
             } catch (NumberFormatException e) {
 
@@ -968,7 +992,7 @@ public class TreeToASTVisitor {
             } else if (ctx.typedefName() != null) {
                 if (!typedefMapper.containsKey(ctx.typedefName().getText())) {
                     //typedefMapper.put(ctx.typedefName().getText(), new TypedefType());
-                    throw new IllegalArgumentException("This type hasn't been recorded yet...");
+                    throw new IllegalArgumentException("This type hasn't been recorded yet...: " + ctx.typedefName().getText());
                 }
                 return typedefMapper.get(ctx.typedefName().getText());
             } else {
@@ -1059,7 +1083,8 @@ public class TreeToASTVisitor {
                         structMembers.add(declaredVariable);
                     }
                 }
-                VariableDeclaration variableDeclaration = new VariableDeclaration(structMembers);
+                String originalString = structDeclarationContext.getText();
+                VariableDeclaration variableDeclaration = new VariableDeclaration(structMembers, originalString);
                 structVariableDeclarations.add(variableDeclaration);
             }
             return structUnionType;

@@ -1,7 +1,9 @@
 package visitor;
 
 import ast.*;
+import ast.declaration.Declaration;
 import ast.declaration.TypedefDeclaration;
+import ast.declaration.VariableDeclaration;
 import ast.expression.Expression;
 import ast.statement.Statement;
 import ast.statement.impl.*;

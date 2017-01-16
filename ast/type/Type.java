@@ -12,4 +12,6 @@ public interface Type extends BaseElement {
     }
 
     String toCode();
+
+    String toExpandedCode();
 }

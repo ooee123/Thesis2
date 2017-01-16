@@ -24,7 +24,7 @@ public class ASTGeneralVisitorTest {
         CParser parser = new CParser(tokens);
 
         CParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
-        TreeToASTVisitor visitor = new TreeToASTVisitor();
+        TreeToASTVisitor visitor = new TreeToASTVisitor(tokens);
         Program program = visitor.visit(compilationUnit);
         PDGGenerationVisitor pdgVisitor = new PDGGenerationVisitor(program);
         for (Function function : program.getFunction()) {

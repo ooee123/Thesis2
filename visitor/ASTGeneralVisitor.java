@@ -2,6 +2,7 @@ package visitor;
 
 import ast.*;
 import ast.declaration.TypedefDeclaration;
+import ast.declaration.VariableDeclaration;
 import ast.expression.*;
 import ast.expression.impl.*;
 import ast.statement.Statement;
@@ -13,7 +14,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.*;
 
-import static ast.VariableDeclaration.DeclaredVariable;
+import static ast.declaration.VariableDeclaration.DeclaredVariable;
 
 @Data
 public class ASTGeneralVisitor {

@@ -1,16 +1,13 @@
 package visitor;
 
 import ast.*;
-import ast.expression.Expression;
-import ast.expression.impl.PrimaryExpressionIdentifier;
+import ast.declaration.VariableDeclaration;
 import ast.statement.CanContainStatements;
 import ast.statement.Statement;
 import ast.statement.impl.CompoundStatement;
 import ast.statement.impl.IterationStatementDeclareFor;
 import ast.type.Type;
-import com.google.common.collect.Sets;
 import lombok.Data;
-import lombok.Value;
 
 import java.util.*;
 

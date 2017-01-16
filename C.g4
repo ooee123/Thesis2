@@ -232,7 +232,7 @@ typeSpecifier
     ;
 
 structOrUnionSpecifier
-    :   structOrUnion gccAttributeSpecifier? Identifier? '{' structDeclarationList '}'
+    :   structOrUnion Identifier? '{' structDeclarationList '}' gccAttributeSpecifier?
     |   structOrUnion gccAttributeSpecifier? Identifier
     ;
 

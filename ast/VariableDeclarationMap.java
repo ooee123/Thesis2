@@ -1,5 +1,6 @@
 package ast;
 
+import ast.declaration.VariableDeclaration;
 import pdg.PDGNode;
 
 import java.util.Collection;

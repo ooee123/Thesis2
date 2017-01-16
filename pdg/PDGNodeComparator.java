@@ -1,6 +1,7 @@
 package pdg;
 
 import ast.*;
+import ast.declaration.VariableDeclaration;
 import ast.expression.Expression;
 import ast.expression.impl.PostfixExpressionInvocationImpl;
 import ast.expression.impl.PrimaryExpressionConstant;

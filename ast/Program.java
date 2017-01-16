@@ -1,6 +1,8 @@
 package ast;
 
+import ast.declaration.Declaration;
 import ast.declaration.TypedefDeclaration;
+import ast.declaration.VariableDeclaration;
 import lombok.Value;
 
 import java.util.ArrayList;

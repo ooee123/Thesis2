@@ -21,4 +21,15 @@ public class PointerType implements Type {
         }
         return builder.toString();
     }
+
+    @Override
+    public String toExpandedCode() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(actualType.toExpandedCode() + " ");
+
+        for (int i = 0; i < pointerLevel; i++) {
+            builder.append("*");
+        }
+        return builder.toString();
+    }
 }

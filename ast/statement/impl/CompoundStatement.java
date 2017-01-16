@@ -1,7 +1,7 @@
 package ast.statement.impl;
 
 import ast.BlockItem;
-import ast.VariableDeclaration;
+import ast.declaration.VariableDeclaration;
 import ast.expression.Expression;
 import ast.statement.Statement;
 import lombok.AllArgsConstructor;

@@ -28,7 +28,7 @@ public class PDGNodeComparatorTest {
     }
 
     public PDGNode<? extends BlockItem> getAssignmentPDGNode(String lvalue, ConditionalExpression right) {
-        return new PDGNodeExpressionStatement(new ExpressionStatement(new AssignmentExpressionImpl(new PrimaryExpressionIdentifier(lvalue), AssignmentExpressionImpl.AssignmentOperator.ASSIGNMENT, right)));
+        return new PDGNodeExpressionStatement(new ExpressionStatement(new AssignmentExpressionImpl(new PrimaryExpressionIdentifier(lvalue), AssignmentExpressionImpl.AssignmentOperator.ASSIGNMENT, right), right.toCode()));
     }
 
     @Test

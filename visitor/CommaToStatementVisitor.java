@@ -71,8 +71,8 @@ public class CommaToStatementVisitor {
     }
 
     public List<BlockItem> visit(CommaExpression expression) {
-        List<AssignmentExpression> assignmentExpressions = ((CommaExpression) expression).getAssignmentExpressions();
-        return assignmentExpressions.stream().map(exp -> new ExpressionStatement(exp)).collect(Collectors.toList());
+        List<AssignmentExpression> assignmentExpressions = expression.getAssignmentExpressions();
+        return assignmentExpressions.stream().map(exp -> new ExpressionStatement(exp, expression.toCode())).collect(Collectors.toList());
     }
 
     public List<BlockItem> visit(IterationStatementWhile iterationStatementWhile) {
@@ -186,7 +186,7 @@ public class CommaToStatementVisitor {
     public CommaComponent breakCommaExpression(CommaExpression exp) {
         List<AssignmentExpression> assignmentExpressions = exp.getAssignmentExpressions();
         AssignmentExpression last = assignmentExpressions.remove(assignmentExpressions.size() - 1);
-        List<ExpressionStatement> expressionStatements = assignmentExpressions.stream().map(asnExp -> new ExpressionStatement(asnExp)).collect(Collectors.toList());
+        List<ExpressionStatement> expressionStatements = assignmentExpressions.stream().map(asnExp -> new ExpressionStatement(asnExp, exp.toCode())).collect(Collectors.toList());
         return new CommaComponent(expressionStatements, last);
     }
 }

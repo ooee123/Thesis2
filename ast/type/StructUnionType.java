@@ -1,6 +1,6 @@
 package ast.type;
 
-import ast.VariableDeclaration;
+import ast.declaration.VariableDeclaration;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -14,8 +14,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(exclude = {"declarations"})
 public class StructUnionType implements ActualType {
-
-
     public enum StructUnion {
         STRUCT("struct"),
         UNION("union");
@@ -50,7 +48,8 @@ public class StructUnionType implements ActualType {
     private final List<VariableDeclaration> declarations;
     @Setter private String typedefName;
 
-    public String expandedStructUnion() {
+    @Override
+    public String toExpandedCode() {
         StringBuilder builder = new StringBuilder();
         builder.append(structUnion.token);
         if (tag != null) {
@@ -76,7 +75,7 @@ public class StructUnionType implements ActualType {
         } else if (tag != null && wasToCoded) {
             return structUnion.token + " " + tag;
         } else {
-            return expandedStructUnion();
+            return toExpandedCode();
         }
     }
 

@@ -1,4 +1,6 @@
-package ast;
+package ast.declaration;
+
+import ast.BlockItem;
 
 /**
  * Created by ooee on 11/3/16.

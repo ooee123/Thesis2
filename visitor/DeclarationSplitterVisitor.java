@@ -1,6 +1,7 @@
 package visitor;
 
 import ast.*;
+import ast.declaration.VariableDeclaration;
 import ast.expression.impl.AssignmentExpressionImpl;
 import ast.expression.impl.PrimaryExpressionIdentifier;
 import ast.statement.CanContainStatements;
@@ -37,11 +38,11 @@ public class DeclarationSplitterVisitor {
                     declaredVariables.add(new VariableDeclaration.DeclaredVariable(declaredVariable.getType(), declaredVariable.getIdentifier()));
                     if (declaredVariable.getInitializer() != null) {
                         String variableName = declaredVariable.getIdentifier().getIdentifier();
-                        Statement assignmentStatement = new ExpressionStatement(new AssignmentExpressionImpl(new PrimaryExpressionIdentifier(variableName), AssignmentExpressionImpl.AssignmentOperator.ASSIGNMENT, declaredVariable.getInitializer()));
+                        Statement assignmentStatement = new ExpressionStatement(new AssignmentExpressionImpl(new PrimaryExpressionIdentifier(variableName), AssignmentExpressionImpl.AssignmentOperator.ASSIGNMENT, declaredVariable.getInitializer()), "Something also goes here");
                         statements.add(assignmentStatement);
                     }
                 }
-                variableDeclarations.add(new VariableDeclaration(declaredVariables));
+                variableDeclarations.add(new VariableDeclaration(declaredVariables, "Something goes here"));
             } else if (blockItem instanceof Statement) {
                 if (blockItem instanceof CanContainStatements) {
                     for (Statement statement1 : ((CanContainStatements) blockItem).getStatementNodes()) {

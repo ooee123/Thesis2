@@ -17,4 +17,9 @@ public class MultiplePrimitiveType implements ActualType {
         List<String> primitiveTypesCode = primitiveTypes.stream().map(pt -> pt.toCode()).collect(Collectors.toList());
         return String.join(" ", primitiveTypesCode);
     }
+
+    @Override
+    public String toExpandedCode() {
+        return toCode();
+    }
 }

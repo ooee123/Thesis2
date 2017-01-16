@@ -55,6 +55,6 @@ public class EnumDefinition implements TypeDefinition {
 
     @Override
     public String definition() {
-        return enumType.expandedStructUnion();
+        return enumType.toExpandedCode();
     }
 }

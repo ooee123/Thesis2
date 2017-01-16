@@ -36,7 +36,7 @@ public class Main {
             CParser parser = new CParser(tokens);
             System.err.println("Finish parsing");
             CParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
-            TreeToASTVisitor visitor = new TreeToASTVisitor();
+            TreeToASTVisitor visitor = new TreeToASTVisitor(tokens);
             System.err.println("Begin AST building");
             Program program = visitor.visit(compilationUnit);
             System.err.println("Finish AST building");

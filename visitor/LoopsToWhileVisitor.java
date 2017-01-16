@@ -73,8 +73,8 @@ public class LoopsToWhileVisitor {
     }
 
     public List<BlockItem> iterationToWhile(IterationStatementFor iterationStatementFor) {
-        BlockItem initialStatement = new ExpressionStatement(iterationStatementFor.getInitial());
-        Statement iterStatement = new ExpressionStatement(iterationStatementFor.getIteration());
+        BlockItem initialStatement = new ExpressionStatement(iterationStatementFor.getInitial(), iterationStatementFor.getOriginalLine());
+        Statement iterStatement = new ExpressionStatement(iterationStatementFor.getIteration(), iterationStatementFor.getOriginalLine());
         Statement body = visit(iterationStatementFor.getStatement());
 
         body = CompoundStatement.addToEnd(iterStatement, body);
@@ -89,7 +89,7 @@ public class LoopsToWhileVisitor {
     public List<BlockItem> iterationToWhile(IterationStatementDeclareFor iterationStatementDeclareFor) {
         List<BlockItem> blockItems = new ArrayList<>();
         blockItems.add(iterationStatementDeclareFor.getVariableDeclaration());
-        Statement iterStatement = new ExpressionStatement(iterationStatementDeclareFor.getIteration());
+        Statement iterStatement = new ExpressionStatement(iterationStatementDeclareFor.getIteration(), iterationStatementDeclareFor.getCommentTip());
         Statement body = visit(iterationStatementDeclareFor.getStatement());
         body = CompoundStatement.addToEnd(iterStatement, body);
 

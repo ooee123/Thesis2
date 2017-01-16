@@ -44,7 +44,7 @@ public class Main {
         CParser parser = new CParser(tokens);
 
         CParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
-        TreeToASTVisitor visitor = new TreeToASTVisitor();
+        TreeToASTVisitor visitor = new TreeToASTVisitor(tokens);
         Program program = visitor.visit(compilationUnit);
         if (printParsedProgramFlag) {
             System.out.println(program.toCode(SHOW_ORIGINAL_LINES));

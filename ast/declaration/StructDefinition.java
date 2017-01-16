@@ -16,7 +16,7 @@ public class StructDefinition implements TypeDefinition {
 
     @Override
     public String definition() {
-        return structUnionType.expandedStructUnion();
+        return structUnionType.toExpandedCode();
     }
 
     @Override
@@ -25,7 +25,7 @@ public class StructDefinition implements TypeDefinition {
     }
 
     public String toCode() {
-        return structUnionType.expandedStructUnion() + ";";
+        return structUnionType.toCode() + ";";
     }
 
     @Override
