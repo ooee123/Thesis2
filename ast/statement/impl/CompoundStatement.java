@@ -45,6 +45,11 @@ public class CompoundStatement implements Statement {
     }
 
     @Override
+    public boolean hasJump() {
+        return blockItems.stream().anyMatch(blk -> blk.hasJump());
+    }
+
+    @Override
     public String toCode(boolean showOriginalLine) {
         List<String> codes = collectionToCode(blockItems, showOriginalLine);
         return toCode(String.join("\n", codes));

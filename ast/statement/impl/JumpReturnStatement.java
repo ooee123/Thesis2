@@ -55,6 +55,11 @@ public class JumpReturnStatement implements JumpStatementStrict {
     }
 
     @Override
+    public boolean hasJump() {
+        return true;
+    }
+
+    @Override
     public Set<String> getPotentiallyChangedVariables() {
         return returnExpression.getPotentiallyChangedVariables();
     }

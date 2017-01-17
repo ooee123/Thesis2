@@ -71,6 +71,11 @@ public class SelectionStatementSwitch implements SelectionStatement, CanContainS
         return false;
     }
 
+    @Override
+    public boolean hasJump() {
+        return compoundStatement.hasJump();
+    }
+
     public List<List<BlockItem>> getCases() {
         int i = 0;
         List<List<BlockItem>> cases = new ArrayList<>();

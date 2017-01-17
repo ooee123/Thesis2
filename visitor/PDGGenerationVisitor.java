@@ -183,16 +183,16 @@ public class PDGGenerationVisitor {
     }
 
     private Returns<SelectionStatementSwitch> visit(SelectionStatementSwitch statement) {
-        List<Collection<PDGNode<? extends BlockItem>>> cases = new ArrayList<>();
+        List<List<PDGNode<? extends BlockItem>>> cases = new ArrayList<>();
         for (List<BlockItem> blockItems : statement.getCases()) {
-            Collection<PDGNode<? extends BlockItem>> caseBlock = new ArrayList<>();
+            List<PDGNode<? extends BlockItem>> caseBlock = new ArrayList<>();
             for (BlockItem blockItem : blockItems) {
                 caseBlock.add(visit(blockItem).getPdgNode());
             }
             cases.add(caseBlock);
         }
         if (statement.hasDefault()) {
-            Collection<PDGNode<? extends BlockItem>> defaultCase = new ArrayList<>();
+            List<PDGNode<? extends BlockItem>> defaultCase = new ArrayList<>();
             for (BlockItem blockItem : statement.getDefaultCase()) {
                 defaultCase.add(visit(blockItem).getPdgNode());
             }
@@ -471,6 +471,19 @@ public class PDGGenerationVisitor {
                         }
                     }
                 }
+            }
+            if (blockItem.hasJump()) {
+                for (PDGNode<? extends BlockItem> node : allNodes.values()) {
+                    node.linkOrderDependency(pdgNode);
+                }
+                /*
+                for (Collection<PDGNode<? extends BlockItem>> pdgNodes : lastAssigned.values()) {
+                    for (PDGNode<? extends BlockItem> node : pdgNodes) {
+                        node.linkOrderDependency(pdgNode);
+                    }
+                    //pdgNodes.add(pdgNode);
+                }
+                */
             }
             if (blockItem instanceof VariableDeclaration) {
                 for (VariableDeclaration.DeclaredVariable declaredVariable : ((VariableDeclaration) blockItem).getDeclaredVariables()) {

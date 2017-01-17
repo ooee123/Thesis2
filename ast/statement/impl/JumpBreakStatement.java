@@ -20,6 +20,11 @@ public class JumpBreakStatement implements JumpStatementStrict {
     }
 
     @Override
+    public boolean hasJump() {
+        return true;
+    }
+
+    @Override
     public Set<String> getDependantVariables() {
         return Sets.newHashSet();
     }

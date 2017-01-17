@@ -30,6 +30,15 @@ public class SelectionStatementIf implements SelectionStatement, CanContainState
     }
 
     @Override
+    public boolean hasJump() {
+        boolean elseJump = false;
+        if (elseStatement != null) {
+            elseJump = elseStatement.hasJump();
+        }
+        return elseJump || thenStatement.hasJump();
+    }
+
+    @Override
     public String toCode(boolean showOriginalLine) {
         String base = String.format("%s", toCommentTip(condition));
 

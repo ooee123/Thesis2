@@ -54,6 +54,11 @@ public class IterationStatementFor implements IterationStatement, CanContainStat
     }
 
     @Override
+    public boolean hasJump() {
+        return statement.hasJump();
+    }
+
+    @Override
     public Set<String> getDependantVariables() {
         Set<String> dependantVariables = new HashSet<>();
         if (initial != null) {

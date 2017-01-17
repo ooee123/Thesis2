@@ -23,6 +23,11 @@ public class LabeledCaseStatement implements LabeledStatement, CanContainStateme
     private Statement statement;
     private String originalLine;
 
+    @Override
+    public boolean hasJump() {
+        return statement.hasJump();
+    }
+
     public LabeledCaseStatement(ConditionalExpression conditionalExpression, Statement statement) {
         this(conditionalExpression, statement, toCommentTip(conditionalExpression));
     }

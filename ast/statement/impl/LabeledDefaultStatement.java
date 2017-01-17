@@ -24,6 +24,11 @@ public class LabeledDefaultStatement implements LabeledStatement, CanContainStat
     }
 
     @Override
+    public boolean hasJump() {
+        return statement.hasJump();
+    }
+
+    @Override
     public Set<String> getDependantVariables() {
         return statement.getDependantVariables();
     }

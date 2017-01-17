@@ -55,6 +55,11 @@ public class IterationStatementDeclareFor implements IterationStatement, CanCont
     }
 
     @Override
+    public boolean hasJump() {
+        return statement.hasJump();
+    }
+
+    @Override
     public Set<String> getDependantVariables() {
         Set<String> dependantVariables = new HashSet<>();
         for (VariableDeclaration.DeclaredVariable declaredVariable : variableDeclaration.getDeclaredVariables()) {

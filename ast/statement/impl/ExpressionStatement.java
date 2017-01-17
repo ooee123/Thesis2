@@ -32,6 +32,11 @@ public class ExpressionStatement implements Statement {
         }
     }
 
+    @Override
+    public boolean hasJump() {
+        return false;
+    }
+
     private static String toCommentTip(Expression expression) {
         if (expression != null) {
             return expression.toCode();

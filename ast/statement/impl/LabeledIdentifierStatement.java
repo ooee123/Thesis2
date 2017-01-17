@@ -25,6 +25,11 @@ public class LabeledIdentifierStatement implements LabeledStatement, CanContainS
     }
 
     @Override
+    public boolean hasJump() {
+        return statement.hasJump();
+    }
+
+    @Override
     public Set<String> getDependantVariables() {
         return statement.getDependantVariables();
     }

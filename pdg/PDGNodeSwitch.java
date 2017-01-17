@@ -16,14 +16,14 @@ import java.util.*;
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class PDGNodeSwitch extends PDGNodeContainsStatementNode<SelectionStatementSwitch> {
-    @NonNull private List<Collection<PDGNode<? extends BlockItem>>> cases;
-    private Collection<PDGNode<? extends BlockItem>> defaultCase;
+    @NonNull private List<List<PDGNode<? extends BlockItem>>> cases;
+    private List<PDGNode<? extends BlockItem>> defaultCase;
 
-    public PDGNodeSwitch(SelectionStatementSwitch selectionStatementSwitch, List<Collection<PDGNode<? extends BlockItem>>> cases) {
+    public PDGNodeSwitch(SelectionStatementSwitch selectionStatementSwitch, List<List<PDGNode<? extends BlockItem>>> cases) {
         this(selectionStatementSwitch, cases, null, false);
     }
 
-    public PDGNodeSwitch(SelectionStatementSwitch selectionStatementSwitch, List<Collection<PDGNode<? extends BlockItem>>> cases, Collection<PDGNode<? extends BlockItem>> defaultCase, boolean required) {
+    public PDGNodeSwitch(SelectionStatementSwitch selectionStatementSwitch, List<List<PDGNode<? extends BlockItem>>> cases, List<PDGNode<? extends BlockItem>> defaultCase, boolean required) {
         super(selectionStatementSwitch, required);
         this.cases = cases;
         this.defaultCase = defaultCase;
@@ -32,11 +32,17 @@ public class PDGNodeSwitch extends PDGNodeContainsStatementNode<SelectionStateme
     @Override
     public SelectionStatementSwitch sort(PDGSorter sorter) {
         List<BlockItem> blockItems = new ArrayList<>();
-        for (Collection<PDGNode<? extends BlockItem>> aCase : cases) {
-            blockItems.addAll(sorter.sort(aCase).getBlockItems());
+        for (List<PDGNode<? extends BlockItem>> aCase : cases) {
+            PDGNode<? extends BlockItem> labeledBlockItem = aCase.remove(0);
+            List<BlockItem> caseBlockItems = sorter.sort(aCase).getBlockItems();
+            caseBlockItems.add(0, labeledBlockItem.blockItem);
+            blockItems.addAll(caseBlockItems);
         }
         if (this.defaultCase != null) {
-            blockItems.addAll(sorter.sort(this.defaultCase).getBlockItems());
+            PDGNode<? extends BlockItem> defaultBlockItem = this.defaultCase.remove(0);
+            List<BlockItem> defaultBlockItems = sorter.sort(this.defaultCase).getBlockItems();
+            defaultBlockItems.add(0, defaultBlockItem.blockItem);
+            blockItems.addAll(defaultBlockItems);
         }
         return new SelectionStatementSwitch(blockItem.getExpression(), new CompoundStatement(blockItems));
     }

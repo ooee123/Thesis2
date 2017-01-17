@@ -45,20 +45,26 @@ public class CompoundStatementGroups implements Statement {
         List<String> statementCodes = collectionToCode(statements, showOriginalLine);
         return "{\n" + String.join("\n", declarationCodes) + "\n" + String.join("\n", statementCodes) + "\n}";
     }
-/*
-    public static CompoundStatementGroups addToEnd(BlockItem toBeAdded, Statement body) {
-        if (body instanceof CompoundStatementGroups) {
-            CompoundStatementGroups compoundStatement = (CompoundStatementGroups) body;
-            compoundStatement.getBlockItems().add(toBeAdded);
-            return compoundStatement;
-        } else {
-            List<BlockItem> compoundStatement = new ArrayList<>();
-            compoundStatement.add(body);
-            compoundStatement.add(toBeAdded);
-            return new CompoundStatementGroups(compoundStatement);
-        }
+
+    @Override
+    public boolean hasJump() {
+        return statements.stream().anyMatch(stm -> stm.hasJump());
     }
-*/
+
+    /*
+        public static CompoundStatementGroups addToEnd(BlockItem toBeAdded, Statement body) {
+            if (body instanceof CompoundStatementGroups) {
+                CompoundStatementGroups compoundStatement = (CompoundStatementGroups) body;
+                compoundStatement.getBlockItems().add(toBeAdded);
+                return compoundStatement;
+            } else {
+                List<BlockItem> compoundStatement = new ArrayList<>();
+                compoundStatement.add(body);
+                compoundStatement.add(toBeAdded);
+                return new CompoundStatementGroups(compoundStatement);
+            }
+        }
+    */
     @Override
     public Set<String> getDependantVariables() {
         Set<String> assignedValues = new HashSet<>();

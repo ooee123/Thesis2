@@ -26,6 +26,8 @@ public interface BlockItem extends BaseElement {
     Set<String> getGuaranteedChangedVariables();
 
     Set<String> getPotentiallyChangedVariables();
+
+    boolean hasJump();
 /*
     default boolean readsOrWritesMemory() {
         final boolean[] modifiesMemory = new boolean[1];

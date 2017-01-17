@@ -38,6 +38,11 @@ public class IterationStatementWhile implements IterationStatement, CanContainSt
     }
 
     @Override
+    public boolean hasJump() {
+        return statement.hasJump();
+    }
+
+    @Override
     public Set<String> getDependantVariables() {
         Set<String> dependentVariables = new HashSet<>();
         dependentVariables.addAll(condition.getVariables());
