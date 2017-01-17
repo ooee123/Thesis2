@@ -233,6 +233,7 @@ typeSpecifier
 
 structOrUnionSpecifier
     :   structOrUnion Identifier? '{' structDeclarationList '}' gccAttributeSpecifier?
+    |   structOrUnion gccAttributeSpecifier? Identifier? '{' structDeclarationList '}'
     |   structOrUnion gccAttributeSpecifier? Identifier
     ;
 

@@ -21,7 +21,7 @@ import java.io.IOException;
  * Created by ooee on 10/20/16.
  */
 public class Main {
-    public static final boolean SHOW_ORIGINAL_LINE = true;
+    public static final boolean SHOW_ORIGINAL_LINE = false;
 
     public static void main(String args[]) {
         if (args.length < 1) {
@@ -29,16 +29,26 @@ public class Main {
             System.exit(-1);
         }
         try {
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Preprocess.preprocess(new File(args[0])).getBytes());
-            CLexer lexer = new CLexer(new ANTLRInputStream(byteArrayInputStream));
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            String preprocess = Preprocess.preprocess(new File(args[0]));
+            int splittingIndex = Preprocess.getSplittingIndex(preprocess);
+            String firstPart = Preprocess.removePounds(preprocess.substring(0, splittingIndex));
+            String secondPart = Preprocess.removePounds(preprocess.substring(splittingIndex, preprocess.length()));
+            //ByteArrayInputStream firstPartByteArrayInputStream = new ByteArrayInputStream(Preprocess.preprocess(new File(args[0])).getBytes());
+            ByteArrayInputStream firstPartByteArrayInputStream = new ByteArrayInputStream(firstPart.getBytes());
+            ByteArrayInputStream secondPartByteArrayInputStream = new ByteArrayInputStream(secondPart.getBytes());
+            CLexer firstPartlexer = new CLexer(new ANTLRInputStream(firstPartByteArrayInputStream));
+            CLexer secondPartlexer = new CLexer(new ANTLRInputStream(secondPartByteArrayInputStream));
+            CommonTokenStream firstPartTokens = new CommonTokenStream(firstPartlexer);
+            CommonTokenStream secondPartTokens = new CommonTokenStream(secondPartlexer);
             System.err.println("Begin parsing");
-            CParser parser = new CParser(tokens);
+            CParser firstPartParser = new CParser(firstPartTokens);
+            CParser secondPartParser = new CParser(secondPartTokens);
             System.err.println("Finish parsing");
-            CParser.CompilationUnitContext compilationUnit = parser.compilationUnit();
-            TreeToASTVisitor visitor = new TreeToASTVisitor(tokens);
+            CParser.CompilationUnitContext firstPartCompilationUnit = firstPartParser.compilationUnit();
+            CParser.CompilationUnitContext secondPartCompilationUnit = secondPartParser.compilationUnit();
+            TreeToASTVisitor visitor = new TreeToASTVisitor(firstPartCompilationUnit, secondPartTokens);
             System.err.println("Begin AST building");
-            Program program = visitor.visit(compilationUnit);
+            Program program = visitor.visit(secondPartCompilationUnit);
             System.err.println("Finish AST building");
 
             System.err.println("Assigning types to primary expressions");

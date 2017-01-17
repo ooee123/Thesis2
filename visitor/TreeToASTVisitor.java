@@ -38,13 +38,23 @@ public class TreeToASTVisitor {
         enumTagMapper = new HashMap<>();
         typedefMapper = new HashMap<>();
         functions = new LinkedHashMap<>();
+        typedefMapper.put("__builtin_va_list", new TypedefType(new PrimitiveType("__builtin_va_list"), "__builtin_va_list"));
         this.tokenStream = tokenStream;
+    }
+
+    /**
+     * Takes as input data that is used to construct all the typedefs etc, and will not be included in final code
+     * @param ctx
+     * @param tokenStream
+     */
+    public TreeToASTVisitor(CParser.CompilationUnitContext ctx, CommonTokenStream tokenStream) {
+        this(tokenStream);
+        visit(ctx);
+        System.out.println("Hello");
     }
 
     public Program visit(CParser.CompilationUnitContext ctx) {
         /* Init */
-        typedefMapper.put("__builtin_va_list", new TypedefType(new PrimitiveType("__builtin_va_list"), "__builtin_va_list"));
-
 
         Collection<Declaration> variableDeclarations = new ArrayList<>();
         CParser.TranslationUnitContext translationUnitContext = ctx.translationUnit();

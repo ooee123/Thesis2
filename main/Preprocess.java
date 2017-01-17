@@ -1,5 +1,7 @@
 package main;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Scanner;
@@ -25,23 +27,17 @@ public class Preprocess {
 
     
 
-    public static void moveScannerToRealCode(Scanner scanner, File file, int firstLine) {
-        return;
-        /*
+    public static String skipNLines(String string, int firstLine) {
+        Scanner scanner = new Scanner(string);
+        for (int i = 0; i < firstLine; i++) {
+            scanner.nextLine();
+        }
+        StringBuilder builder = new StringBuilder();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if (line.startsWith("#") && line.contains(file.getName())) {
-                Scanner lineScanner = new Scanner(line);
-                if (lineScanner.hasNext() && lineScanner.next().equals("#")) {
-                    if (lineScanner.hasNextInt() && lineScanner.nextInt() >= firstLine) {
-                        if (lineScanner.hasNext() && lineScanner.next().equals(String.format("\"%s\"", file.getAbsolutePath()))) {
-                            break;
-                        }
-                    }
-                }
-            }
+            builder.append(line + "\n");
         }
-        */
+        return builder.toString();
     }
 
     public static String stripUnderscore(String source, String word) {
@@ -79,9 +75,39 @@ public class Preprocess {
 
         //Process process = processBuilder.start();
         Scanner scanner = new Scanner(process.getInputStream());
-        Scanner scanner1 = new Scanner(process.getErrorStream());
         //Scanner scanner = new Scanner(file);
         //moveScannerToRealCode(scanner, file, firstLine);
+        StringBuffer buffer = new StringBuffer();
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            //if (!line.trim().startsWith("#")) {
+                buffer.append(line + "\n");
+            //}
+        }
+
+        Scanner scanner1 = new Scanner(process.getErrorStream());
+        while (scanner1.hasNextLine()) {
+            System.err.println(scanner1.nextLine());
+        }
+        String finalString = buffer.toString();
+        finalString = stripUnderscore(finalString, "signed");
+        //int firstLine = getFirstLine(finalString, file.getName());
+        int firstLine = getFirstLine(finalString, "<stdin>");
+        String originalCode = skipNLines(finalString, firstLine);
+        //String finalString = removeFunctionAttributes(buffer.toString());
+        return finalString;
+    }
+
+    public static int getSplittingIndex(String string) {
+        int i = string.lastIndexOf("\"<stdin>\"");
+        while (string.charAt(i) != '#') {
+            i -= 1;
+        }
+        return i;
+    }
+
+    public static String removePounds(String string) {
+        Scanner scanner = new Scanner(string);
         StringBuffer buffer = new StringBuffer();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -89,30 +115,33 @@ public class Preprocess {
                 buffer.append(line + "\n");
             }
         }
-
-
-        while (scanner1.hasNextLine()) {
-            System.err.println(scanner1.nextLine());
-        }
-        String finalString = buffer.toString();
-        finalString = stripUnderscore(finalString, "signed");
-        //String finalString = removeFunctionAttributes(buffer.toString());
-        return finalString;
+        return buffer.toString();
     }
 
-    public static int getFirstLine(File file) throws FileNotFoundException {
-        Scanner scanner = new Scanner(file);
-        scanner.next();
-        int startNumber = scanner.nextInt();
+    public static int getFirstLine(String string, String fileName) throws FileNotFoundException {
+        int firstLine = 0;
         int lineNumber = 0;
-        int firstLineNumber = 0;
+        Scanner scanner = new Scanner(string);
         while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
             lineNumber += 1;
+            String line = scanner.nextLine();
             if (line.startsWith("#")) {
-                firstLineNumber = lineNumber;
+                Scanner lineScanner = new Scanner(line);
+                lineScanner.next("#");
+                if (lineScanner.hasNextInt()) {
+                    lineScanner.nextInt();
+                    String scannedFileName = lineScanner.next();
+                    if (scannedFileName.equals("\"" + fileName + "\"")) {
+                        while (lineScanner.hasNextInt()) {
+                            int flag = lineScanner.nextInt();
+                            if (flag == 2) {
+                                firstLine = lineNumber;
+                            }
+                        }
+                    }
+                }
             }
         }
-        return firstLineNumber + startNumber - 1;
+        return firstLine;
     }
 }
