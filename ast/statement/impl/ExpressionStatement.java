@@ -28,7 +28,7 @@ public class ExpressionStatement implements Statement {
         if (showOriginalLine) {
             return toCommentTip(expression) + "; /* " + originalLine + " */";
         } else {
-            return toCommentTip(expression);
+            return toCommentTip(expression) + ";";
         }
     }
 

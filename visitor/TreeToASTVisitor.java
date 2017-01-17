@@ -50,7 +50,6 @@ public class TreeToASTVisitor {
     public TreeToASTVisitor(CParser.CompilationUnitContext ctx, CommonTokenStream tokenStream) {
         this(tokenStream);
         visit(ctx);
-        System.out.println("Hello");
     }
 
     public Program visit(CParser.CompilationUnitContext ctx) {
@@ -447,7 +446,7 @@ public class TreeToASTVisitor {
             return visit(ctx.jumpStatement());
         } else {
             if (ctx.logicalOrExpression() != null) {
-
+                //return new ExpressionStatement(new PostfixExpressionInvocationImpl(new PrimaryExpressionIdentifier("FD_SET"), ))
             }
         }
         throw new UnsupportedOperationException("What kind of statement is this?\n" + ctx.getText());
@@ -887,12 +886,10 @@ public class TreeToASTVisitor {
             } catch (NumberFormatException e) {
 
             }
-            System.out.println("Replacing token: " + token);
             token = token.replaceAll("u", "");
             token = token.replaceAll("U", "");
             token = token.replaceAll("l", "");
             token = token.replaceAll("L", "");
-            System.out.println("Got: " + token);
             try {
                 return new PrimaryExpressionConstant(Long.valueOf(token));
             } catch (NumberFormatException e) {

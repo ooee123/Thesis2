@@ -1,8 +1,9 @@
 package main;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Scanner;
 
@@ -42,7 +43,6 @@ public class Preprocess {
 
     public static String stripUnderscore(String source, String word) {
         String underscore = "__" + word + "__";
-        System.out.println(source.indexOf("__signed__"));
         return source.replaceAll(underscore, word);
     }
 
@@ -59,12 +59,18 @@ public class Preprocess {
         return process;
     }
 
+    public static String prependUndef(String string) {
+        string = string.replaceAll("FD_SET\\(", "\n#undef FD_SET\nFD_SET(");
+        string = string.replaceAll("FD_ZERO\\(", "\n#undef FD_ZERO\nFD_ZERO(");
+        return string;
+    }
+
     public static String preprocess(File file) throws IOException {
         //File uncommented = uncomment(file);
         File uncommented = file;
 
         String string = fileToString(file);
-
+        string = prependUndef(string);
         //int firstLine = getFirstLine(uncommented);
         ProcessBuilder processBuilder = new ProcessBuilder("gcc", "-E", "-xc", "-");
         processBuilder.directory(file.getParentFile());
@@ -99,7 +105,7 @@ public class Preprocess {
     }
 
     public static int getSplittingIndex(String string) {
-        int i = string.lastIndexOf("\"<stdin>\"");
+        int i = string.lastIndexOf("\"<stdin>\" 2");
         while (string.charAt(i) != '#') {
             i -= 1;
         }

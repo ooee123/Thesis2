@@ -21,7 +21,7 @@ import java.io.IOException;
  * Created by ooee on 10/20/16.
  */
 public class Main {
-    public static final boolean SHOW_ORIGINAL_LINE = false;
+    public static final boolean SHOW_ORIGINAL_LINE = true;
 
     public static void main(String args[]) {
         if (args.length < 1) {
