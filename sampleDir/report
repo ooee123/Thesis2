@@ -1,0 +1,102 @@
+// Mine
+
+ 88    f = makePacketMssg(5, h, b, g, global_b, e); /* packet = makePacketMssg ( 5 , destLen , dest , srcLen , myHandle , toSend ) ; */
+ 89    if (sendPacket(f, c)<0) /* if (sendPacket(packet, socket)<0) */ {
+ 90       exit(1); /* exit ( 1 ) ; */
+ 91       perror("Packet Message"); /* perror ( "Packet Message" ) ; */
+ 92    }
+ 93    free(f); /* free ( packet ) ; */
+ 94    free(e); /* free ( toSend ) ; */
+
+ 78       f = makePacketMssg(5, h, b, g, global_b, e); /* packet = makePacketMssg ( 5 , destLen , dest , srcLen , myHandle , toSend ) ; */
+ 79       if (sendPacket(f, c)<0) /* if (sendPacket(packet, socket)<0) */ {
+ 80          exit(1); /* exit ( 1 ) ; */
+ 81          perror("Packet Message"); /* perror ( "Packet Message" ) ; */
+ 82       }
+ 83       free(f); /* free ( packet ) ; */
+ 84    }
+ 85    free(e); /* free ( toSend ) ; */
+
+==================================================================================
+
+ 55    c = makePacketBroadcast(4, f, global_b, e); /* packet = makePacketBroadcast ( 4 , hLen , myHandle , toSend ) ; */
+ 56    if (sendPacket(c, b)<0) /* if (sendPacket(packet, socket)<0) */ {
+ 57       exit(1); /* exit ( 1 ) ; */
+ 58       perror("Packet Broadcast"); /* perror ( "Packet Broadcast" ) ; */
+ 59    }
+ 60    free(c); /* free ( packet ) ; */
+ 61    free(e); /* free ( toSend ) ; */
+
+ 45       c = makePacketBroadcast(4, f, global_b, e); /* packet = makePacketBroadcast ( 4 , hLen , myHandle , toSend ) ; */
+ 46       if (sendPacket(c, b)<0) /* if (sendPacket(packet, socket)<0) */ {
+ 47          exit(1); /* exit ( 1 ) ; */
+ 48          perror("Packet Broadcast"); /* perror ( "Packet Broadcast" ) ; */
+ 49       }
+ 50       free(c); /* free ( packet ) ; */
+ 51    }
+ 52    free(e); /* free ( toSend ) ; */
+
+
+// Original
+115   packet = makePacketMssg(CLIENT_MESSAGE, destLen, dest,
+116                  srcLen, myHandle, toSend);
+117   if(sendPacket(packet, socket) < 0) {
+118     perror("Packet Message");
+119     exit(1);
+120   }
+121   free(packet);
+
+103     packet = makePacketMssg(CLIENT_MESSAGE, destLen, dest,
+104                          srcLen, myHandle, toSend);
+105     if(sendPacket(packet, socket) < 0) {
+106       perror("Packet Message");
+107       exit(1);
+108     }
+109     free(packet);
+
+=============================
+
+107       exit(1);
+108     }
+109     free(packet);
+110     mssgNum--;
+111   }
+112   free(toSend);
+113   toSend = malloc(theRest);
+114   memcpy(toSend, mssg + consumed, theRest);
+
+ 67       exit(1);
+ 68     }
+ 69     free(packet);
+ 70     mssgNum--;
+ 71   }
+ 72   free(toSend);
+ 73   toSend = malloc(theRest);
+ 74   memcpy(toSend, mssg + consumed, theRest);
+
+============================
+
+ 92   int mssgNum = (strlen(mssg) + 1) / maxMssgLen;
+ 93   int consumed = 0;
+ 94   /* add mssgNum because that's how many nulls we'll end up with
+ 95      which we need to account for in the packet*/
+ 96   int theRest = ((strlen(mssg) + 1) % maxMssgLen) + mssgNum;
+ 97 
+ 98   toSend = malloc(maxMssgLen);
+ 99   while(mssgNum > 0) {
+100     memcpy(toSend, mssg + consumed, maxMssgLen - 1);
+101     toSend[maxMssgLen - 1] = 0;
+102     consumed += maxMssgLen - 1;
+
+ 53   int mssgNum = (strlen(mssg) + 1) / maxMssgLen;
+ 54   int consumed = 0;
+ 55   /* add mssgNum because that's how many nulls we'll end up with
+ 56      which we need to account for in the packet*/
+ 57   int theRest = ((strlen(mssg) + 1) % maxMssgLen) + mssgNum;
+ 58 
+ 59   toSend = malloc(maxMssgLen);
+ 60   while(mssgNum > 0) {
+ 61     memcpy(toSend, mssg + consumed, maxMssgLen - 1);
+ 62     toSend[maxMssgLen - 1] = 0;
+ 63     consumed += maxMssgLen - 1;
+
