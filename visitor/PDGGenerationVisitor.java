@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PDGGenerationVisitor {
 
+    public static final boolean TREAT_UNKNOWN_FUNCTIONS_AS_ORDER_DEPENDENT = true; // Versus variable dependent
+
     @Value
     private class Returns<T extends BlockItem> {
         Dependencies dependencies;
@@ -353,6 +355,7 @@ public class PDGGenerationVisitor {
             PDGNode<? extends BlockItem> pdgNode = returns.getPdgNode();
             allNodes.put(blockItem, pdgNode);
             if (blockItem.readsMemory()) {
+                /*
                 for (PDGNode<VariableDeclaration> variableDeclarationPDGNode : variableDeclarations.values()) {
                     variableDeclarationPDGNode.linkVariableDependency(pdgNode);
                 }
@@ -366,14 +369,20 @@ public class PDGGenerationVisitor {
                     pdgNodes.add(pdgNode);
                 }
                 for (String s : returns.getDependencies().getDependentVariables()) {
-                    /*
-                    if (!usedSinceLastAssignment.containsKey(s)) {
-                        usedSinceLastAssignment.addNewVariable(s, );
-                    }
-                    */
                     usedSinceLastAssignment.augment(s, pdgNode);
                 }
+                */
+                // For stdlib functions that take no parameters, like printf. If it reads memory, then it requires all
+                // previous code to be there
+                for (PDGNode<? extends BlockItem> node : allNodes.values()) {
+                    if (TREAT_UNKNOWN_FUNCTIONS_AS_ORDER_DEPENDENT) {
+                        node.linkOrderDependency(pdgNode);
+                    } else {
+                        node.linkVariableDependency(pdgNode);
+                    }
+                }
                 // Set statement as one that depends on things outside of scope?
+
             } else {
 
                 for (String usedVariable : returns.dependencies.getDependentVariables()) {
@@ -472,19 +481,13 @@ public class PDGGenerationVisitor {
                     }
                 }
             }
+            /*
             if (blockItem.hasJump()) {
                 for (PDGNode<? extends BlockItem> node : allNodes.values()) {
                     node.linkOrderDependency(pdgNode);
                 }
-                /*
-                for (Collection<PDGNode<? extends BlockItem>> pdgNodes : lastAssigned.values()) {
-                    for (PDGNode<? extends BlockItem> node : pdgNodes) {
-                        node.linkOrderDependency(pdgNode);
-                    }
-                    //pdgNodes.add(pdgNode);
-                }
-                */
             }
+            */
             if (blockItem instanceof VariableDeclaration) {
                 for (VariableDeclaration.DeclaredVariable declaredVariable : ((VariableDeclaration) blockItem).getDeclaredVariables()) {
                     variableDeclarations.put(declaredVariable.getIdentifier().getIdentifier(), ((PDGNode<VariableDeclaration>) pdgNode));

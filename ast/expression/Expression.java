@@ -19,6 +19,16 @@ public interface Expression extends BaseElement {
 
     String toCode();
 
+    default boolean hasExit() {
+        for (PostfixExpressionInvocationImpl postfixExpressionInvocation : getInvocations()) {
+            String functionName = postfixExpressionInvocation.getFunction().getIdentifier();
+            if (functionName.equals("exit")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     Set<String> getVariables();
 
     Set<String> getDependentVariables();

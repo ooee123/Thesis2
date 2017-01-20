@@ -34,7 +34,7 @@ public class ExpressionStatement implements Statement {
 
     @Override
     public boolean hasJump() {
-        return false;
+        return expression.hasExit();
     }
 
     private static String toCommentTip(Expression expression) {

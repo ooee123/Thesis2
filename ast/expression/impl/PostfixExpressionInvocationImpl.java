@@ -20,8 +20,7 @@ public class PostfixExpressionInvocationImpl implements PostfixExpression {
     private Function function;
 
     public PostfixExpressionInvocationImpl(PostfixExpression expression, List<AssignmentExpression> arguments) {
-        this.postfixExpression = expression;
-        this.arguments = arguments;
+        this(expression, arguments, null);
     }
 
     public boolean writesMemory() {
