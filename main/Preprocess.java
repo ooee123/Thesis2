@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+
+import java.io.*;
 import java.util.Scanner;
 
 /**
@@ -149,5 +151,28 @@ public class Preprocess {
             }
         }
         return firstLine;
+    }
+
+    public static String insertUndefs(String string, int firstLine) {
+        Scanner scanner = new Scanner(string);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        PrintWriter printer = new PrintWriter(byteArrayOutputStream);
+        // Print until end of preprocessor directives
+        for (int i = 0; i < firstLine; i++) {
+            printer.println(scanner.nextLine());
+        }
+        /*
+        while (scanner.hasNextLine()) {
+            printer.println(scanner.nextLine());
+        }
+        */
+        printer.println("#undef FD_SET");
+        printer.println("#undef FD_ISSET");
+        printer.println("#undef FD_ZERO");
+        while (scanner.hasNextLine()) {
+            printer.println(scanner.nextLine());
+        }
+        printer.close();
+        return byteArrayOutputStream.toString();
     }
 }
