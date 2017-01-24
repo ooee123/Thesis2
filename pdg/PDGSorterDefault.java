@@ -59,6 +59,11 @@ public class PDGSorterDefault implements PDGSorter {
                 }
             }
         }
+        if (readyNodes.size() == 0 && nodes.size() > 1) {
+            if (nodes.stream().allMatch(node -> node.blockItem instanceof JumpStatementStrict)) {
+                readyNodes.add(nodes.stream().findFirst().get());
+            }
+        }
         return readyNodes;
     }
 }

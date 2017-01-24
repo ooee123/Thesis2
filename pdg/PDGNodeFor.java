@@ -30,7 +30,7 @@ public class PDGNodeFor extends PDGNodeContainsStatementNode<IterationStatementF
     public IterationStatementFor sort(PDGSorter sorter) {
         Expression condition = blockItem.getCondition();
         Statement statement = body.sort(sorter);
-        return new IterationStatementFor(blockItem.getInitial(), blockItem.getCondition(), blockItem.getIteration(), statement);
+        return new IterationStatementFor(blockItem.getInitial(), blockItem.getCondition(), blockItem.getIteration(), statement, blockItem.getOriginalLine());
     }
 
     public String toCode(PDGSorterDefault sorter) {

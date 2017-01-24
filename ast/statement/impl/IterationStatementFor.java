@@ -30,10 +30,6 @@ public class IterationStatementFor implements IterationStatement, CanContainStat
         return String.format("%s %s", toCommentTip(initialCode, conditionCode, iterationCode), statementCode);
     }
 
-    public IterationStatementFor(Expression initial, Expression condition, Expression iteration, Statement statement) {
-        this(initial, condition, iteration, statement, toCommentTip(initial.toCode(), condition.toCode(), iteration.toCode()));
-    }
-
     private static String toCommentTip(String initial, String condition, String iteration) {
         return String.format("for (%s; %s; %s)", initial, condition, iteration);
     }

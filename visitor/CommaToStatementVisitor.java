@@ -122,7 +122,7 @@ public class CommaToStatementVisitor {
         for (BlockItem blockItem : toAddToBody) {
             CompoundStatement.addToEnd(blockItem, body);
         }
-        newBlockItems.add(new IterationStatementFor(initial, condition, iteration, body));
+        newBlockItems.add(new IterationStatementFor(initial, condition, iteration, body, iterationStatementFor.getOriginalLine()));
         return newBlockItems;
     }
 

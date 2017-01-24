@@ -40,20 +40,20 @@ public class Main {
             CLexer secondPartlexer = new CLexer(new ANTLRInputStream(secondPartByteArrayInputStream));
             CommonTokenStream firstPartTokens = new CommonTokenStream(firstPartlexer);
             CommonTokenStream secondPartTokens = new CommonTokenStream(secondPartlexer);
-            System.err.println("Begin parsing");
+            System.err.print("Begin parsing " + args[0] + "...");
             CParser firstPartParser = new CParser(firstPartTokens);
             CParser secondPartParser = new CParser(secondPartTokens);
-            System.err.println("Finish parsing");
+            System.err.println("Done");
             CParser.CompilationUnitContext firstPartCompilationUnit = firstPartParser.compilationUnit();
             CParser.CompilationUnitContext secondPartCompilationUnit = secondPartParser.compilationUnit();
             TreeToASTVisitor visitor = new TreeToASTVisitor(firstPartCompilationUnit, secondPartTokens);
-            System.err.println("Begin AST building");
+            System.err.print("Begin AST building...");
             Program program = visitor.visit(secondPartCompilationUnit);
-            System.err.println("Finish AST building");
+            System.err.println("Done");
 
-            System.err.println("Assigning types to primary expressions");
+            System.err.print("Assigning types to primary expressions...");
             new PrimaryExpressionTypeAssignerVisitor(program);
-            System.err.println("Finish assigning types to primary expressions");
+            System.err.println("Done");
 
             PDGGenerationVisitor pdgGenerationVisitor = new PDGGenerationVisitor(program);
 
@@ -61,17 +61,20 @@ public class Main {
             //FunctionArgumentOrderVisitor functionArgumentOrderVisitor = new FunctionArgumentOrderVisitor();
             //functionArgumentOrderVisitor.visit(program);
             for (Function function : program.getFunction()) {
-                System.err.println("Begin PDG generation for function " + function.getIdentifier());
+                System.err.print("Begin PDG generation for function " + function.getIdentifier() + "...");
                 PDGNodeCompoundStatement functionBody = pdgGenerationVisitor.visit(function);
-                System.err.println("Finish PDG generation");
+                System.err.println("Done");
+                System.err.print("Being Useless removal for function " + function.getIdentifier() + "...");
                 PDGUselessCodeRemover pdgUselessCodeRemover = new PDGUselessCodeRemover();
                 pdgUselessCodeRemover.removeUselessCode(functionBody);
+                System.err.println("Done");
 
                 PDGNodeTransitiveReducer pdgNodeTransitiveReducer = new PDGNodeTransitiveReducer();
                 pdgNodeTransitiveReducer.reduce(functionBody);
-
+                System.err.print("Being serializing PDG for function " + function.getIdentifier() + "...");
                 PDGSorter sorter = new PDGSorterDefault();
                 CompoundStatement statement = sorter.sort(functionBody.getBody());
+                System.err.println("Done");
                 function.setCompoundStatement(statement);
             }
             ProgramIdentifierNormalizerVisitor programIdentifierNormalizerVisitor = new ProgramIdentifierNormalizerVisitor();

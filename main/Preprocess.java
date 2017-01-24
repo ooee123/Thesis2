@@ -64,6 +64,7 @@ public class Preprocess {
     public static String prependUndef(String string) {
         string = string.replaceAll("FD_SET\\(", "\n#undef FD_SET\nFD_SET(");
         string = string.replaceAll("FD_ZERO\\(", "\n#undef FD_ZERO\nFD_ZERO(");
+        string = string.replaceAll("FD_ISSET\\(", "\n#undef FD_ISSET\nFD_ISSET(");
         return string;
     }
 

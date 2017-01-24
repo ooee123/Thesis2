@@ -8,7 +8,9 @@ import com.google.common.collect.Sets;
 import lombok.Value;
 import visitor.Visitor;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by ooee on 11/1/16.
@@ -16,10 +18,10 @@ import java.util.Set;
 @Value
 public class TypedefDeclaration implements Declaration {
 
-    private TypedefType typedefType;
+    private List<TypedefType> typedefTypes;
 
-    public TypedefDeclaration(TypedefType typedefType) {
-        this.typedefType = typedefType;
+    public TypedefDeclaration(List<TypedefType> typedefTypes) {
+        this.typedefTypes = typedefTypes;
     }
 
     @Override
@@ -29,6 +31,7 @@ public class TypedefDeclaration implements Declaration {
 
     public String toCode() {
         String originalTypeCode;
+        TypedefType typedefType = typedefTypes.stream().findAny().get();
         if (typedefType.getOriginalType() instanceof StructUnionType) {
             originalTypeCode = ((StructUnionType) typedefType.getOriginalType()).toExpandedCode();
         } else if (typedefType.getOriginalType() instanceof EnumType) {
@@ -36,7 +39,8 @@ public class TypedefDeclaration implements Declaration {
         } else {
             originalTypeCode = typedefType.getOriginalType().toCode();
         }
-        return "typedef " + originalTypeCode + " " + typedefType.getTypedefName() + ";";
+        List<String> strings = typedefTypes.stream().map(ty -> ty.getTypedefName()).collect(Collectors.toList());
+        return "typedef " + originalTypeCode + " " + String.join(", ", strings) + ";";
     }
 
     @Override

@@ -71,9 +71,15 @@ public class PrimaryExpressionTypeAssignerVisitor {
             return new TypeScope(parent);
         } else if (stm instanceof IterationStatementFor) {
             IterationStatementFor iterationStatementFor = (IterationStatementFor) stm;
-            iterationStatementFor.getInitial().visitNestedExpressions(currentScopeVisitor);
-            iterationStatementFor.getCondition().visitNestedExpressions(currentScopeVisitor);
-            iterationStatementFor.getIteration().visitNestedExpressions(currentScopeVisitor);
+            if (iterationStatementFor.getInitial() != null) {
+                iterationStatementFor.getInitial().visitNestedExpressions(currentScopeVisitor);
+            }
+            if (iterationStatementFor.getCondition() != null) {
+                iterationStatementFor.getCondition().visitNestedExpressions(currentScopeVisitor);
+            }
+            if (iterationStatementFor.getIteration() != null) {
+                iterationStatementFor.getIteration().visitNestedExpressions(currentScopeVisitor);
+            }
             Statement body = iterationStatementFor.getStatement();
             TypeScope bodyScope = getDeclarations(body, parent);
             functionScopes.put(body, bodyScope);

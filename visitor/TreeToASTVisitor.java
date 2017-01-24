@@ -10,7 +10,6 @@ import ast.type.*;
 import com.google.common.collect.Lists;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import parser.CParser;
@@ -181,12 +180,12 @@ public class TreeToASTVisitor {
                 } else {
                     if (typeSpecifierContext.typedefName() != null) {
                         if (!typedefMapper.containsKey(typeSpecifierContext.typedefName().getText())) {
-                            System.err.println("Not in");
+                            throw new IllegalArgumentException("Not in");
                         }
                         return typedefMapper.get(typeSpecifierContext.typedefName().getText());
                     } else if (typeSpecifierContext.structOrUnionSpecifier() != null) {
                         if (!tagMapper.containsKey(typeSpecifierContext.structOrUnionSpecifier().Identifier().getText())) {
-                            System.err.println("Not in");
+                            throw new IllegalArgumentException("Not in");
                         }
                         return tagMapper.get(typeSpecifierContext.structOrUnionSpecifier().Identifier().getText());
                     } else {
@@ -376,7 +375,7 @@ public class TreeToASTVisitor {
     }
 
     private TypedefDeclaration processTypedef(CParser.DeclarationContext ctx) {
-        String typedefName = getTypedefName(ctx);
+        List<String> typedefName = getTypedefName(ctx);
         // Get all the inner parts
         Type originalType;
         List<CParser.TypeSpecifierContext> typeSpecifierContexts = filterDeclarationContext(ctx);
@@ -386,18 +385,28 @@ public class TreeToASTVisitor {
             visit(typeSpecifierContexts);
             originalType = getType(ctx.declarationSpecifiers(), ctx.initDeclaratorList().initDeclarator().get(0).declaratorWithoutDeclarator().pointer());
         }
-        TypedefType typedefType = new TypedefType(originalType, typedefName);
-        typedefMapper.putIfAbsent(typedefName, typedefType);
-        return new TypedefDeclaration(typedefType);
+        List<TypedefType> types = new ArrayList<>();
+        for (String s : typedefName) {
+            TypedefType typedefType = new TypedefType(originalType, s);
+            types.add(typedefType);
+            typedefMapper.putIfAbsent(s, typedefType);
+        }
+
+        return new TypedefDeclaration(types);
     }
 
 
-    private String getTypedefName(CParser.DeclarationContext ctx) {
+    private List<String> getTypedefName(CParser.DeclarationContext ctx) {
+        List<String> typedefNames = new ArrayList<>();
         for (CParser.InitDeclaratorContext initDeclaratorContext : ctx.initDeclaratorList().initDeclarator()) {
             CParser.DeclaratorWithoutDeclaratorContext declaratorWithoutDeclaratorContext = initDeclaratorContext.declaratorWithoutDeclarator();
-            return getIdentifier(declaratorWithoutDeclaratorContext);
+            typedefNames.add(getIdentifier(declaratorWithoutDeclaratorContext));
         }
-        throw new IllegalArgumentException("No typedef identifier found?");
+        if (typedefNames.isEmpty()) {
+            throw new IllegalArgumentException("No typedef identifier found?");
+        } else {
+            return typedefNames;
+        }
     }
 
     private VariableDeclaration.DeclaredVariable visit(CParser.InitDeclaratorContext ctx, Type type) {
@@ -541,7 +550,10 @@ public class TreeToASTVisitor {
         if (LOOPS_AND_IFS_MUST_BE_COMPOUND_STATEMENTS && !(statement instanceof CompoundStatement)) {
             statement = containInCompoundStatement(statement);
         }
-        return new IterationStatementFor(initExpression, condExpression, iterExpression, statement);
+        int startIndex = ctx.getStart().getTokenIndex();
+        int endIndex = ctx.getStop().getTokenIndex();
+        String joined = String.join(" ", tokenStream.get(startIndex, endIndex).stream().map(tk -> tk.getText()).collect(Collectors.toList()));
+        return new IterationStatementFor(initExpression, condExpression, iterExpression, statement, joined);
     }
 
     private IterationStatementDoWhile visit(CParser.DoWhileStatementContext ctx) {
@@ -950,6 +962,10 @@ public class TreeToASTVisitor {
             throw new IllegalArgumentException("Uh oh");
         } else if (ctx.expression() != null) {
             return new PrimaryExpressionParentheses(visit(ctx.expression()));
+        } else if (ctx.typeName() != null) {
+            UnaryExpression unaryExpression = visit(ctx.unaryExpression());
+            Type type = visit(ctx.typeName());
+            return new PrimaryExpressionVariadicArg(unaryExpression, type);
         } else {
             throw new IllegalArgumentException("What kind of primary expression is this? " + ctx.getText());
         }
