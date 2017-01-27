@@ -1,0 +1,52 @@
+Similarity Analyser 2.4.0 - http://www.harukizaemon.com/simian
+Copyright (c) 2003-2015 Simon Harris.  All rights reserved.
+Simian is not free unless used solely for non-commercial or evaluation purposes.
+{failOnDuplication=true, ignoreCharacterCase=true, ignoreCurlyBraces=true, ignoreIdentifierCase=true, ignoreIdentifiers=true, ignoreModifiers=true, ignoreStringCase=true, reportDuplicateText=true, threshold=6}
+Found 6 duplicate lines in the following files:
+ Between lines 63 and 68 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine_noID/chatShared.c
+ Between lines 40 and 45 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine_noID/chatShared.c
+void *packet = malloc(len + sizeof(header)); /* void * packet = malloc ( len + sizeof ( header ) ) ; */packetHandle *hPack = (packetHandle *)packet; /* packetHandle * hPack = ( packetHandle * ) packet ; */
+hPack->head.flag = flag; /* hPack -> head . flag = flag ; */
+headerSetLen(&(hPack->head ), len); /* headerSetLen ( & ( hPack -> head ) , len ) ; */
+hPack->handleLen = hLen; /* hPack -> handleLen = hLen ; */
+memcpy(&(hPack->handleStart ), handle, hLen); /* memcpy ( & ( hPack -> handleStart ) , handle , hLen ) ; */
+=====================================================================
+Found 6 duplicate lines in the following files:
+ Between lines 80 and 87 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine_noID/cclient.c
+ Between lines 47 and 54 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine_noID/cclient.c
+exit(1); /* exit ( 1 ) ; */}
+free(d); /* free ( packet ) ; */
+g--; /* mssgNum -- ; */
+}
+free(c); /* free ( toSend ) ; */
+c = malloc(i); /* toSend = malloc ( theRest ) ; */
+memcpy(c, a + h, i); /* memcpy ( toSend , mssg + consumed , theRest ) ; */
+=====================================================================
+Found 8 duplicate lines in the following files:
+ Between lines 69 and 76 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine_noID/cclient.c
+ Between lines 36 and 43 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine_noID/cclient.c
+int g = (strlen(a) + 1 ) / f; /* int mssgNum = ( strlen ( mssg ) + 1 ) / maxMssgLen ; */int h = 0; /* int consumed = 0 ; */
+int i = ((strlen(a) + 1 ) % f ) + g; /* int theRest = ( ( strlen ( mssg ) + 1 ) % maxMssgLen ) + mssgNum ; */
+c = malloc(f); /* toSend = malloc ( maxMssgLen ) ; */
+while (g>0) /* while (mssgNum>0) */ {
+memcpy(c, a + h, f - 1); /* memcpy ( toSend , mssg + consumed , maxMssgLen - 1 ) ; */
+c[f - 1] = 0; /* toSend [ maxMssgLen - 1 ] = 0 ; */
+h += f - 1; /* consumed += maxMssgLen - 1 ; */
+=====================================================================
+Found 10 duplicate lines in the following files:
+ Between lines 248 and 258 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine_noID/cclient.c
+ Between lines 239 and 249 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine_noID/cclient.c
+void printBroadcast(void *a) /* void printBroadcast ( void * packet ) { */{char *b = ((void *)0 ); /* char * sender = ( ( void * ) 0 ) ; */
+char *c = ((void *)0 ); /* char * mssg = ( ( void * ) 0 ) ; */
+getFirstHandle(a, &b); /* getFirstHandle ( packet , & sender ) ; */
+getBroadCastMssg(a, &c); /* getBroadCastMssg ( packet , & mssg ) ; */
+printf("%s: %s\n", b, c); /* printf ( "%s: %s\n" , sender , mssg ) ; */
+free(c); /* free ( mssg ) ; */
+free(b); /* free ( sender ) ; */
+}
+void printMessage(void *a) /* void printMessage ( void * packet ) { */{
+char *b = ((void *)0 ); /* char * sender = ( ( void * ) 0 ) ; */
+=====================================================================
+Found 60 duplicate lines in 8 blocks in 2 files
+Processed a total of 555 significant (697 raw) lines in 5 files
+Processing time: 0.034sec

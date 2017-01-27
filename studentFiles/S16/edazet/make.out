@@ -1,0 +1,4 @@
+gcc -g -c networks.c
+gcc -g -c testing.c
+gcc -g -o cclient -Wall tcp_client.c testing.o networks.o 
+gcc -g -o server -Wall tcp_server.c testing.o networks.o 

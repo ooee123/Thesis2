@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>server.c</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<HR>
+<H3><CENTER>server.c</CENTER></H3><HR>
+<PRE>
+/******************************************************************************
+* tcp_server.c
+*
+* CPE 464 - Program 1
+*****************************************************************************/
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/uio.h&gt;
+#include &lt;sys/time.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;string.h&gt;
+#include &lt;strings.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;netdb.h&gt;
+
+#include &quot;networks.h&quot;
+#include &quot;chat.h&quot;
+#include &quot;handleList.h&quot;
+
+void sendBadHandle(int socket) {
+	handleErr data;
+	
+	data.packetLen = htons(HEAD_SIZE_CONST);
+	data.flag = BAD_HANDLE;
+	
+	if(send(socket, (void*)&amp;data, HEAD_SIZE_CONST, 0) &lt; 0) {
+		perror(&quot;Send on Server&quot;);
+		exit(FAIL);
+	}
+}
+
+void sendHandleACK(int socket) {
+	handleACK data;
+
+	data.packetLen = htons(HEAD_SIZE_CONST);
+	data.flag = ACK_HANDLE;
+	
+	if(send(socket, (void*)&amp;data, HEAD_SIZE_CONST, 0) &lt; 0) {
+		perror(&quot;Send on Server&quot;);
+		exit(FAIL);
+	}
+	
+}
+
+void sendNumClientsPacket(int socket, int32_t numHandles) {
+	char *data = malloc(NUM_CLIENT_CONST);
+	int32_t num = htonl(numHandles);
+	int flag = NUM_HANDLES;
+	int length = htons(NUM_CLIENT_CONST);
+	
+
+	memcpy(data, &amp;length, 2);
+	memcpy(&amp;data[FLAG_OFF], &amp;flag, 1);
+	memcpy(&amp;data[HEAD_SIZE_CONST], &amp;num, 4);
+	
+	if(send(socket, (void*)data, NUM_CLIENT_CONST, 0) &lt; 0) {
+		perror(&quot;Sending number of clients&quot;);
+		exit(FAIL);
+	}
+}
+
+void sendHandle(int socket, Handle *handle) {
+	char *data = malloc(GIVE_HANDLE_CONST + handle-&gt;length);
+	int flag = GIVE_HANDLE;
+	int length = htons(GIVE_HANDLE_CONST + handle-&gt;length);
+
+	memcpy(data, &amp;length, 2);
+	memcpy(&amp;data[FLAG_OFF], &amp;flag, 1);
+	memcpy(&amp;data[HEAD_SIZE_CONST], &amp;length, 1);
+	memcpy(&amp;data[GIVE_HANDLE_CONST], handle-&gt;name, handle-&gt;length);
+
+	if(send(socket, (void*)data, GIVE_HANDLE_CONST + handle-&gt;length, 0) &lt; 0) {
+		perror(&quot;Sending handle data&quot;);
+		exit(FAIL);
+	}
+	free(data);
+}
+
+void sendHandlePackets(int socket, int32_t numHandles) {
+	int ndx = 0;
+
+	for(ndx = 0; ndx &lt; numHandles; ndx++) {
+		Handle *handle = getClientData(ndx);
+		sendHandle(socket,handle);
+	}		
+}
+
+void sendExitPacket(int socket) {
+	handleACK data;
+	
+<A NAME="0"></A>	data.packetLen = htons(HEAD_SIZE_CONST);
+	data.flag = ACK_EXIT;
+
+<FONT color="#0000ff"><A HREF="javascript:ZweiFrames('match0-1.html#0',3,'match0-top.html#0',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>	if(send(socket, (void*)&amp;data, HEAD_SIZE_CONST, 0) &lt; 0) {
+		perror(&quot;Send Exit ACK&quot;);
+		exit(FAIL);
+	}
+}
+
+void sendBadDest(int socketNum, cclient *handle) {
+	badDest *packet = malloc(sizeof(badDest));
+	int size = INIT_SIZE_CONST + handle-&gt;len;
+	unsigned char *data = malloc(size);</B></FONT>
+
+	packet-&gt;head.packetLen = htons(size);
+	packet-&gt;head.flag = BAD_DEST;
+	packet-&gt;handle = handle;
+
+	/* Copy: head, then length of bad handle and finally handle. */
+	memcpy(data, &amp;packet-&gt;head, HEAD_SIZE_CONST);
+	memcpy(&amp;data[HEAD_SIZE_CONST], &amp;packet-&gt;handle-&gt;len, 1);
+	memcpy(&amp;data[INIT_SIZE_CONST], packet-&gt;handle-&gt;name, packet-&gt;handle-&gt;len);
+
+	if(send(socketNum, data, size, 0) &lt; 0) {
+		perror(&quot;Send Bad Dest&quot;);
+		exit(FAIL);
+	}
+
+	free(data);
+	free(packet);
+} 
+
+void sendMessage(int socket, char *buffer, int length) {
+	unsigned char *data = malloc(length);
+	
+	memcpy(data, buffer, length);
+	
+	if(send(socket, data, length, 0) &lt; 0) {
+		perror(&quot;Send Message&quot;);
+		exit(FAIL);
+	}
+
+	free(data);
+}
+
+void constructMessage(Handle *destInfo, cclient *srcInfo, char *buffer,int length) {
+	char *data = malloc(length + 1 + destInfo-&gt;length);
+	int remainingLen = length - MSG_SRC_LEN_OFF;	
+	buffer[FLAG_OFF] = MESSAGE;
+
+	memcpy(data, buffer, HEAD_SIZE_CONST);		// Header
+	memcpy(&amp;data[MSG_DEST_LEN_OFF], &amp;destInfo-&gt;length, 1); // Length of dest client
+	memcpy(&amp;data[MSG_DEST_OFF], destInfo-&gt;name, destInfo-&gt;length); // dest name
+	memcpy(&amp;data[MSG_SRC_LEN_OFF + destInfo-&gt;length], &amp;buffer[BCAST_SRC_LEN_OFF],remainingLen);
+
+	if(send(destInfo-&gt;socket, data, length + 1 + destInfo-&gt;length, 0) &lt; 0) {
+		perror(&quot;Send Message (To all)&quot;);
+		exit(FAIL);
+	}
+
+	free(data);
+}
+	
+void sendMessageToAll(char *buffer, int length, cclient *srcInfo) {
+	int ndx = 0, numHandles = getNumHandles();
+
+	for(ndx = 0; ndx &lt; numHandles; ndx++) {
+		Handle *destInfo = getClientData(ndx);
+		if(strcmp(destInfo-&gt;name, srcInfo-&gt;name)) {
+			constructMessage(destInfo, srcInfo, buffer, length);
+		}
+	}
+}
+
+void parseDetails(int numBytes, char *buffer, int socket, int clientSocket) {
+	uint16_t length;
+	int32_t numHandles = 0;
+	uint8_t flag;
+	cclient srcInfo;
+	cclient destInfo;
+	int destSocket = 0;
+	
+	/* Get the length &amp; flag of the packet. */
+	memcpy(&amp;length, buffer, 2);
+	length = ntohs(length);
+	memcpy(&amp;flag, &amp;buffer[FLAG_OFF], 1);
+
+	switch(flag) {
+		case INIT_HANDLE:
+			memcpy(&amp;srcInfo.len, &amp;buffer[HEAD_SIZE_CONST], 1);
+			srcInfo.name = malloc(srcInfo.len);
+			memcpy(srcInfo.name, &amp;buffer[INIT_SIZE_CONST], srcInfo.len);
+
+			if(findHandle(srcInfo.name) &gt; 0) {
+				sendBadHandle(clientSocket);
+			}
+			else {
+				addHandle(srcInfo.name, srcInfo.len, clientSocket);
+				sendHandleACK(clientSocket);
+			}
+			free(srcInfo.name);
+		break;
+
+		case BROADCAST:
+			memcpy(&amp;srcInfo.len, &amp;buffer[BCAST_SRC_LEN_OFF], 1);
+			srcInfo.name = malloc(srcInfo.len + 1);
+			memcpy(srcInfo.name, &amp;buffer[BCAST_SRC_OFF], srcInfo.len);
+			srcInfo.name[srcInfo.len] = '\0';
+			
+			sendMessageToAll(buffer, length, &amp;srcInfo);
+		break;
+
+		case MESSAGE:
+			memcpy(&amp;destInfo.len, &amp;buffer[HEAD_SIZE_CONST], 1);
+			destInfo.name = malloc(destInfo.len + 1);
+			memcpy(destInfo.name, &amp;buffer[INIT_SIZE_CONST], destInfo.len);
+			destInfo.name[destInfo.len] = '\0';
+
+			if(findHandle(destInfo.name) == NOT_FOUND) {
+				sendBadDest(clientSocket, &amp;destInfo);
+			} 
+
+			else {
+				destSocket = getSocket(destInfo.name);
+				if(destSocket == FAIL) {
+					printf(&quot;Something went wrong in handleList!\n&quot;);
+					exit(FAIL);
+				}
+				sendMessage(destSocket, buffer, length);
+			}
+			free(destInfo.name);
+		break;
+
+		case EXIT_REQ:
+			sendExitPacket(clientSocket);
+		break;
+
+		case REQ_HANDLES:
+			numHandles = getNumHandles();	
+			sendNumClientsPacket(clientSocket, numHandles);
+			/* Need to then go send all #numHandles worth of handleData packets*/
+			sendHandlePackets(clientSocket, numHandles);			
+		break;
+
+		default:
+			printf(&quot;Bad flag!\n&quot;);
+			printf(&quot;Flag is: %d\n&quot;, flag);
+		break;
+	}
+}
+	
+void startServerChat(int socketNum) {
+	fd_set useFds, saveFds;
+	int ndx, numFds = 0;
+	int client_socket = 0;
+
+<A NAME="1"></A>	FD_ZERO(&amp;saveFds);
+	FD_SET(socketNum, &amp;saveFds);
+	
+<FONT color="#f63526"><A HREF="javascript:ZweiFrames('match0-1.html#1',3,'match0-top.html#1',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>	while(1) {
+		useFds = saveFds;
+		if(select(FD_SETSIZE, &amp;useFds, NULL, NULL, NULL) &lt; 0) {
+			perror(&quot;select&quot;);
+			exit(FAIL);
+		}
+
+		for(ndx = 0; ndx &lt; FD_SETSIZE; ndx++) {
+			if(FD_ISSET(ndx, &amp;useFds)) {
+				if(ndx == socketNum) {</B></FONT>
+					client_socket = tcpAccept(socketNum);
+					FD_SET(client_socket,&amp;saveFds);
+					numFds++;
+<A NAME="2"></A>				}
+				else {
+					char *buffer = malloc(MAXBUF);
+<FONT color="#77bfc7"><A HREF="javascript:ZweiFrames('match0-1.html#2',3,'match0-top.html#2',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>					int nbytes = read(ndx, buffer, MAXBUF);
+					if(nbytes &lt; 0) {
+						perror(&quot;read&quot;);
+						exit(FAIL);
+					}
+					else if(nbytes == 0) {
+						FD_CLR(ndx, &amp;saveFds);
+						removeSocket(ndx);
+					}
+					else { 
+						parseDetails(nbytes, buffer, socketNum, ndx);
+					}
+					free(buffer);
+				}</B></FONT>
+			}
+		}
+	}
+	close(client_socket);
+}
+
+int main(int argc, char *argv[]) {
+	int server_socket = 0;   //socket descriptor for the server socket
+	int port_number = 0;	 //optional 
+	
+	if(argc == 2) {
+		port_number = atoi(argv[1]);
+	}
+
+	/* Create the server socket */
+	server_socket = tcpServerSetup(port_number);
+
+	/* Get commands from clients and send packages. */
+	startServerChat(server_socket);
+	
+	/* close the sockets */
+	close(server_socket);
+	
+	return 0;
+}
+</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,19 @@
+Waylin Wang Lab Section: 9 am
+
+To compile
+	make clean
+	make all
+
+To run server
+	./server <optional port number>
+
+To run cclient
+	./cclient <handle name> <host address> <host port>
+
+Commands supported by cclient:
+%m/M <handle> <message>
+%b/b <message>
+%l/L
+%e/E
+
+Both %m and %b must include a space between each argument.

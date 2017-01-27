@@ -1,0 +1,450 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>cclient.c</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff" style="margin-left:25">
+<HR>
+<H3><CENTER>cclient.c</CENTER></H3><HR>
+<PRE>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;sys/uio.h&gt;
+#include &lt;sys/time.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;string.h&gt;
+#include &lt;strings.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;netdb.h&gt;
+#include &lt;ctype.h&gt;
+
+#include &quot;networks.h&quot;
+#include &quot;testing.h&quot;
+
+#define MAXBUF 1024
+#define HEADER 3
+#define BYTE 1
+#define PACKET_LEN 2
+
+void startUp(int socket_fd);
+void printPrompt(void);
+void initPacket(char *client_handle, int socket_fd);
+void promptUser(int socket_fd);
+void message(char *input, int socket_fd, int send_len);
+void broadcast(char *input, int socket_fd, int send_len);
+void handleList(char *input, int socket_fd, int send_len);
+void exitClient(char *input, int socket_fd, int send_len);
+void transmitCheck(int socket_fd);
+void receivingMessage(char *packet);
+void errorMessage(char *packet);
+void receiveNumHandles(char *packet, int socket_fd);
+void printHandles(char *packet, int socket_fd);
+void terminateClient(char *packet);
+
+char *global_handle;
+int max_socket = 3;
+int list_flag = 0;
+int actual_clients = 0;
+int count_clients = 0;
+
+int main(int argc, char *argv[]) {
+	int socket_fd = 0;
+
+	if (argc != 4) {
+		fprintf(stderr, &quot;Error - must include IP address, port number, and client handle name\n&quot;);
+		exit(EXIT_FAILURE);
+	}
+	
+	/* Set up the TCP Client socket */
+	socket_fd = tcpClientSetup(argv[2], argv[3]);
+	initPacket(argv[1], socket_fd);
+	
+	startUp(socket_fd);
+	close(socket_fd);
+
+	return 0;
+}
+
+void startUp(int socket_fd) {
+	int max_socket = socket_fd;
+	fd_set fdvar;
+
+        FD_ZERO(&amp;fdvar);
+        FD_SET(socket_fd, &amp;fdvar);
+
+	while (1) {	
+		if (!list_flag) {
+			printPrompt();
+		}
+		while (1) {
+			FD_ZERO(&amp;fdvar);
+			FD_SET(socket_fd, &amp;fdvar);
+			FD_SET(STDIN_FILENO, &amp;fdvar);
+
+			if (select(max_socket + 1, (fd_set *)&amp;fdvar, (fd_set *)0, (fd_set *)0, NULL) &gt; 0) {
+				if (FD_ISSET(socket_fd, &amp;fdvar)) {
+					transmitCheck(socket_fd);	
+				}
+
+				if (!list_flag) {
+					if (FD_ISSET(STDIN_FILENO, &amp;fdvar)) {
+						promptUser(socket_fd);
+					}
+				}
+				break;
+			}
+
+			break;
+		}
+	}
+}
+
+void transmitCheck(int socket_fd) {
+	char *packet = NULL;
+	int bytes_recv = -1;
+	uint8_t flag;
+	
+	static struct timeval timeout;
+	timeout.tv_sec = 1;
+	timeout.tv_usec = 0;
+
+	packet = malloc(MAXBUF);
+<A NAME="0"></A>	bytes_recv = recv(socket_fd, packet, MAXBUF, 0);
+
+	if (bytes_recv != -1) {
+<FONT color="#0000ff"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match0-0.html#0',2,'match0-top.html#0',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>		flag = *(packet + PACKET_LEN);
+
+		switch (flag) {
+
+			case 5:
+				receivingMessage(packet);
+				break;
+			case 7:
+				errorMessage(packet);
+				break;
+			case 9:
+				terminateClient(packet);
+				break;
+			case 11:
+				receiveNumHandles(packet, socket_fd);
+				break;
+			case 12:</B></FONT>
+				count_clients++;
+				printHandles(packet, socket_fd);	
+
+				if (count_clients == actual_clients) {
+					list_flag = 0;
+					count_clients = 0;
+				}
+				break;
+			default:
+				// invalid flag.
+				break;	
+		}
+	}
+}
+
+void terminateClient(char *packet) {
+	printf(&quot;\n&quot;);
+	exit(EXIT_SUCCESS);
+}
+
+void printHandles(char *packet, int socket_fd) {
+<A NAME="1"></A>	uint16_t packet_len, gar_len = HEADER;
+	uint8_t flag;
+	uint8_t handle_len;	
+<FONT color="#f63526"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match0-0.html#1',2,'match0-top.html#1',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>	char *handle, *garbage = malloc(HEADER);
+
+	packet_len = *(uint16_t*)packet;
+	handle_len = *((uint8_t*)(packet + HEADER));
+	handle = packet + HEADER + BYTE;
+
+	printf(&quot;\t%s\n&quot;, handle);
+
+	/* garbage signal to receive handles. */
+        flag = 0;
+
+        memcpy(garbage, &amp;gar_len, PACKET_LEN);
+        memcpy(garbage + PACKET_LEN, &amp;flag, BYTE);
+
+        send(socket_fd, garbage, gar_len, 0);
+}
+
+void receiveNumHandles(char *packet, int socket_fd) {
+	uint32_t num_clients;
+	char *garbage = malloc(HEADER);</B></FONT>
+	uint16_t gar_len = HEADER;
+	/* garbage signal to receive handles. */
+	int flag = 0;
+	
+	num_clients = *((uint32_t*)(packet + HEADER));
+	actual_clients = num_clients;
+
+	printf(&quot;\nNumber of clients: %d\n&quot;, num_clients);
+	list_flag = 1;
+
+	memcpy(garbage, &amp;gar_len, PACKET_LEN);
+	memcpy(garbage + PACKET_LEN, &amp;flag, BYTE);
+
+	send(socket_fd, garbage, gar_len, 0);
+}
+
+void receivingMessage(char *packet) {
+	char *sender, *text, *buf;
+	uint16_t packet_len;
+	uint8_t sender_len;
+
+	packet_len = *((uint16_t*)packet);
+	sender_len = *(packet + HEADER);
+	sender = packet + HEADER + BYTE;
+	text = packet + HEADER + BYTE + sender_len;	
+
+	buf = malloc(sender_len);
+	memcpy(buf, sender, sender_len);
+
+	printf(&quot;\n%s: %s\n&quot;, buf, text);
+	free(buf);
+}
+
+void initPacket(char *client_handle, int socket_fd) {
+	// This fn needs to start the inital client setup.
+	// flag = 1 and format is: chat header + 1 byte handle length + handle
+	uint16_t packet_len = HEADER + BYTE + strlen(client_handle);
+	char *packet = malloc(packet_len);
+	uint8_t flag = 1, handle_len = strlen(client_handle);
+	int sent;
+
+	memcpy(packet, &amp;packet_len, PACKET_LEN);
+	memcpy(packet + PACKET_LEN, &amp;flag, 1);
+	memcpy(packet + PACKET_LEN + 1, &amp;handle_len, 1);
+	memcpy(packet + PACKET_LEN + 2, client_handle, handle_len);
+
+	sent = send(socket_fd, packet, packet_len, 0);
+
+	packet = NULL;
+	packet = malloc(3);
+
+	fd_set fdvar;
+	int nfds, msg_len;
+
+	FD_ZERO(&amp;fdvar);
+	FD_SET(socket_fd, &amp;fdvar);
+	
+	nfds = select(socket_fd + 1, (fd_set *)&amp;fdvar, (fd_set *)0, (fd_set *)0, NULL);
+
+	if (FD_ISSET(socket_fd, &amp;fdvar)) {
+	
+		msg_len = recv(socket_fd, packet, MAXBUF, 0);
+		packet_len = *(uint16_t*)packet;
+       		flag = *((uint8_t*)packet + PACKET_LEN);
+
+		if (flag == 3) {
+			fprintf(stderr, &quot;Handle already in use: &lt;%s&gt;\n&quot;, client_handle);
+			exit(EXIT_FAILURE);
+		}
+
+		global_handle = client_handle;
+		free(packet);
+	}
+}
+
+void promptUser(int socket_fd) {
+	char *send_buf = NULL, command;
+	int send_len = 0;
+
+	send_buf = (char *) malloc(MAXBUF);
+	
+	send_len = 0;
+	while ((send_buf[send_len] = getchar()) != '\n' &amp;&amp; send_len &lt; MAXBUF-1)
+	{
+		send_len++;
+	}
+
+	send_buf[send_len] = '\0';
+
+	if (send_buf[0] != '%') {
+		printf(&quot;Invalid command\n&quot;);	
+	}
+	else {
+		// Get second char.
+		command = send_buf[1];
+		switch (tolower(command)) {
+			case 'm':
+				message(send_buf, socket_fd, send_len);
+				break;
+			case 'b':
+				broadcast(send_buf, socket_fd, send_len);
+				break;
+			case 'l':
+				handleList(send_buf, socket_fd, send_len);
+				break;
+			case 'e':
+				exitClient(send_buf, socket_fd, send_len);
+				break;
+			default:
+				/* Error. */
+				printf(&quot;Invalid command\n&quot;);
+				break;
+		}
+	}
+}
+
+void message(char *send_buf, int socket_fd, int send_len) {
+	char *token = send_buf, *handle, *packet, *text;
+	const char *delim = &quot; &quot;, flag = 5;
+	int sent, txt_len = 0;
+	uint16_t total_len = 0;
+	uint8_t handle_len, sending_len;
+	
+	/* the command */
+	token = strtok(token, delim);
+
+	/* the handle/client */
+	handle = strtok(NULL, delim);
+
+	/* the handle length and name */
+	handle_len = strlen(handle);
+	sending_len = strlen(global_handle);
+
+	txt_len = send_len - 4 - handle_len;
+	text = malloc(txt_len + 1);
+
+	while ((token = strtok(NULL, delim)) != NULL) {
+		strcat(text, token);
+		strcat(text, &quot; &quot;);
+	}
+	strcat(text, &quot;\0&quot;);
+
+	total_len = 3 + 1 + handle_len + 1 + sending_len + txt_len;
+ 
+	/* Add header size in bytes. */
+	packet = malloc(total_len);
+	/* Copy packet length into packet. */
+	memcpy(packet, &amp;total_len, 2);
+	/* Copy flag into packet. */
+	memcpy(packet + 2, &amp;flag, 1);
+	/* Copy handle length into packet. */
+	memcpy(packet + 2 + 1, &amp;handle_len, 1);
+	/* Copy handle name into packet. */
+	memcpy(packet + 2 + 1 + 1, handle, handle_len);
+	/* Copy sending client handle length */
+	memcpy(packet + 2 + 1 + 1 + handle_len, &amp;sending_len, 1);
+	/* Copy sending client handle name */
+	memcpy(packet + 2 + 1 + 1 + handle_len + 1, global_handle, sending_len);
+	/* Copy text message into packet. */
+	memcpy(packet + 2 + 1 + 1 + handle_len + 1 + sending_len, text, txt_len + 1);
+
+	sent = send(socket_fd, packet, total_len, 0);
+	//printf(&quot;message sent %d bytes\n&quot;, sent);
+}
+
+  
+void broadcast(char *input, int socket_fd, int send_len) {
+	char *token = input, *handle, *packet, *text;
+	uint8_t sending_len, flag = 4;
+	int total_len, txt_len, sent;
+
+	/* the command */
+        token = strtok(token, &quot; &quot;);
+
+	/* sending client handle length */
+        sending_len = strlen(global_handle);
+
+	/* counted chars - %b - 1 space */
+        txt_len = send_len - 3;
+
+	/* take account for ending null char */
+        text = malloc(txt_len + 1);
+
+        while ((token = strtok(NULL, &quot; &quot;)) != NULL) {
+                strcat(text, token);
+                strcat(text, &quot; &quot;);
+        }
+	strcat(text, &quot;\0&quot;);
+
+	handle = global_handle;
+
+        strcat(text, &quot;\0&quot;);
+        total_len = 3 + 1 + sending_len + txt_len;
+
+	/* Add header size in bytes. */
+        packet = malloc(total_len);
+        /* Copy packet length into packet. */
+        memcpy(packet, &amp;total_len, 2);
+        /* Copy flag into packet. */
+        memcpy(packet + 2, &amp;flag, 1);
+        /* Copy handle length into packet. */
+        memcpy(packet + 2 + 1, &amp;sending_len, 1);
+        /* Copy handle name into packet. */
+        memcpy(packet + 2 + 1 + 1, handle, sending_len);
+	/* Text message */
+	memcpy(packet + 2 + 1 + 1 + sending_len, text, txt_len + 1);
+
+	// ssize_t send(int socket, const void *buffer, size_t length, int flags);
+	sent = send(socket_fd, packet, total_len, 0);	
+}
+
+void handleList(char *input, int socket_fd, int send_len) {
+	/* Print out a list of the handles currently known by the server. */
+	char *packet;
+	uint16_t packet_len = HEADER;
+	uint8_t flag = 10;
+	int sent;
+
+	packet = malloc(packet_len);
+	memcpy(packet, &amp;packet_len, PACKET_LEN);
+	memcpy(packet + PACKET_LEN, &amp;flag, BYTE);
+
+	sent = send(socket_fd, packet, packet_len, 0);
+}
+
+
+void exitClient(char *input, int socket_fd, int send_len) {
+	uint16_t packet_len;
+	uint8_t flag = 8;
+	char *packet;
+	int sent;
+
+	packet_len = HEADER;
+	packet = malloc(packet_len);
+	memcpy(packet, &amp;packet_len, PACKET_LEN);
+	memcpy(packet + PACKET_LEN, &amp;flag, BYTE);
+
+	sent = send(socket_fd, packet, packet_len, 0);
+}
+
+// FLAG = 7
+void errorMessage(char *packet) {
+	char *invalid, *client;
+	int invalid_len = *(packet + HEADER);
+
+	client = packet + HEADER + BYTE;
+	invalid = malloc(invalid_len);
+        memcpy(invalid, client, invalid_len);
+
+	fprintf(stderr, &quot;\nClient with handle %s does not exist.\n&quot;, invalid);
+	free(invalid);
+}
+
+void printPrompt() {
+	/* Print user prompt to view. */
+	printf(&quot;$: &quot;);
+	fflush(stdout);
+}
+</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,17 @@
+#Jeffrey Nunez, 9am Lab
+---------------------------
+
+Hello. My program should hopefully function correctly, with two small
+quirks that don't affect the actual operation.
+
+1) The "$: " prints strangely, sometimes appearing three times on a line,
+   and often between every line.
+
+2) If you try to send an empty message or broadcast, it works fine,
+   but you'll need to press Enter two to four times depending on how much
+   you type after the %M or %B. (E.g., "%M clientA" will require three Enter
+   keystrokes, and "%M clientA " will require two Enter keystrokes).
+
+I hope everything else performs as expected.
+
+Thank you for your time.

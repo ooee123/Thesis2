@@ -1,0 +1,83 @@
+
+real	0m0.000s
+user	0m0.000s
+sys	0m0.000s
+Parsing ../../networks.c
+Parsing ../../handleList.c
+Parsing ../../server.c
+Merging parameters: 50, 2, 3
+Merging parameters: 50, 2, 3
+syntax error: 11.8
+typeCount before init() = 227
+typeCount after init() = 227
+syntax error: 105.8
+Total counted terminals:419
+typeCount before init() = 227
+typeCount after init() = 227
+Merging parameters: 50, 2, 3
+Total counted terminals:481
+syntax error: 26.18
+syntax error: 38.18
+syntax error: 67.34
+syntax error: 94.18
+syntax error: 105.39
+syntax error: 141.30
+syntax error: 159.55
+syntax error: 174.19
+syntax error: 248.17
+Line range used: All [0, 0]
+# basic vectors:3
+typeCount before init() = 227
+typeCount after init() = 227
+Total nodes > 556 (some children of atomic nodes are skipped), # nodes in the Sq tree:140
+Line range used: All [0, 0]
+Total counted terminals:1563
+# basic vectors:5
+Moved steps = 59, merged vectors = 30
+# vectors:33, including must-gen nodes:3
+Total nodes > 860 (some children of atomic nodes are skipped), # nodes in the Sq tree:225
+Moved steps = 97, merged vectors = 49
+# vectors:54, including must-gen nodes:5
+Parsing ../../cclient.c
+Parsing ../../testing.c
+Merging parameters: 50, 2, 3
+Merging parameters: 50, 2, 3
+syntax error: 32.29
+syntax error: 33.23
+syntax error: 52.26
+syntax error: 41.29
+typeCount before init() = 227
+typeCount after init() = 227
+Total counted terminals:116
+syntax error: 84.27
+syntax error: 85.17
+syntax error: 105.30
+syntax error: 118.30
+syntax error: 132.23
+syntax error: 144.22
+syntax error: 164.30
+syntax error: 168.20
+Line range used: All [0, 0]
+# basic vectors:0
+syntax error: 226.30
+Total nodes > 317 (some children of atomic nodes are skipped), # nodes in the Sq tree:76
+syntax error: 233.28
+syntax error: 240.67
+syntax error: 244.16
+Moved steps = 27, merged vectors = 14
+# vectors:14, including must-gen nodes:0
+syntax error: 324.24
+syntax error: 325.17
+Line range used: All [0, 0]
+typeCount before init() = 227
+typeCount after init() = 227
+# basic vectors:25
+Total counted terminals:1896
+Total nodes > 2056 (some children of atomic nodes are skipped), # nodes in the Sq tree:538
+Moved steps = 241, merged vectors = 121
+# vectors:146, including must-gen nodes:25
+Line range used: All [0, 0]
+# basic vectors:31
+Total nodes > 2139 (some children of atomic nodes are skipped), # nodes in the Sq tree:635
+Moved steps = 276, merged vectors = 138
+# vectors:169, including must-gen nodes:31

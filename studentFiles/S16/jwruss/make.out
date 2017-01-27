@@ -1,0 +1,2 @@
+gcc -g -o cclient -Wall tcp_client.c testing.o 
+gcc -g -o server -Wall tcp_server.c testing.o 

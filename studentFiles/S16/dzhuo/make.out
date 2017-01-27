@@ -1,0 +1,4 @@
+gcc -g -c testing.c
+gcc -g -o common.o -c common.c
+gcc -g -o cclient -Wall cclient.c common.o testing.o 
+gcc -g -o server -Wall server.c common.o testing.o 

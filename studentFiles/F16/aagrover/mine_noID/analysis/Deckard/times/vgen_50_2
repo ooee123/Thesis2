@@ -1,0 +1,64 @@
+
+real	0m0.000s
+user	0m0.000s
+sys	0m0.000s
+Parsing ../../networks.c
+Parsing ../../server.c
+Merging parameters: 50, 2, 3
+Merging parameters: 50, 2, 3
+Parsing ../../cclient.c
+syntax error: 4.24
+syntax error: 7.24
+syntax error: 23.24
+syntax error: 26.24
+syntax error: 39.12
+syntax error: 44.42
+syntax error: 44.60
+typeCount before init() = 227syntax error: 66.1
+
+typeCount after init() = 227
+Total counted terminals:437
+Merging parameters: 50, 2, 3
+syntax error: 22.24
+syntax error: 25.24
+syntax error: 40.12
+syntax error: 52.39
+syntax error: 52.57
+syntax error: 65.1
+syntax error: 150.12
+typeCount before init() = 227
+typeCount after init() = 227
+syntax error: 164.41
+syntax error: 164.59
+Line range used: All [0, 0]
+# basic vectors:3
+Total nodes > 631 (some children of atomic nodes are skipped), # nodes in the Sq tree:150
+Total counted terminals:2021
+typeCount before init() = 227
+typeCount after init() = 227
+Moved steps = 64, merged vectors = 32
+# vectors:35, including must-gen nodes:3
+Total counted terminals:1868
+Parsing ../../testing.c
+Merging parameters: 50, 2, 3
+syntax error: 4.24
+syntax error: 7.24
+syntax error: 18.29
+typeCount before init() = 227
+typeCount after init() = 227
+Total counted terminals:134
+Line range used: All [0, 0]
+# basic vectors:0
+Total nodes > 419 (some children of atomic nodes are skipped), # nodes in the Sq tree:96
+Moved steps = 37, merged vectors = 19
+# vectors:19, including must-gen nodes:0
+Line range used: All [0, 0]
+Line range used: All [0, 0]
+# basic vectors:24
+# basic vectors:26
+Total nodes > 2422 (some children of atomic nodes are skipped), # nodes in the Sq tree:688
+Total nodes > 2525 (some children of atomic nodes are skipped), # nodes in the Sq tree:702
+Moved steps = 341, merged vectors = 171
+# vectors:195, including must-gen nodes:24
+Moved steps = 353, merged vectors = 177
+# vectors:203, including must-gen nodes:26

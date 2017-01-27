@@ -1,0 +1,8 @@
+Gerik Kubiak 9am
+
+All common packet functions are in packet.c
+
+The structures of client.c and server.c are pretty similar and no function is too long.
+I tried to write a good deal of helper functions which helped a lot. Especially the ones in packet.c
+
+Ignore mySocketIO.c

@@ -1,0 +1,3 @@
+g++ -g -c testing.cpp
+g++ -g -o cclient -Wall tcp_client.cpp testing.o 
+g++ -g -o server -Wall tcp_server.cpp testing.o 

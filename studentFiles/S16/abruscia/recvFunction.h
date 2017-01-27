@@ -1,0 +1,1 @@
+uint16_t recvFunc(int socketNum, char *buf);

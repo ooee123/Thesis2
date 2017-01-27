@@ -1,0 +1,6 @@
+Alexander DeMello (ademello), enrolled in 12-3 lab, attend 3-6 lab
+
+compiles with just make
+runs with ./server and ./cclient <name> <server> <port>
+
+Only %m works. Can connect to server from multiple clients. Dynamic allocation of sockets should be functioning. Lots of things currently crash the program.

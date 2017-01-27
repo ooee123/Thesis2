@@ -1,0 +1,5 @@
+gcc -g -c testing.c
+gcc -g -o cclient -Wall tcp_client.c testing.o 
+gcc -g -o server -Wall tcp_server.c testing.o 
+tcp_server.c: In function ‘receive_from_client’:
+tcp_server.c:361: warning: unused variable ‘buf_size’

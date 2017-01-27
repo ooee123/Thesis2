@@ -1,0 +1,6 @@
+g++  -o cclient -Wall chat_client.cpp chat_client_funcs.h  testing.o 
+g++  -o server -Wall chat_server.cpp chat_server_funcs.cpp chat_server_funcs.h testing.o 
+chat_server_funcs.h:1: fatal error: can’t create precompiled header server: Permission denied
+compilation terminated.
+Preprocessed source stored into /tmp/cc270Gfy.out file, please attach this to your bugreport.
+make: *** [server] Error 1

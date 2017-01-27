@@ -1,0 +1,18 @@
+Steven Gerick 9 am lab
+CPE 464
+Program 2
+
+NOTES:
+
+Some additional print messages have been added to the server for
+monitoring purposes:
+The server prints out any broadcast messages it receives
+The server prints out any regular messages it receives
+The server prints out when a client joins
+The server prints out when a client leaves
+
+
+Max message length is about 7650. Messages longer than 1024 characters are not split
+into multiple packets.
+
+

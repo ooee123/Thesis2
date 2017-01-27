@@ -1,0 +1,5 @@
+Drew Balthazor noon
+
+Server and cclient do not implement %L functionality at this time.
+cclient and server also both (falsely) assume 1 recv() per send() call.
+Hopefully fixed for late turnin 10/25/16

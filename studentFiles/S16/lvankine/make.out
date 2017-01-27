@@ -1,0 +1,3 @@
+g++ -g -c testing.c
+g++ -g -o cclient -Wall cclient.cpp ClientApp.h ClientApp.cpp ClientConnection.h ClientConnection.cpp ProcessMessage.h ProcessMessage.cpp ConstructMessage.h ConstructMessage.cpp PacketStructs.h testing.o 
+g++ -g -o server -Wall server.cpp ServerApp.h ServerApp.cpp ServerConnection.h ServerConnection.cpp PacketStructs.h testing.o  

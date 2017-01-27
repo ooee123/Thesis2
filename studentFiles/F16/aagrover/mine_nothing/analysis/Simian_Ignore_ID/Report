@@ -1,0 +1,16 @@
+Similarity Analyser 2.4.0 - http://www.harukizaemon.com/simian
+Copyright (c) 2003-2015 Simon Harris.  All rights reserved.
+Simian is not free unless used solely for non-commercial or evaluation purposes.
+{failOnDuplication=true, ignoreCharacterCase=true, ignoreCurlyBraces=true, ignoreIdentifierCase=true, ignoreIdentifiers=true, ignoreModifiers=true, ignoreStringCase=true, reportDuplicateText=true, threshold=6}
+Found 6 duplicate lines in the following files:
+ Between lines 218 and 223 in /home/ooee/Thesis2/studentFiles/F16/aagrover/mine_nothing/server.c
+ Between lines 252 and 257 in /home/ooee/Thesis2/studentFiles/F16/aagrover/mine_nothing/cclient.c
+total_len = 3 + 1 + sending_len + txt_len; /* total_len = 3 + 1 + sending_len + txt_len ; */packet = malloc(total_len); /* packet = malloc ( total_len ) ; */
+memcpy(packet, &total_len, 2); /* memcpy ( packet , & total_len , 2 ) ; */
+memcpy(packet + 2, &flag, 1); /* memcpy ( packet + 2 , & flag , 1 ) ; */
+memcpy(packet + 2 + 1, &sending_len, 1); /* memcpy ( packet + 2 + 1 , & sending_len , 1 ) ; */
+memcpy(packet + 2 + 1 + 1, handle, sending_len); /* memcpy ( packet + 2 + 1 + 1 , handle , sending_len ) ; */
+=====================================================================
+Found 12 duplicate lines in 2 blocks in 2 files
+Processed a total of 569 significant (672 raw) lines in 4 files
+Processing time: 0.036sec

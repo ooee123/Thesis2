@@ -1,0 +1,50 @@
+Language accepted: C/C++ Scanner [basic markup]
+Command line: -l c/c++ -vl /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine_noID 
+initialize ok
+JPlag (Version 2.11.8-SNAPSHOT)
+
+Language: C/C++ Scanner [basic markup]
+
+Root-dir: /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine_noID
+6 submissions
+------ Parsing submission: analysis
+ERROR: nothing to parse for submission "analysis"
+ERROR -> Submission removed
+------ Parsing submission: cclient.c
+Scanning file cclient.c
+OK
+------ Parsing submission: chatShared.c
+Scanning file chatShared.c
+OK
+------ Parsing submission: networks.c
+Scanning file networks.c
+OK
+------ Parsing submission: server.c
+Scanning file server.c
+OK
+------ Parsing submission: testing.c
+Scanning file testing.c
+OK
+
+5 submissions parsed successfully!
+1 parser error!
+
+
+
+Total time for parsing: 0 sec
+Time per parsed submission: 4 msec
+
+Comparing cclient.c-chatShared.c: 0.0
+Comparing cclient.c-networks.c: 0.0
+Comparing cclient.c-server.c: 18.272425
+Comparing cclient.c-testing.c: 0.0
+Comparing chatShared.c-networks.c: 0.0
+Comparing chatShared.c-server.c: 0.0
+Comparing chatShared.c-testing.c: 0.0
+Comparing networks.c-server.c: 0.0
+Comparing networks.c-testing.c: 0.0
+Comparing server.c-testing.c: 0.0
+
+Total time for comparing submissions: 0 sec
+Time per comparison: 0 msec
+Writing results to: result

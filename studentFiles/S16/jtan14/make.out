@@ -1,0 +1,3 @@
+gcc -g -c testing.c
+gcc -g -o cclient -Wall client.c testing.o 
+gcc -g -o server -Wall server.c testing.o 

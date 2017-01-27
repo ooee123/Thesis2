@@ -1,0 +1,5 @@
+Toby Chan 9AM
+CPE 464
+
+%m\n is invalid, %m valid_user\n is invalid also. %m valid_user \n is valid though.
+The $: output is kinda weird sometimes.

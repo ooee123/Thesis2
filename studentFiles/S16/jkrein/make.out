@@ -1,0 +1,6 @@
+gcc -g -c testing.c
+gcc -g -o cclient -Wall tcp_client.c testing.o 
+gcc -g -o server -Wall tcp_server.c testing.o 
+tcp_server.c: In function ‘main’:
+tcp_server.c:33: warning: format ‘%lu’ expects type ‘long unsigned int’, but argument 2 has type ‘unsigned int’
+tcp_server.c:33: warning: format ‘%lu’ expects type ‘long unsigned int’, but argument 3 has type ‘unsigned int’

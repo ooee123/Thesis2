@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>server.c</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<HR>
+<H3><CENTER>server.c</CENTER></H3><HR>
+<PRE>
+int serverFD; /* int serverFD ; */
+int *clientFDs = ((void *)0 ); /* int * clientFDs = ( ( void * ) 0 ) ; */
+<A NAME="0"></A>char **handles = ((void *)0 ); /* char * * handles = ( ( void * ) 0 ) ; */
+int clientNum = 0; /* int clientNum = 0 ; */
+
+<FONT color="#0000ff"><A HREF="javascript:ZweiFrames('match0-1.html#0',3,'match0-top.html#0',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>unsigned int __bswap_32(unsigned int __bsx) /*  */{
+return __builtin_bswap32(__bsx); /* return __builtin_bswap32(__bsx) */
+}
+__uint64_t __bswap_64(__uint64_t __bsx) /*  */{
+return __builtin_bswap64(__bsx); /* return __builtin_bswap64(__bsx) */
+}
+int main(int argc, char *argv) /* int main ( int argc , char * argv [ ] ) { */{</B></FONT>
+serverFD = tcpServerSetup(0); /* serverFD = tcpServerSetup ( 0 ) ; */
+process(); /* process ( ) ; */
+return 0; /* return 0 */
+}
+void addClient(int fd) /* void addClient ( int fd ) { */{
+clientNum++; /* clientNum ++ ; */
+clientFDs = realloc(clientFDs, sizeof(int) * clientNum); /* clientFDs = realloc ( clientFDs , sizeof ( int ) * clientNum ) ; */
+clientFDs[clientNum - 1] = fd; /* clientFDs [ clientNum - 1 ] = fd ; */
+handles = realloc(handles, sizeof(char *) * clientNum); /* handles = realloc ( handles , sizeof ( char * ) * clientNum ) ; */
+handles[clientNum - 1] = ((void *)0 ); /* handles [ clientNum - 1 ] = ( ( void * ) 0 ) ; */
+}
+void setClientName(void *packet, int fd) /* void setClientName ( void * packet , int fd ) { */{
+int i = 0; /* int i = 0 ; */
+char *name = ((void *)0 ); /* char * name = ( ( void * ) 0 ) ; */
+getFirstHandle(packet, &amp;name); /* getFirstHandle ( packet , &amp; name ) ; */
+for (i = 0; i&lt;clientNum; i++) {
+if (clientFDs[i] == fd) /* if (clientFDs[i] == fd) */ {
+if (getFDForName(name) != -1) /* if (getFDForName(name) != -1) */ {
+free(name); /* free ( name ) ; */
+sendPacketFlag(3, clientFDs[i]); /* sendPacketFlag ( 3 , clientFDs [ i ] ) ; */
+removeClient(fd); /* removeClient ( fd ) ; */
+} else {
+handles[i] = name; /* handles [ i ] = name ; */
+sendPacketFlag(2, clientFDs[i]); /* sendPacketFlag ( 2 , clientFDs [ i ] ) ; */
+printf(&quot;Welcome: %s\n&quot;, handles[i]); /* printf ( &quot;Welcome: %s\n&quot; , handles [ i ] ) ; */
+}
+return; /* return */
+}
+}
+}
+int getFDForName(char *name) /* int getFDForName ( char * name ) { */{
+int i = 0; /* int i = 0 ; */
+for (i = 0; i&lt;clientNum; i++) {
+if (handles[i] != ((void *)0 )&amp;&amp;strcmp(name, handles[i]) == 0) /* if (handles[i] != ((void *)0 )&amp;&amp;strcmp(name, handles[i]) == 0) */ {
+return clientFDs[i]; /* return clientFDs[i] */
+}
+}
+return -1; /* return -1 */
+}
+void removeClient(int fd) /* void removeClient ( int fd ) { */{
+int foundFD = 0; /* int foundFD = 0 ; */
+int i = 0; /* int i = 0 ; */
+int *newClientFDs; /* int * newClientFDs ; */
+char **newHandles; /* char * * newHandles ; */
+clientNum--; /* clientNum -- ; */
+newClientFDs = (int *)malloc(sizeof(int) * clientNum); /* newClientFDs = ( int * ) malloc ( sizeof ( int ) * clientNum ) ; */
+newHandles = (char **)malloc(sizeof(char *) * clientNum); /* newHandles = ( char * * ) malloc ( sizeof ( char * ) * clientNum ) ; */
+for (i = 0; i&lt;=clientNum; i++) {
+if (clientFDs[i] != fd) /* if (clientFDs[i] != fd) */ {
+if (!foundFD) /* if (!foundFD) */ {
+newClientFDs[i] = clientFDs[i]; /* newClientFDs [ i ] = clientFDs [ i ] ; */
+newHandles[i] = handles[i]; /* newHandles [ i ] = handles [ i ] ; */
+} else {
+newClientFDs[i - 1] = clientFDs[i]; /* newClientFDs [ i - 1 ] = clientFDs [ i ] ; */
+newHandles[i - 1] = handles[i]; /* newHandles [ i - 1 ] = handles [ i ] ; */
+}
+} else {
+foundFD = 1; /* foundFD = 1 ; */
+if (handles[i] != ((void *)0 )) /* if (handles[i] != ((void *)0 )) */ {
+printf(&quot;Bye %s\n&quot;, handles[i]); /* printf ( &quot;Bye %s\n&quot; , handles [ i ] ) ; */
+}
+free(handles[i]); /* free ( handles [ i ] ) ; */
+close(clientFDs[i]); /* close ( clientFDs [ i ] ) ; */
+}
+}
+free(handles); /* free ( handles ) ; */
+free(clientFDs); /* free ( clientFDs ) ; */
+handles = newHandles; /* handles = newHandles ; */
+clientFDs = newClientFDs; /* clientFDs = newClientFDs ; */
+}
+int getFDForInput() /* int getFDForInput ( ) { */{
+int i = 0; /* int i = 0 ; */
+fd_set fdvar; /* fd_set fdvar ; */
+int maxFD = serverFD + 1; /* int maxFD = serverFD + 1 ; */
+FD_ZERO(&amp;fdvar); /* FD_ZERO ( &amp; fdvar ) ; */
+FD_SET(serverFD, &amp;fdvar); /* FD_SET ( serverFD , &amp; fdvar ) ; */
+<A NAME="1"></A>if (clientNum&gt;0) /* if (clientNum&gt;0) */ {
+maxFD = clientFDs[clientNum - 1] + 1; /* maxFD = clientFDs [ clientNum - 1 ] + 1 ; */
+}
+<FONT color="#f63526"><A HREF="javascript:ZweiFrames('match0-1.html#1',3,'match0-top.html#1',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>for (i = 0; i&lt;clientNum; i++) {
+FD_SET(clientFDs[i], &amp;fdvar); /* FD_SET ( clientFDs [ i ] , &amp; fdvar ) ; */
+}
+if (mySelect(maxFD, (fd_set *)&amp;fdvar, ((void *)0 ), ((void *)0 ), ((void *)0 )) == -1) /* if (mySelect(maxFD, (fd_set *)&amp;fdvar, ((void *)0 ), ((void *)0 ), ((void *)0 )) == -1) */ {
+perror(&quot;Error selecting FD to read from&quot;); /* perror ( &quot;Error selecting FD to read from&quot; ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+if (FD_ISSET(serverFD, &amp;fdvar)) /* if (FD_ISSET(serverFD, &amp;fdvar)) */ {
+return serverFD; /* return serverFD */
+} else {</B></FONT>
+for (i = 0; i&lt;clientNum; i++) {
+if (FD_ISSET(clientFDs[i], &amp;fdvar)) /* if (FD_ISSET(clientFDs[i], &amp;fdvar)) */ {
+return clientFDs[i]; /* return clientFDs[i] */
+}
+}
+}
+return -1; /* return -1 */
+}
+<A NAME="2"></A>void acceptClient() /* void acceptClient ( ) { */{
+int clientFD = tcpAccept(serverFD); /* int clientFD = tcpAccept ( serverFD ) ; */
+addClient(clientFD); /* addClient ( clientFD ) ; */
+<FONT color="#77bfc7"><A HREF="javascript:ZweiFrames('match0-1.html#2',3,'match0-top.html#2',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>}
+void process() /* void process ( ) { */{
+int fdToProcess; /* int fdToProcess ; */
+while (1) /* while (1) */ {
+fdToProcess = getFDForInput(); /* fdToProcess = getFDForInput ( ) ; */
+if (fdToProcess == serverFD) /* if (fdToProcess == serverFD) */ {
+acceptClient(); /* acceptClient ( ) ; */
+} else {
+processPacket(fdToProcess); /* processPacket ( fdToProcess ) ; */
+}
+}
+}
+void processPacket(int fd) /* void processPacket ( int fd ) { */{</B></FONT>
+uint8_t *packet = malloc(1000); /* uint8_t * packet = malloc ( 1000 ) ; */
+int numBytes = 0; /* int numBytes = 0 ; */
+if ((numBytes = myRecv(fd, packet, 1000, 0) )&lt;0) /* if ((numBytes = myRecv(fd, packet, 1000, 0) )&lt;0) */ {
+perror(&quot;recv call&quot;); /* perror ( &quot;recv call&quot; ) ; */
+exit(-1); /* exit ( - 1 ) ; */
+}
+if (numBytes == 0) /* if (numBytes == 0) */ {
+<A NAME="3"></A>removeClient(fd); /* removeClient ( fd ) ; */
+}
+switch (((header *)packet )-&gt;flag) /* switch (((header *)packet )-&gt;flag) */ {
+<FONT color="#6cc417"><A HREF="javascript:ZweiFrames('match0-1.html#3',3,'match0-top.html#3',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>case 1: 
+setClientName(packet, fd); /* setClientName ( packet , fd ) ; */
+break;
+case 8: 
+sendPacketFlag(9, fd); /* sendPacketFlag ( 9 , fd ) ; */
+removeClient(fd); /* removeClient ( fd ) ; */
+break;
+case 4: 
+broadCast(fd, packet); /* broadCast ( fd , packet ) ; */
+break;
+case 5: 
+forwardMessage(fd, packet); /* forwardMessage ( fd , packet ) ; */
+break;
+case 10: 
+sendPacketHandleAck(11, fd); /* sendPacketHandleAck ( 11 , fd ) ; */
+sendHandles(fd); /* sendHandles ( fd ) ; */
+break;
+default: 
+break;
+}</B></FONT>
+free(packet); /* free ( packet ) ; */
+}
+void broadCast(int senderFD, void *packet) /* void broadCast ( int senderFD , void * packet ) { */{
+int i = 0; /* int i = 0 ; */
+for (i = 0; i&lt;clientNum; i++) {
+if (clientFDs[i] != senderFD) /* if (clientFDs[i] != senderFD) */ {
+if (sendPacket(packet, clientFDs[i])&lt;0) /* if (sendPacket(packet, clientFDs[i])&lt;0) */ {
+perror(&quot;Packet Broadcast&quot;); /* perror ( &quot;Packet Broadcast&quot; ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+}
+}
+}
+void forwardMessage(int senderFD, void *packet) /* void forwardMessage ( int senderFD , void * packet ) { */{
+char *dest = ((void *)0 ); /* char * dest = ( ( void * ) 0 ) ; */
+int sent = 0; /* int sent = 0 ; */
+int i = 0; /* int i = 0 ; */
+getDestHandle(packet, &amp;dest); /* getDestHandle ( packet , &amp; dest ) ; */
+for (i = 0; i&lt;clientNum; i++) {
+if (strcmp(dest, handles[i]) == 0) /* if (strcmp(dest, handles[i]) == 0) */ {
+sent = 1; /* sent = 1 ; */
+if (sendPacket(packet, clientFDs[i])&lt;0) /* if (sendPacket(packet, clientFDs[i])&lt;0) */ {
+perror(&quot;Packet Broadcast&quot;); /* perror ( &quot;Packet Broadcast&quot; ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+break;
+}
+}
+if (sent == 0) /* if (sent == 0) */ {
+sendPacketFlag(7, senderFD); /* sendPacketFlag ( 7 , senderFD ) ; */
+}
+free(dest); /* free ( dest ) ; */
+}
+void sendPacketHandleAck(uint8_t flag, int socket) /* void sendPacketHandleAck ( uint8_t flag , int socket ) { */{
+packetHandleAck head; /* packetHandleAck head ; */
+headerSetLen((header *)&amp;head, (uint16_t )(sizeof(packetHandleAck) - sizeof(header))); /* headerSetLen ( ( header * ) &amp; head , ( uint16_t ) ( sizeof ( packetHandleAck ) - sizeof ( header ) ) ) ; */
+packetHandleAckSetNum(&amp;head, clientNum); /* packetHandleAckSetNum ( &amp; head , clientNum ) ; */
+head.head.flag = flag; /* head . head . flag = flag ; */
+if (mySend(socket, &amp;head, sizeof(packetHandleAck), 0)&lt;0) /* if (mySend(socket, &amp;head, sizeof(packetHandleAck), 0)&lt;0) */ {
+perror(&quot;Flag Packet Send&quot;); /* perror ( &quot;Flag Packet Send&quot; ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+}
+void sendPacketHandle(int socket, char *handle) /* void sendPacketHandle ( int socket , char * handle ) { */{
+int hLen = strlen(handle); /* int hLen = strlen ( handle ) ; */
+void *packet = makePacketHandle(12, hLen, handle); /* void * packet = makePacketHandle ( 12 , hLen , handle ) ; */
+if (sendPacket(packet, socket)&lt;0) /* if (sendPacket(packet, socket)&lt;0) */ {
+perror(&quot;Packet Connection&quot;); /* perror ( &quot;Packet Connection&quot; ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+free(packet); /* free ( packet ) ; */
+}
+void sendHandles(int socket) /* void sendHandles ( int socket ) { */{
+int i = 0; /* int i = 0 ; */
+for (i = 0; i&lt;clientNum; i++) {
+sendPacketHandle(socket, handles[i]); /* sendPacketHandle ( socket , handles [ i ] ) ; */
+}
+}
+</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,26 @@
+Timothy Chu CPE464-01/04 (3pm lab)
+tchu01@calpoly.edu
+Program 2
+
+Relevant files:
+   - Makefile
+   - README
+   - cclient.c
+   - server.c
+   - clientserver.h
+   - networks.h
+   - testing.c
+   - testing.h
+
+To compile program:
+   - Call "make"
+
+To run client:
+   - Call "client <handle> <host-name> <port-number>"
+
+To run server:
+   - Call "server <optional: port-number>"
+
+Notes:
+   - Tested on vogon and unix1-4. Successfully connected more than 3 clients,
+      and got them to communicate. All commands (%l, %e, %m, %b) tested.

@@ -1,0 +1,10 @@
+Name: Andrea Everson
+Lab Section: 12PM on Wednesdays
+
+Using the code given from Professor Smith. (networks.c and networks.h)
+
+Unfortunately, I ran into some snags with BroadCast and Requesting the handles. 
+I beleive that the way I am currently implementing my getClientData function 
+is the possible cause of this. 
+
+

@@ -1,0 +1,19 @@
+Jacob Russ, 9am Lab Section, CPE 464 Project 2
+
+For my client, I attempted to print the "$: " at the most proper timing. 
+There are some weird prints of it due to that. I do not null terminate the
+name strings unless I am unpacking them. They are sent without null terminators
+but I add one when I unpack it so that I can use printf and strlen which depend
+on a null character. 
+
+I send the length in network order and therefore unpack it and convert from 
+network to host. This is as the spec states. I also do this for the 32 bit name
+count length variable. 
+
+Do to some restraints with function calls having to be in order, I wasn't able
+to function out my code as much as I'd like. One particular case is how recv
+calls would only work if they were in the same function. 
+
+Lastly, I have a fair number of #define statements that can be found in the 
+networks.h file. I also use a few globals on both the server and client side
+to achieve an easier tp follow and read structure. Hopefully those all help!

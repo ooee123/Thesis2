@@ -1,0 +1,8 @@
+gcc -g -o cclient -Wall cclient.c testing.o 
+cclient.c: In function ‘scan_user_input’:
+cclient.c:284: warning: implicit declaration of function ‘tolower’
+cclient.c:290: warning: implicit declaration of function ‘send_msg’
+cclient.c: At top level:
+cclient.c:417: warning: conflicting types for ‘send_msg’
+cclient.c:290: note: previous implicit declaration of ‘send_msg’ was here
+gcc -g -o server -Wall server.c testing.o 

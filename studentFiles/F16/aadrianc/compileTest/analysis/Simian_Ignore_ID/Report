@@ -1,0 +1,52 @@
+Similarity Analyser 2.4.0 - http://www.harukizaemon.com/simian
+Copyright (c) 2003-2015 Simon Harris.  All rights reserved.
+Simian is not free unless used solely for non-commercial or evaluation purposes.
+{failOnDuplication=true, ignoreCharacterCase=true, ignoreCurlyBraces=true, ignoreIdentifierCase=true, ignoreIdentifiers=true, ignoreModifiers=true, ignoreStringCase=true, reportDuplicateText=true, threshold=6}
+Found 6 duplicate lines in the following files:
+ Between lines 88 and 94 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine/cclient.c
+ Between lines 78 and 85 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine/cclient.c
+d = makePacketMssg(5, h, b, g, global_b, f); /* packet = makePacketMssg ( 5 , destLen , dest , srcLen , myHandle , toSend ) ; */if (sendPacket(d, c)<0) /* if (sendPacket(packet, socket)<0) */ {
+perror("Packet Message"); /* perror ( "Packet Message" ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+free(d); /* free ( packet ) ; */
+}
+free(f); /* free ( toSend ) ; */
+=====================================================================
+Found 6 duplicate lines in the following files:
+ Between lines 55 and 61 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine/cclient.c
+ Between lines 45 and 52 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine/cclient.c
+d = makePacketBroadcast(4, f, global_b, e); /* packet = makePacketBroadcast ( 4 , hLen , myHandle , toSend ) ; */if (sendPacket(d, b)<0) /* if (sendPacket(packet, socket)<0) */ {
+perror("Packet Broadcast"); /* perror ( "Packet Broadcast" ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+free(d); /* free ( packet ) ; */
+}
+free(e); /* free ( toSend ) ; */
+=====================================================================
+Found 6 duplicate lines in the following files:
+ Between lines 63 and 68 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine/chatShared.c
+ Between lines 40 and 45 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine/chatShared.c
+void *e = malloc(d + sizeof(header)); /* void * packet = malloc ( len + sizeof ( header ) ) ; */packetHandle *f = (packetHandle *)e; /* packetHandle * hPack = ( packetHandle * ) packet ; */
+f->head.flag = a; /* hPack -> head . flag = flag ; */
+headerSetLen(&(f->head ), d); /* headerSetLen ( & ( hPack -> head ) , len ) ; */
+f->handleLen = b; /* hPack -> handleLen = hLen ; */
+memcpy(&(f->handleStart ), c, b); /* memcpy ( & ( hPack -> handleStart ) , handle , hLen ) ; */
+=====================================================================
+Found 10 duplicate lines in the following files:
+ Between lines 248 and 258 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine/cclient.c
+ Between lines 239 and 249 in /home/ooee/Thesis2/studentFiles/F16/aadrianc/mine/cclient.c
+void printBroadcast(void *a) /* void printBroadcast ( void * packet ) { */{char *b = ((void *)0 ); /* char * sender = ( ( void * ) 0 ) ; */
+char *c = ((void *)0 ); /* char * mssg = ( ( void * ) 0 ) ; */
+getFirstHandle(a, &b); /* getFirstHandle ( packet , & sender ) ; */
+getBroadCastMssg(a, &c); /* getBroadCastMssg ( packet , & mssg ) ; */
+printf("%s: %s\n", b, c); /* printf ( "%s: %s\n" , sender , mssg ) ; */
+free(c); /* free ( mssg ) ; */
+free(b); /* free ( sender ) ; */
+}
+void printMessage(void *a) /* void printMessage ( void * packet ) { */{
+char *b = ((void *)0 ); /* char * sender = ( ( void * ) 0 ) ; */
+=====================================================================
+Found 56 duplicate lines in 8 blocks in 2 files
+Processed a total of 555 significant (697 raw) lines in 5 files
+Processing time: 0.034sec

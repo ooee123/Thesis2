@@ -1,0 +1,26 @@
+Name: Aaron Newberg (asnewber)
+Lab time: Noon
+Assignment: Program 2 - Chat Program using TCP
+
+Instructions:
+
+   to build - 
+	$make
+		
+   to clean - 
+	$make clean
+
+   to run server -
+   $./server {port number}
+
+   to run client -
+   $./cclient {client name} {server name} {port number}
+
+Notes:
+
+My chat program can send messages!!!
+
+Known issues: 
+I cannot get messages over 1000 bytes to send in two different packets. 
+Too many bugs were being introduced while I was trying to do this... And its 11:00PM on the due date.
+You may see my commented-out attempts in tcp_server.c.

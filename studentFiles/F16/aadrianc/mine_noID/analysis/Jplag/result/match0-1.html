@@ -1,0 +1,284 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>cclient.c</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff" style="margin-left:25">
+<HR>
+<H3><CENTER>cclient.c</CENTER></H3><HR>
+<PRE>
+int global_c = 0; /* int socketFD = 0 ; */
+<A NAME="0"></A>int global_a = 0; /* int isConnected = 0 ; */
+char *global_b = ((void *)0 ); /* char * myHandle = ( ( void * ) 0 ) ; */
+
+<FONT color="#0000ff"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match0-0.html#0',2,'match0-top.html#0',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>unsigned int __bswap_32(unsigned int a) /*  */{
+return __builtin_bswap32(a); /* return __builtin_bswap32(__bsx) */
+}
+__uint64_t __bswap_64(__uint64_t a) /*  */{
+return __builtin_bswap64(a); /* return __builtin_bswap64(__bsx) */
+}
+int main(int a, char *b) /* int main ( int argc , char * argv [ ] ) { */{</B></FONT>
+if (a != 4) /* if (argc != 4) */ {
+printf(&quot;usage: %s handle host-name port-number \n&quot;, b[0]); /* printf ( &quot;usage: %s handle host-name port-number \n&quot; , argv [ 0 ] ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+global_c = tcpClientSetup(b[2], b[3]); /* socketFD = tcpClientSetup ( argv [ 2 ] , argv [ 3 ] ) ; */
+global_b = b[1]; /* myHandle = argv [ 1 ] ; */
+sendPacketConnection(global_c); /* sendPacketConnection ( socketFD ) ; */
+process(); /* process ( ) ; */
+return 0; /* return 0 */
+}
+void sendPacketConnection(int a) /* void sendPacketConnection ( int socket ) { */{
+int b = strlen(global_b); /* int hLen = strlen ( myHandle ) ; */
+void *c = makePacketHandle(1, b, global_b); /* void * packet = makePacketHandle ( 1 , hLen , myHandle ) ; */
+if (sendPacket(c, a)&lt;0) /* if (sendPacket(packet, socket)&lt;0) */ {
+perror(&quot;Packet Connection&quot;); /* perror ( &quot;Packet Connection&quot; ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+free(c); /* free ( packet ) ; */
+}
+void sendPacketBroadCast(char *a, int b) /* void sendPacketBroadCast ( char * mssg , int socket ) { */{
+char *c; /* char * toSend ; */
+void *d; /* void * packet ; */
+int e = strlen(global_b); /* int hLen = strlen ( myHandle ) ; */
+int f = 1000 - e - sizeof(header) - 1; /* int maxMssgLen = 1000 - hLen - sizeof ( header ) - 1 ; */
+int g = (strlen(a) + 1 ) / f; /* int mssgNum = ( strlen ( mssg ) + 1 ) / maxMssgLen ; */
+int h = 0; /* int consumed = 0 ; */
+int i = ((strlen(a) + 1 ) % f ) + g; /* int theRest = ( ( strlen ( mssg ) + 1 ) % maxMssgLen ) + mssgNum ; */
+c = malloc(f); /* toSend = malloc ( maxMssgLen ) ; */
+while (g&gt;0) /* while (mssgNum&gt;0) */ {
+memcpy(c, a + h, f - 1); /* memcpy ( toSend , mssg + consumed , maxMssgLen - 1 ) ; */
+c[f - 1] = 0; /* toSend [ maxMssgLen - 1 ] = 0 ; */
+h += f - 1; /* consumed += maxMssgLen - 1 ; */
+d = makePacketBroadcast(4, e, global_b, c); /* packet = makePacketBroadcast ( 4 , hLen , myHandle , toSend ) ; */
+if (sendPacket(d, b)&lt;0) /* if (sendPacket(packet, socket)&lt;0) */ {
+perror(&quot;Packet Broadcast&quot;); /* perror ( &quot;Packet Broadcast&quot; ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+free(d); /* free ( packet ) ; */
+g--; /* mssgNum -- ; */
+}
+free(c); /* free ( toSend ) ; */
+c = malloc(i); /* toSend = malloc ( theRest ) ; */
+memcpy(c, a + h, i); /* memcpy ( toSend , mssg + consumed , theRest ) ; */
+d = makePacketBroadcast(4, e, global_b, c); /* packet = makePacketBroadcast ( 4 , hLen , myHandle , toSend ) ; */
+if (sendPacket(d, b)&lt;0) /* if (sendPacket(packet, socket)&lt;0) */ {
+perror(&quot;Packet Broadcast&quot;); /* perror ( &quot;Packet Broadcast&quot; ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+free(d); /* free ( packet ) ; */
+free(c); /* free ( toSend ) ; */
+}
+void sendPacketMssg(char *a, char *b, int c) /* void sendPacketMssg ( char * mssg , char * dest , int socket ) { */{
+char *d; /* char * toSend ; */
+void *e; /* void * packet ; */
+int f = strlen(global_b); /* int srcLen = strlen ( myHandle ) ; */
+int g = strlen(b); /* int destLen = strlen ( dest ) ; */
+int h = 1000 - (f + 1 ) - (g + 1 ) - sizeof(header); /* int maxMssgLen = 1000 - ( srcLen + 1 ) - ( destLen + 1 ) - sizeof ( header ) ; */
+int i = (strlen(a) + 1 ) / h; /* int mssgNum = ( strlen ( mssg ) + 1 ) / maxMssgLen ; */
+int j = 0; /* int consumed = 0 ; */
+int k = ((strlen(a) + 1 ) % h ) + i; /* int theRest = ( ( strlen ( mssg ) + 1 ) % maxMssgLen ) + mssgNum ; */
+d = malloc(h); /* toSend = malloc ( maxMssgLen ) ; */
+while (i&gt;0) /* while (mssgNum&gt;0) */ {
+memcpy(d, a + j, h - 1); /* memcpy ( toSend , mssg + consumed , maxMssgLen - 1 ) ; */
+d[h - 1] = 0; /* toSend [ maxMssgLen - 1 ] = 0 ; */
+j += h - 1; /* consumed += maxMssgLen - 1 ; */
+e = makePacketMssg(5, g, b, f, global_b, d); /* packet = makePacketMssg ( 5 , destLen , dest , srcLen , myHandle , toSend ) ; */
+if (sendPacket(e, c)&lt;0) /* if (sendPacket(packet, socket)&lt;0) */ {
+perror(&quot;Packet Message&quot;); /* perror ( &quot;Packet Message&quot; ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+free(e); /* free ( packet ) ; */
+i--; /* mssgNum -- ; */
+}
+free(d); /* free ( toSend ) ; */
+d = malloc(k); /* toSend = malloc ( theRest ) ; */
+memcpy(d, a + j, k); /* memcpy ( toSend , mssg + consumed , theRest ) ; */
+e = makePacketMssg(5, g, b, f, global_b, d); /* packet = makePacketMssg ( 5 , destLen , dest , srcLen , myHandle , toSend ) ; */
+if (sendPacket(e, c)&lt;0) /* if (sendPacket(packet, socket)&lt;0) */ {
+perror(&quot;Packet Message&quot;); /* perror ( &quot;Packet Message&quot; ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+free(e); /* free ( packet ) ; */
+free(d); /* free ( toSend ) ; */
+}
+int getFDForInput() /* int getFDForInput ( ) { */{
+fd_set a; /* fd_set fdvar ; */
+<A NAME="1"></A>int b = global_c + 1; /* int maxFD = socketFD + 1 ; */
+FD_ZERO(&amp;a); /* FD_ZERO ( &amp; fdvar ) ; */
+FD_SET(global_c, &amp;a); /* FD_SET ( socketFD , &amp; fdvar ) ; */
+<FONT color="#f63526"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match0-0.html#1',2,'match0-top.html#1',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>if (global_a) /* if (isConnected) */ {
+FD_SET(fileno(stdin), &amp;a); /* FD_SET ( fileno ( stdin ) , &amp; fdvar ) ; */
+}
+if (mySelect(b, (fd_set *)&amp;a, ((void *)0 ), ((void *)0 ), ((void *)0 )) == -1) /* if (mySelect(maxFD, (fd_set *)&amp;fdvar, ((void *)0 ), ((void *)0 ), ((void *)0 )) == -1) */ {
+perror(&quot;Error selecting FD to read from&quot;); /* perror ( &quot;Error selecting FD to read from&quot; ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+if (FD_ISSET(global_c, &amp;a)) /* if (FD_ISSET(socketFD, &amp;fdvar)) */ {
+return global_c; /* return socketFD */
+}</B></FONT>
+if (global_a&amp;&amp;FD_ISSET(fileno(stdin), &amp;a)) /* if (isConnected&amp;&amp;FD_ISSET(fileno(stdin), &amp;fdvar)) */ {
+<A NAME="2"></A>return fileno(stdin); /* return fileno(stdin) */
+}
+return -1; /* return -1 */
+<FONT color="#77bfc7"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match0-0.html#2',2,'match0-top.html#2',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>}
+void process() /* void process ( ) { */{
+int a; /* int fdToProcess ; */
+while (1) /* while (1) */ {
+printf(&quot;$: &quot;); /* printf ( &quot;$: &quot; ) ; */
+fflush(stdout); /* fflush ( stdout ) ; */
+a = getFDForInput(); /* fdToProcess = getFDForInput ( ) ; */
+if (a == fileno(stdin)) /* if (fdToProcess == fileno(stdin)) */ {
+processInput(); /* processInput ( ) ; */
+} else {
+printf(&quot;\n&quot;); /* printf ( &quot;\n&quot; ) ; */
+processPacket(); /* processPacket ( ) ; */
+}
+}
+}
+void processPacket() /* void processPacket ( ) { */{</B></FONT>
+uint8_t *a = malloc(1000); /* uint8_t * packet = malloc ( 1000 ) ; */
+uint8_t *b = a; /* uint8_t * toFree = packet ; */
+int c = 0; /* int numBytes = 0 ; */
+if ((c = myRecv(global_c, a, 1000, 0) )&lt;0) /* if ((numBytes = myRecv(socketFD, packet, 1000, 0) )&lt;0) */ {
+perror(&quot;recv call&quot;); /* perror ( &quot;recv call&quot; ) ; */
+exit(-1); /* exit ( - 1 ) ; */
+}
+if (c == 0) /* if (numBytes == 0) */ {
+printf(&quot;Server terminated\n&quot;); /* printf ( &quot;Server terminated\n&quot; ) ; */
+close(global_c); /* close ( socketFD ) ; */
+exit(1); /* exit ( 1 ) ; */
+}
+while (c&gt;0) /* while (numBytes&gt;0) */ {
+switch (((header *)a )-&gt;flag) /* switch (((header *)packet )-&gt;flag) */ {
+case 2: 
+printf(&quot;Connected to server\n&quot;); /* printf ( &quot;Connected to server\n&quot; ) ; */
+global_a = 1; /* isConnected = 1 ; */
+break;
+case 3: 
+printf(&quot;Handle already in use: %s\n&quot;, global_b); /* printf ( &quot;Handle already in use: %s\n&quot; , myHandle ) ; */
+exit(1); /* exit ( 1 ) ; */
+break;
+case 9: 
+<A NAME="3"></A>printf(&quot;Goodbye!\n&quot;); /* printf ( &quot;Goodbye!\n&quot; ) ; */
+exit(0); /* exit ( 0 ) ; */
+break;
+<FONT color="#6cc417"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match0-0.html#3',2,'match0-top.html#3',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>case 4: 
+printBroadcast(a); /* printBroadcast ( packet ) ; */
+break;
+case 7: 
+printf(&quot;No such handle connected to the server\n&quot;); /* printf ( &quot;No such handle connected to the server\n&quot; ) ; */
+break;
+case 5: 
+printMessage(a); /* printMessage ( packet ) ; */
+break;
+case 12: 
+printHandle(a); /* printHandle ( packet ) ; */
+break;
+case 11: 
+printf(&quot;Number of clients: %u\n&quot;, packetHandleAckGetNum((packetHandleAck *)a)); /* printf ( &quot;Number of clients: %u\n&quot; , packetHandleAckGetNum ( ( packetHandleAck * ) packet ) ) ; */
+break;
+default: 
+printf(&quot;unknown packet %d with size %d\n&quot;, ((header *)a )-&gt;flag, c); /* printf ( &quot;unknown packet %d with size %d\n&quot; , ( ( header * ) packet ) -&gt; flag , numBytes ) ; */
+break;
+}</B></FONT>
+a += headerGetLen((header *)a) + sizeof(header); /* packet += headerGetLen ( ( header * ) packet ) + sizeof ( header ) ; */
+c -= headerGetLen((header *)a) + sizeof(header); /* numBytes -= headerGetLen ( ( header * ) packet ) + sizeof ( header ) ; */
+}
+free(b); /* free ( toFree ) ; */
+}
+void processInput() /* void processInput ( ) { */{
+int a = 0; /* int didWork = 0 ; */
+unsigned long b = -1; /* unsigned long inputNum = - 1 ; */
+char *c = ((void *)0 ); /* char * line = ( ( void * ) 0 ) ; */
+char *d = ((void *)0 ); /* char * lineToFree = ( ( void * ) 0 ) ; */
+char *e = ((void *)0 ); /* char * cmd = ( ( void * ) 0 ) ; */
+char *f = ((void *)0 ); /* char * mssg = ( ( void * ) 0 ) ; */
+char *g = ((void *)0 ); /* char * dst = ( ( void * ) 0 ) ; */
+getline(&amp;c, (size_t *)&amp;b, stdin); /* getline ( &amp; line , ( size_t * ) &amp; inputNum , stdin ) ; */
+d = c; /* lineToFree = line ; */
+e = strtok(c, &quot; \n\t&quot;); /* cmd = strtok ( line , &quot; \n\t&quot; ) ; */
+if (e != ((void *)0 )) /* if (cmd != ((void *)0 )) */ {
+if (strcmp(e, &quot;%E&quot;) == 0 || strcmp(e, &quot;%e&quot;) == 0) /* if (strcmp(cmd, &quot;%E&quot;) == 0 || strcmp(cmd, &quot;%e&quot;) == 0) */ {
+sendPacketFlag(8, global_c); /* sendPacketFlag ( 8 , socketFD ) ; */
+a = 1; /* didWork = 1 ; */
+}
+if (strcmp(e, &quot;%B&quot;) == 0 || strcmp(e, &quot;%b&quot;) == 0) /* if (strcmp(cmd, &quot;%B&quot;) == 0 || strcmp(cmd, &quot;%b&quot;) == 0) */ {
+f = strtok(((void *)0 ), &quot;\n&quot;); /* mssg = strtok ( ( ( void * ) 0 ) , &quot;\n&quot; ) ; */
+if (f == ((void *)0 )) /* if (mssg == ((void *)0 )) */ {
+printf(&quot;Invalid command\n&quot;); /* printf ( &quot;Invalid command\n&quot; ) ; */
+} else {
+sendPacketBroadCast(f, global_c); /* sendPacketBroadCast ( mssg , socketFD ) ; */
+}
+a = 1; /* didWork = 1 ; */
+}
+if (strcmp(e, &quot;%M&quot;) == 0 || strcmp(e, &quot;%m&quot;) == 0) /* if (strcmp(cmd, &quot;%M&quot;) == 0 || strcmp(cmd, &quot;%m&quot;) == 0) */ {
+g = strtok(((void *)0 ), &quot; \n\t&quot;); /* dst = strtok ( ( ( void * ) 0 ) , &quot; \n\t&quot; ) ; */
+if (g == ((void *)0 )) /* if (dst == ((void *)0 )) */ {
+printf(&quot;Invalid command\n&quot;); /* printf ( &quot;Invalid command\n&quot; ) ; */
+} else {
+f = strtok(((void *)0 ), &quot;\n&quot;); /* mssg = strtok ( ( ( void * ) 0 ) , &quot;\n&quot; ) ; */
+if (f == ((void *)0 )) /* if (mssg == ((void *)0 )) */ {
+printf(&quot;Invalid command\n&quot;); /* printf ( &quot;Invalid command\n&quot; ) ; */
+} else {
+sendPacketMssg(f, g, global_c); /* sendPacketMssg ( mssg , dst , socketFD ) ; */
+}
+}
+a = 1; /* didWork = 1 ; */
+}
+if (strcmp(e, &quot;%L&quot;) == 0 || strcmp(e, &quot;%l&quot;) == 0) /* if (strcmp(cmd, &quot;%L&quot;) == 0 || strcmp(cmd, &quot;%l&quot;) == 0) */ {
+sendPacketFlag(10, global_c); /* sendPacketFlag ( 10 , socketFD ) ; */
+a = 1; /* didWork = 1 ; */
+}
+}
+free(d); /* free ( lineToFree ) ; */
+if (a == 0) /* if (didWork == 0) */ {
+printf(&quot;Invalid command\n&quot;); /* printf ( &quot;Invalid command\n&quot; ) ; */
+}
+}
+void processHandles(int a) /* void processHandles ( int handleNum ) { */{
+int b = 0; /* int i = 0 ; */
+global_a = 0; /* isConnected = 0 ; */
+for (b = 0; b&lt;a; b++) {
+getFDForInput(); /* getFDForInput ( ) ; */
+processPacket(); /* processPacket ( ) ; */
+}
+global_a = 1; /* isConnected = 1 ; */
+}
+void printBroadcast(void *a) /* void printBroadcast ( void * packet ) { */{
+char *b = ((void *)0 ); /* char * sender = ( ( void * ) 0 ) ; */
+char *c = ((void *)0 ); /* char * mssg = ( ( void * ) 0 ) ; */
+getFirstHandle(a, &amp;b); /* getFirstHandle ( packet , &amp; sender ) ; */
+getBroadCastMssg(a, &amp;c); /* getBroadCastMssg ( packet , &amp; mssg ) ; */
+printf(&quot;%s: %s\n&quot;, b, c); /* printf ( &quot;%s: %s\n&quot; , sender , mssg ) ; */
+free(c); /* free ( mssg ) ; */
+free(b); /* free ( sender ) ; */
+}
+void printMessage(void *a) /* void printMessage ( void * packet ) { */{
+char *b = ((void *)0 ); /* char * sender = ( ( void * ) 0 ) ; */
+char *c = ((void *)0 ); /* char * mssg = ( ( void * ) 0 ) ; */
+getSrcHandle(a, &amp;b); /* getSrcHandle ( packet , &amp; sender ) ; */
+getMssg(a, &amp;c); /* getMssg ( packet , &amp; mssg ) ; */
+printf(&quot;%s: %s\n&quot;, b, c); /* printf ( &quot;%s: %s\n&quot; , sender , mssg ) ; */
+free(c); /* free ( mssg ) ; */
+free(b); /* free ( sender ) ; */
+}
+void printHandle(void *a) /* void printHandle ( void * packet ) { */{
+char *b = ((void *)0 ); /* char * handle = ( ( void * ) 0 ) ; */
+getFirstHandle(a, &amp;b); /* getFirstHandle ( packet , &amp; handle ) ; */
+printf(&quot;  -%s\n&quot;, b); /* printf ( &quot;  -%s\n&quot; , handle ) ; */
+free(b); /* free ( handle ) ; */
+}
+</PRE>
+</BODY>
+</HTML>
