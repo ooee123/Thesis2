@@ -38,7 +38,7 @@ public class LabeledCaseStatement implements LabeledStatement, CanContainStateme
 
     @Override
     public String toCode(boolean showOriginalLine) {
-        return toCommentTip(conditionalExpression) + statement.toCode(showOriginalLine);
+        return toCommentTip(conditionalExpression) + "\n" + statement.toCode(showOriginalLine);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class LabeledDefaultStatement implements LabeledStatement, CanContainStat
 
     @Override
     public String toCode(boolean showOriginalLine) {
-        return "default: " + statement.toCode(showOriginalLine);
+        return "default: \n" + statement.toCode(showOriginalLine);
     }
 
     @Override

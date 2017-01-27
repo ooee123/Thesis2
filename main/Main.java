@@ -21,15 +21,29 @@ import java.io.IOException;
  * Created by ooee on 10/20/16.
  */
 public class Main {
-    public static final boolean SHOW_ORIGINAL_LINE = true;
-
+    public static boolean SHOW_ORIGINAL_LINE = true;
+    public static boolean NORMALIZE_IDENTIFIERS = true;
+    public static boolean SORT_STATEMENTS = true;
+    public static boolean REMOVE_USELESS_CODE = true;
     public static void main(String args[]) {
         if (args.length < 1) {
-            System.err.println("Put C file as first parameter");
+            System.err.println("Usage: [-cisr] <C source file>");
+            System.err.println("c for original line as comments");
+            System.err.println("i for normalizing identifiers");
+            System.err.println("s for sort statements");
+            System.err.println("r for removing useless code. s must be turned on for this feature");
             System.exit(-1);
         }
+        String sourceFile = args[0];
+        if (args[0].startsWith("-")) {
+            SHOW_ORIGINAL_LINE = args[0].contains("c");
+            NORMALIZE_IDENTIFIERS = args[0].contains("i");
+            SORT_STATEMENTS = args[0].contains("s");
+            REMOVE_USELESS_CODE = args[0].contains("r");
+            sourceFile = args[1];
+        }
         try {
-            String preprocess = Preprocess.preprocess(new File(args[0]));
+            String preprocess = Preprocess.preprocess(new File(sourceFile));
             int splittingIndex = Preprocess.getSplittingIndex(preprocess);
             String firstPart = Preprocess.removePounds(preprocess.substring(0, splittingIndex));
             String secondPart = Preprocess.removePounds(preprocess.substring(splittingIndex, preprocess.length()));
@@ -40,7 +54,7 @@ public class Main {
             CLexer secondPartlexer = new CLexer(new ANTLRInputStream(secondPartByteArrayInputStream));
             CommonTokenStream firstPartTokens = new CommonTokenStream(firstPartlexer);
             CommonTokenStream secondPartTokens = new CommonTokenStream(secondPartlexer);
-            System.err.print("Begin parsing " + args[0] + "...");
+            System.err.print("Begin parsing " + sourceFile + "...");
             CParser firstPartParser = new CParser(firstPartTokens);
             CParser secondPartParser = new CParser(secondPartTokens);
             System.err.println("Done");
@@ -60,25 +74,30 @@ public class Main {
             //pdgGenerationVisitor.visit(program);
             //FunctionArgumentOrderVisitor functionArgumentOrderVisitor = new FunctionArgumentOrderVisitor();
             //functionArgumentOrderVisitor.visit(program);
-            for (Function function : program.getFunction()) {
-                System.err.print("Begin PDG generation for function " + function.getIdentifier() + "...");
-                PDGNodeCompoundStatement functionBody = pdgGenerationVisitor.visit(function);
-                System.err.println("Done");
-                System.err.print("Being Useless removal for function " + function.getIdentifier() + "...");
-                PDGUselessCodeRemover pdgUselessCodeRemover = new PDGUselessCodeRemover();
-                pdgUselessCodeRemover.removeUselessCode(functionBody);
-                System.err.println("Done");
-
-                PDGNodeTransitiveReducer pdgNodeTransitiveReducer = new PDGNodeTransitiveReducer();
-                pdgNodeTransitiveReducer.reduce(functionBody);
-                System.err.print("Being serializing PDG for function " + function.getIdentifier() + "...");
-                PDGSorter sorter = new PDGSorterDefault();
-                CompoundStatement statement = sorter.sort(functionBody.getBody());
-                System.err.println("Done");
-                function.setCompoundStatement(statement);
+            if (SORT_STATEMENTS) {
+                for (Function function : program.getFunction()) {
+                    System.err.print("Begin PDG generation for function " + function.getIdentifier() + "...");
+                    PDGNodeCompoundStatement functionBody = pdgGenerationVisitor.visit(function);
+                    System.err.println("Done");
+                    if (REMOVE_USELESS_CODE) {
+                        System.err.print("Begin Useless removal for function " + function.getIdentifier() + "...");
+                        PDGUselessCodeRemover pdgUselessCodeRemover = new PDGUselessCodeRemover();
+                        pdgUselessCodeRemover.removeUselessCode(functionBody);
+                        System.err.println("Done");
+                    }
+                    PDGNodeTransitiveReducer pdgNodeTransitiveReducer = new PDGNodeTransitiveReducer();
+                    pdgNodeTransitiveReducer.reduce(functionBody);
+                    System.err.print("Begin serializing PDG for function " + function.getIdentifier() + "...");
+                    PDGSorter sorter = new PDGSorterDefault();
+                    CompoundStatement statement = sorter.sort(functionBody.getBody());
+                    System.err.println("Done");
+                    function.setCompoundStatement(statement);
+                }
             }
-            ProgramIdentifierNormalizerVisitor programIdentifierNormalizerVisitor = new ProgramIdentifierNormalizerVisitor();
-            programIdentifierNormalizerVisitor.visit(program);
+            if (NORMALIZE_IDENTIFIERS) {
+                ProgramIdentifierNormalizerVisitor programIdentifierNormalizerVisitor = new ProgramIdentifierNormalizerVisitor();
+                programIdentifierNormalizerVisitor.visit(program);
+            }
             System.out.println(program.toCode(SHOW_ORIGINAL_LINE));
         } catch (IOException e) {
             System.err.println(e);

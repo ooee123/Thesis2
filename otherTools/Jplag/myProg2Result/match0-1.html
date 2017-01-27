@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>chatclientMainMine.c</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff" style="margin-left:25">
+<HR>
+<H3><CENTER>chatclientMainMine.c</CENTER></H3><HR>
+<PRE>
+int helloSetup(Peer *a, char *b, struct timeval *c, int d){
+   char e;
+   Packet f;
+   char g[27];
+   PacketStream h;
+   memset(&amp;h, 0, sizeof(PacketStream));
+   g[0] = HELLO;
+   setSeqNum(g, 0);
+   strncpy(g + 7, b, 20);
+   f.length = 27;
+   f.data = g;
+   setChecksum(f);
+   sendMessage(a, f, c, d);
+   h = pollBuffer(a);
+   if (hasNextPacket(&amp;h)) {
+      f = nextPacket(&amp;h);
+      e = f.data[0];
+      freePacketStream(&amp;h);
+      return e == WELCOME;
+   }
+   while (1) {
+      h = recvMessage(a);
+      if (hasNextPacket(&amp;h)) {
+         f = nextPacket(&amp;h);
+         e = f.data[0];
+         freePacketStream(&amp;h);
+         return e == WELCOME;
+      }
+   }
+}
+int connectSocket(int a, char *b, int c){
+   struct addrinfo d;
+   int e;
+   char f[6];
+   struct addrinfo *g;
+   memset(&amp;d, 0, sizeof(struct addrinfo));
+   sprintf(f, &quot;%d&quot;, c);
+   d.ai_family = 2;
+   d.ai_socktype = SOCK_STREAM;
+   e = getaddrinfo(b, f, &amp;d, &amp;g);
+   e = connect(a, g-&gt;ai_addr, g-&gt;ai_addrlen);
+   freeaddrinfo(g);
+   return e;
+}
+int main(int a, char **b){
+   char *c;
+   char *d = &quot;Handle is in use. Logging out.\n&quot;;
+   char *e;
+   int f;
+   Peer g;
+   ServerConfig h = parseConfig(a, b);
+   set_err_rate(h.errRate);
+   if (a&lt;2 || h.print) {
+      printf(&quot;usage: chat [ options ] hostname handle\nOptions:\n     -p  &lt;port&gt;     --- port used by the chatserver (default: 10464)\n     -e  &lt;rate&gt;     --- error rate for sent packets (default: 0.05)\n     -t  &lt;timeout&gt;  --- timeout for stop-and-wait (ms) (default: 250ms)\n     -R  &lt;retries&gt;  --- times to re-try before presuming dead (default: 25)\n     -N             --- do not use ncurses windows\n     -h             --- print usage information and exit\n     -v             --- increase verbosity level\n&quot;);
+      return 0;
+<A NAME="0"></A>   }
+   e = b[a - 2];
+   c = b[a - 1];
+<FONT color="#0000ff"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match0-0.html#0',2,'match0-top.html#0',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>   if (global_s) {
+      printf(&quot;\tPreparing socket...&quot;);
+      fflush(global_c);
+   }
+   g = initPeer(global_m());
+   if (g.fd == -1) {
+      if (global_s) {
+         printf(&quot; Unsuccessful.\n&quot;);
+      }
+      perror(((void *)0 ));
+      return 0;
+   }
+   if (global_s) {
+      printf(&quot; Successful\n\tConnecting to server...&quot;);
+      fflush(global_c);
+   }
+   f = connectSocket(g.fd, e, h.port);
+   if (f == -1) {
+      if (global_s) {
+         printf(&quot; Unsuccessful.\n&quot;);
+      }
+      perror(((void *)0 ));
+      return 0;
+   }
+   if (global_s) {
+      printf(&quot; Successful connection.\n\tProcessing HELLO... &quot;);
+      fflush(global_c);
+   }
+   f = helloSetup(&amp;g, c, &amp;h.timeout, h.retries);
+   if (!f) {</B></FONT>
+      printf(d);
+      return 0;
+   }
+   printf(&quot;Login successful.\n&quot;);
+   if (h.ncurse) {
+      global_j();
+   }
+   f = chatClient(&amp;g, c, &amp;h.timeout, h.retries);
+   if (h.ncurse) {
+      global_k();
+   }
+   close(g.fd);
+   if (f == -1) {
+      printf(&quot;Critical Error encountered! Shutting down.\n&quot;);
+   }
+   printf(&quot;Logout successful.\n&quot;);
+   return 0;
+}
+</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>chatserverMain.c</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<HR>
+<H3><CENTER>chatserverMain.c</CENTER></H3><HR>
+<PRE>
+int main(int a, char **b){
+   ServerConfig c;
+   int d;
+   int e;
+   c = parseConfig(a, b);
+   if (c.print) {
+      printf(&quot;usage:chatserver [ options ]\nOptions:\n     -p &lt;port&gt;     ---  port used by the chatserver (default: 10464)\n     -e &lt;rate&gt;     ---  error rate for sent packets (default: 0.05)\n     -t &lt;timeout&gt;  ---  timeout for stop-and-wait (ms) (default: 250ms)\n     -R &lt;retries&gt;  ---  times to re-try before presuming dead (default: 25)\n     -m            ---  monitor the conversation (default: FALSE)\n     -h            ---  print usage information and exit\n     -v            ---  increase verbosity level\n&quot;);
+<A NAME="0"></A>      return 0;
+   }
+   set_err_rate(c.errRate);
+<FONT color="#0000ff"><A HREF="javascript:ZweiFrames('match0-1.html#0',3,'match0-top.html#0',1)"><IMG SRC="forward.gif" ALT="other" BORDER="0" ALIGN="right"></A><B>   if (global_s) {
+      printf(&quot;Preparing socket...&quot;);
+      fflush(global_c);
+   }
+   e = global_m();
+   if (e == -1) {
+      if (global_s) {
+         printf(&quot; Unsuccessful.\n&quot;);
+      }
+      perror(((void *)0 ));
+      return 0;
+   }
+   if (global_s) {
+      printf(&quot; Successful.\nBinding socket...&quot;);
+   }
+   d = bindSocket(e, c.port);
+   if (d) {
+      if (global_s) {
+         printf(&quot; Unsuccessful.\n&quot;);
+      }
+      perror(((void *)0 ));
+      return 0;
+   }
+   if (global_s) {
+      printf(&quot; Successful.\nListening...&quot;);
+   }
+   d = listenSocket(e, 100);
+   if (d) {</B></FONT>
+      if (global_s) {
+         printf(&quot; Unsuccessful.\n&quot;);
+      }
+      perror(((void *)0 ));
+      return 0;
+   }
+   if (global_s) {
+      printf(&quot;Successful.\nEntering chatserver\n&quot;);
+   }
+   chatServer(e, &amp;c.timeout, c.retries, c.monitor);
+   close(e);
+   printf(&quot;Goodbye\n&quot;);
+   return 0;
+}
+</PRE>
+</BODY>
+</HTML>

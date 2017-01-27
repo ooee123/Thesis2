@@ -21,7 +21,7 @@ public class LabeledIdentifierStatement implements LabeledStatement, CanContainS
 
     @Override
     public String toCode(boolean showOriginalLine) {
-        return identifier + ": " + statement.toCode(showOriginalLine);
+        return identifier + ": \n" + statement.toCode(showOriginalLine);
     }
 
     @Override

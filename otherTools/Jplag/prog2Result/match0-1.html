@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+ <TITLE>chatclientMain.c</TITLE>
+<META http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <script type="text/javascript">
+  <!--
+   function ZweiFrames(URL1,F1,URL2,F2)
+   {
+    parent.frames[F1].location.href=URL1;
+    parent.frames[F2].location.href=URL2;
+   }
+  //-->
+  </script>
+</HEAD>
+<BODY BGCOLOR="#ffffff" style="margin-left:25">
+<HR>
+<H3><CENTER>chatclientMain.c</CENTER></H3><HR>
+<PRE>
+/* Kevin Ly
+ * 2013-11-24
+ * CPE 464
+ * Nico
+ */
+#include &quot;chatLib.h&quot;
+#include &quot;cpe464.h&quot;
+#include &quot;reliableTCP.h&quot;
+#include &lt;arpa/inet.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;sys/select.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/time.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;netdb.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;unistd.h&gt;
+
+int chatClient(Peer *server, char *handle, struct timeval *tv, int retries);
+
+int helloSetup(Peer *server, char *handle, struct timeval *timeout, int retries)
+{
+   /* Data vars */
+   char data[27];
+   /* Misc vars */
+   char type;
+   PacketStream stream;
+   Packet packet;
+
+   memset(&amp;stream, 0, sizeof(PacketStream));
+   /* Prepare HELLO packet */
+   data[0] = HELLO;
+   setSeqNum(data, 0);
+   strncpy(data + 7, handle, 20);
+   
+   packet.data = data;
+   packet.length = HELLO_S;
+   /* Set up checksum */
+   setChecksum(packet); 
+
+   sendMessage(server, packet, timeout, retries);
+   stream = pollBuffer(server);
+   if (hasNextPacket(&amp;stream))
+   {
+      packet = nextPacket(&amp;stream);
+      type = packet.data[0];
+      freePacketStream(&amp;stream);
+      return type == WELCOME;
+   }
+   while (1)
+   {
+      stream = recvMessage(server);
+      if (hasNextPacket(&amp;stream))
+      {
+         packet = nextPacket(&amp;stream);
+         type = packet.data[0];
+         freePacketStream(&amp;stream);
+         return type == WELCOME;
+      }
+   }
+}
+
+int connectSocket(int socketFD, char *hostname, int port)
+{
+   char buffer[6];
+
+   struct addrinfo hints;
+   struct addrinfo *addresses;
+
+   int err;
+
+   memset(&amp;hints, 0, sizeof(struct addrinfo));
+   sprintf(buffer, &quot;%d&quot;, port);
+   hints.ai_family = AF_INET;
+   hints.ai_socktype = SOCK_STREAM;
+
+   err = getaddrinfo(hostname, buffer, &amp;hints, &amp;addresses);
+   err = connect(socketFD, addresses-&gt;ai_addr, addresses-&gt;ai_addrlen);
+   freeaddrinfo(addresses);
+   return err;
+}
+
+int main(int argc, char** argv)
+{
+   static const char *inuseMSG = &quot;Handle is in use. Logging out.\n&quot;;
+   int err;
+
+   ServerConfig config = parseConfig(argc, argv);
+   //verbose = 1;
+
+   Peer server;
+   char *hostname;
+   char *handle;
+   
+   set_err_rate(config.errRate);
+   /* argc check */
+   if (argc &lt; 2 || config.print)
+   {
+      printf(CHAT_OPTIONS);
+      return 0;
+   }
+
+   hostname = argv[argc - 2];
+   handle = argv[argc - 1];
+
+   /* Create the socket, returns an arbitrary fd */
+   if (verbose)
+   {
+      printf(&quot;\tPreparing socket...&quot;);
+      fflush(stdout);
+   }
+   server = initPeer(prepareSocket());
+   if (server.fd == -1)
+   {
+<A NAME="0"></A>      if (verbose)
+         printf(&quot; Unsuccessful.\n&quot;);
+      perror(NULL);
+<FONT color="#0000ff"><div style="position:absolute;left:0"><A HREF="javascript:ZweiFrames('match0-0.html#0',2,'match0-top.html#0',1)"><IMG SRC="back.gif" ALT="other" BORDER="0" ALIGN="left"></A></div><B>      return 0;
+   }
+   if (verbose)
+   {
+      printf(&quot; Successful\n\tConnecting to server...&quot;);
+      fflush(stdout);
+   }
+   /* Connect to server */
+   err = connectSocket(server.fd, hostname, config.port);
+   if (err == -1)
+   {
+      if (verbose)
+         printf(&quot; Unsuccessful.\n&quot;);
+      perror(NULL);
+      return 0;
+   }
+   if (verbose)</B></FONT>
+   {
+      printf(&quot; Successful connection.\n\tProcessing HELLO... &quot;);
+      fflush(stdout);
+   }
+   /* Initial Setup with Server (HELLO/WELCOME) */
+   err = helloSetup(&amp;server, handle, &amp;config.timeout, config.retries);
+   if (!err)
+   {
+      printf(inuseMSG);
+      return 0;
+   }
+   printf(&quot;Login successful.\n&quot;);
+   if (config.ncurse)
+      start_windowing();
+   /* Start chat client */
+   err = chatClient(&amp;server, handle, &amp;config.timeout, config.retries);
+      
+   if (config.ncurse)
+     stop_windowing();
+   
+   close(server.fd);
+   if (err == -1)
+      printf(CRITICAL_ERROR);
+   printf(&quot;Logout successful.\n&quot;);
+   return 0;
+}
+</PRE>
+</BODY>
+</HTML>

@@ -153,7 +153,8 @@ public class FunctionIdentifierNormalizerVisitor {
                 this.declaredVariables.add(identifier);
                 if (declaredVariable.getInitializer() != null) {
                     Touchy touchy = new Touchy();
-                    declaredVariable.getInitializer().visitNestedExpressions(touchy);
+                    //declaredVariable.getInitializer().visitNestedExpressions(touchy);
+                    touchy.visit(declaredVariable.getInitializer());
                     Map<String, Collection<PrimaryExpressionIdentifier>> identifiers = touchy.getIdentifiers();
                     for (Map.Entry<String, Collection<PrimaryExpressionIdentifier>> stringCollectionEntry : identifiers.entrySet()) {
                         this.identifiers.putIfAbsent(stringCollectionEntry.getKey(), Sets.newIdentityHashSet());
