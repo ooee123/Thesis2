@@ -19,7 +19,7 @@ public class PDGSorterDefault implements PDGSorter {
     public CompoundStatement sort(Collection<PDGNode<? extends BlockItem>> nodes) {
         List<BlockItem> blockItems = new ArrayList<>();
         Collection<VariableDeclaration> emptyVariableDeclarations = Sets.newIdentityHashSet();
-        Collection<PDGNode> emptyDeclarationNodes = Sets.newIdentityHashSet();
+        Collection<PDGNode<? extends BlockItem>> emptyDeclarationNodes = Sets.newIdentityHashSet();
         for (PDGNode node : nodes) {
             if (node.blockItem instanceof VariableDeclaration) {
                 if (node.blockItem.getDependantVariables().isEmpty()) {
@@ -28,10 +28,19 @@ public class PDGSorterDefault implements PDGSorter {
                 }
             }
         }
+        while(!emptyDeclarationNodes.isEmpty()) {
+            PDGNode<? extends BlockItem> nextNode = pickNextNode(emptyDeclarationNodes);
+            PDGNode.removeNode(nextNode, nodes);
+            emptyDeclarationNodes.remove(nextNode);
+            blockItems.add(nextNode.blockItem);
+
+        }
+        /*
         blockItems.addAll(emptyVariableDeclarations);
         for (PDGNode emptyDeclarationNode : emptyDeclarationNodes) {
             PDGNode.removeNode(emptyDeclarationNode, nodes);
         }
+        */
 
         while (nodes.size() > 0) {
             Collection<PDGNode<? extends BlockItem>> candidateNextNodes = getReadyNodes(nodes);
@@ -52,6 +61,7 @@ public class PDGSorterDefault implements PDGSorter {
 
     private Collection<PDGNode<? extends BlockItem>> getReadyNodes(Collection<PDGNode<? extends BlockItem>> nodes) {
         Collection<PDGNode<? extends BlockItem>> readyNodes = Sets.newIdentityHashSet();
+
         for (PDGNode<? extends BlockItem> node : nodes) {
             if (node.getDependsOn().isEmpty() && node.getIsBehindOfMe().isEmpty()) {
                 if (!(node.getBlockItem() instanceof JumpStatementStrict) || nodes.size() <= 1) {

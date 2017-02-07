@@ -51,6 +51,9 @@ public class PDGNodeComparator implements Comparator<PDGNode<? extends BlockItem
                     return Integer.compare(this.score.get(i), score.score.get(i));
                 }
             }
+            if (this.score.size() != score.score.size()) {
+                return Integer.compare(this.score.size(), score.score.size());
+            }
             return 0;
         }
     }

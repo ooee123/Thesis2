@@ -1,8 +1,0 @@
-Author: MacKenzie Jew 
-Lab Section: Noon
-class: CPE 464 Intro to Networks
-Prof: Hugh Smith
-
-Notes: The only bug I am aware of is that occaisonally the program will output either a personal messege or a broadcast with strange characters at the end. Why? I don't know. I havn't been able to 
-completly track it down. It's also inconsistent. Doesn't happen very often and I can't predict when it will happen. I believe it is a problem with the client side of the program but I don't why it's
-happening, as I am null terminating all messeges.

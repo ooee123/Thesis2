@@ -1,8 +1,0 @@
-David Zhuo, 9 am
-dzhuo@calpoly.edu
-
-Known problems:
-1) The largest message I was able to send (where it splits into multiple packets) was 1023 bytes. I found online that it was how many terminals buffered input, and I couldn't find a way to flush input. fflush() has undefined behavior for input file streams
-
-2) Between flag = 11 and flag = 12, are we suppose to expect a large delay? My packets send without delay
-3) Flag 11 tells the client the number of known handles. Why does the example for flag 12 have the number of known handles?!?!

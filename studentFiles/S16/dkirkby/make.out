@@ -1,5 +1,0 @@
-gcc -g -c networks.c
-gcc -g -c testing.c
-gcc -g -c handle.c
-gcc -g -o cclient -Wall cclient.c testing.o networks.o handle.o 
-gcc -g -o server -Wall server.c testing.o networks.o handle.o 

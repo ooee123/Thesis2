@@ -1,6 +1,0 @@
-gcc -g -c testing.c
-gcc -g -o cclient -Wall tcp_client.c helpers.c packet.c testing.o 
-gcc -g -o server -Wall tcp_server.c client_linked_list.c packet.c helpers.c testing.o 
-tcp_server.c: In function ‘start_server’:
-tcp_server.c:65: warning: format ‘%lu’ expects type ‘long unsigned int’, but argument 2 has type ‘unsigned int’
-tcp_server.c:65: warning: format ‘%lu’ expects type ‘long unsigned int’, but argument 3 has type ‘unsigned int’

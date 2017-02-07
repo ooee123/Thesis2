@@ -1,3 +1,0 @@
-testing.o: could not read symbols: File in wrong format
-collect2: ld returned 1 exit status
-make: *** [cclient] Error 1

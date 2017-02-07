@@ -1,3 +1,0 @@
-g++ -g -std=c++98 -c testing.c
-g++ -g -std=c++98 -o cclient -Wall tcp_client.cpp chat_util.cpp testing.o 
-g++ -g -std=c++98 -o server -Wall tcp_server.cpp chat_util.cpp testing.o 

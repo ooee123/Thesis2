@@ -1,7 +1,0 @@
-NAME: James Green SECTION: noon
-
-NOTE TO GRADERS: In this version, %L only works for the FIRST call. After that, it will cause the client to hang and break. I will hopefully have this working by the next hand in (if applicable).
-
- Also in this version, the message only can be 1000 chars long, I couldn't work out how to send across multiple packets. It does work for basic messages. 
-
-

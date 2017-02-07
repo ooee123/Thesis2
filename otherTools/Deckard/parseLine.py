@@ -55,6 +55,7 @@ def lineToSection(line):
    dist = decimal.Decimal(tokens[1].split(":")[1])
    return Section(filename, startLine, endLine, startToken, endToken, dist)
 
+
 def getLineSection(filename, startLine, endLine):
    filename = open(filename, "r")
    lines = filename.readlines()

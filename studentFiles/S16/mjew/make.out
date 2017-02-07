@@ -1,5 +1,0 @@
-g++ -g -c testing.c
-g++ -g -o cclient -Wall tcp_client.cpp testing.o 
-g++ -g -o server -Wall tcp_server.cpp testing.o 
-tcp_server.cpp: In function ‘void processFLAG_4(int)’:
-tcp_server.cpp:252: warning: comparison between signed and unsigned integer expressions

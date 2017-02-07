@@ -1,7 +1,0 @@
-Nicholas Donaldson(ndonalds)
-
-3pm lab
-
-There was a spec inconsistency, so I made some assumptions.  I assumed that the response to a "%l" request was 2 packets, one with flag 11 and one with flag 12.  The flag 11 packet has an int with the number of handles, and the spec says that the packet 12 ALSO has this 'num_handles'.  I assumed that this was not intended since the flag 11 packet would be useless in this case, so I chose to use the flag 11 packets size and not include it in the flag 12 packet.
-
-So, I receive flag 11 and save the num_handles there, then whenever I get the 12 packet next I use that size from flag 11 packet to parse the correct amount from the flag 12 packet.

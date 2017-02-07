@@ -1,3 +1,0 @@
-gcc -g -Wall -Werror -Wno-unused-value -c testing.c
-gcc -g -Wall -Werror -Wno-unused-value -o cclient -Wall client.c packet.c socketWrapper.c testing.o 
-gcc -g -Wall -Werror -Wno-unused-value -o server -Wall server.c packet.c socketWrapper.c testing.o 

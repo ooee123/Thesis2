@@ -15,7 +15,9 @@ import visitor.TreeToASTVisitor;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Created by ooee on 10/20/16.
@@ -25,22 +27,36 @@ public class Main {
     public static boolean NORMALIZE_IDENTIFIERS = true;
     public static boolean SORT_STATEMENTS = true;
     public static boolean REMOVE_USELESS_CODE = true;
+    public static boolean SPLIT_FUNCTIONS_MOSS = false;
     public static void main(String args[]) {
         if (args.length < 1) {
-            System.err.println("Usage: [-cisr] <C source file>");
+            System.err.println("Usage: [-cisrm] <C source file>");
             System.err.println("c for original line as comments");
             System.err.println("i for normalizing identifiers");
             System.err.println("s for sort statements");
             System.err.println("r for removing useless code. s must be turned on for this feature");
+            System.err.println("m for moss mode. If specified, you must provide a directory to put all the files");
             System.exit(-1);
         }
+        String mossDirectory = null;
         String sourceFile = args[0];
         if (args[0].startsWith("-")) {
             SHOW_ORIGINAL_LINE = args[0].contains("c");
             NORMALIZE_IDENTIFIERS = args[0].contains("i");
             SORT_STATEMENTS = args[0].contains("s");
             REMOVE_USELESS_CODE = args[0].contains("r");
-            sourceFile = args[1];
+            SPLIT_FUNCTIONS_MOSS = args[0].contains("m");
+            if (SPLIT_FUNCTIONS_MOSS) {
+                if (args.length < 2) {
+                    System.err.println("You must provide a directory after -m to put the moss files");
+                    System.exit(-1);
+                } else {
+                    mossDirectory = args[1];
+                    sourceFile = args[2];
+                }
+            } else {
+                sourceFile = args[1];
+            }
         }
         try {
             String preprocess = Preprocess.preprocess(new File(sourceFile));
@@ -63,6 +79,17 @@ public class Main {
             TreeToASTVisitor visitor = new TreeToASTVisitor(firstPartCompilationUnit, secondPartTokens);
             System.err.print("Begin AST building...");
             Program program = visitor.visit(secondPartCompilationUnit);
+            System.err.println("Done");
+            System.err.print("Removing bswaps...");
+            Iterator<Function> iterator = program.getFunction().iterator();
+            while (iterator.hasNext()) {
+                Function next = iterator.next();
+                if (next.getIdentifier().equals("__bswap_32")) {
+                    iterator.remove();
+                } else if (next.getIdentifier().equals("__bswap_64")) {
+                    iterator.remove();
+                }
+            }
             System.err.println("Done");
 
             System.err.print("Assigning types to primary expressions...");
@@ -97,6 +124,15 @@ public class Main {
             if (NORMALIZE_IDENTIFIERS) {
                 ProgramIdentifierNormalizerVisitor programIdentifierNormalizerVisitor = new ProgramIdentifierNormalizerVisitor();
                 programIdentifierNormalizerVisitor.visit(program);
+            }
+            if (SPLIT_FUNCTIONS_MOSS) {
+                for (Function function : program.getFunction()) {
+                    String functionCode = function.toCode(SHOW_ORIGINAL_LINE);
+                    File functionFile = new File(mossDirectory, sourceFile + "_" + function.getIdentifier() + ".c");
+                    FileWriter fileWriter = new FileWriter(functionFile);
+                    fileWriter.write(functionCode);
+                    fileWriter.close();
+                }
             }
             System.out.println(program.toCode(SHOW_ORIGINAL_LINE));
         } catch (IOException e) {
