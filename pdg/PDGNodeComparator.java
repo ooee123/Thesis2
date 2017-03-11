@@ -1,6 +1,7 @@
 package pdg;
 
 import ast.*;
+import ast.declaration.TypedefDeclaration;
 import ast.declaration.VariableDeclaration;
 import ast.expression.Expression;
 import ast.expression.impl.PostfixExpressionInvocationImpl;
@@ -59,6 +60,7 @@ public class PDGNodeComparator implements Comparator<PDGNode<? extends BlockItem
     }
 
     public enum BlockItemStrictOrdering {
+        TYPEDEF_DECLARATION(TypedefDeclaration.class),
         DECLARATION(VariableDeclaration.class),
         EXPRESSION_STATEMENT(ExpressionStatement.class),
         SELECTION_STATEMENT_IF(SelectionStatementIf.class),
@@ -207,15 +209,21 @@ public class PDGNodeComparator implements Comparator<PDGNode<? extends BlockItem
                 for (VariableDeclaration.DeclaredVariable declaredVariable : ((VariableDeclaration) b1).getDeclaredVariables()) {
                     if (declaredVariable.getInitializer() != null) {
                         s1.addScore(ShallowExpressionVisitor.distanceToObject(declaredVariable.getInitializer().getClass()));
-                    } else {
-                        s1.addScore(0);
+                    }
+                    String typeString = declaredVariable.getType().toCode();
+                    s1.addScore(typeString.length());
+                    for (int i = 0; i < typeString.length(); i++) {
+                        s1.addScore((int)typeString.charAt(i));
                     }
                 }
                 for (VariableDeclaration.DeclaredVariable declaredVariable : ((VariableDeclaration) b2).getDeclaredVariables()) {
                     if (declaredVariable.getInitializer() != null) {
                         s2.addScore(ShallowExpressionVisitor.distanceToObject(declaredVariable.getInitializer().getClass()));
-                    } else {
-                        s2.addScore(0);
+                    }
+                    String typeString = declaredVariable.getType().toCode();
+                    s2.addScore(typeString.length());
+                    for (int i = 0; i < typeString.length(); i++) {
+                        s2.addScore((int)typeString.charAt(i));
                     }
                 }
                 return s1.compareTo(s2);

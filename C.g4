@@ -247,7 +247,7 @@ structDeclarationList
     ;
 
 structDeclaration
-    :   '__extension__'? specifierQualifierList structDeclaratorList ';'
+    :   '__extension__'? specifierQualifierList structDeclaratorList gccDeclaratorExtension* ';'
     |   staticAssertDeclaration
     ;
 

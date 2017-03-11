@@ -100,6 +100,7 @@ public class PDGGenerationVisitor {
         program = p;
         globalVariables = new HashSet<>();
         scopeVisitor = new ScopeVisitor(p);
+        System.err.print("Gathering global variables...");
         for (Declaration declaration : program.getDeclarations()) {
             if (declaration instanceof VariableDeclaration) {
                 for (VariableDeclaration.DeclaredVariable declaredVariable : ((VariableDeclaration) declaration).getDeclaredVariables()) {
@@ -107,6 +108,7 @@ public class PDGGenerationVisitor {
                 }
             }
         }
+        System.err.println("Done");
         identityTypeMapper = null;
     }
 
@@ -208,7 +210,9 @@ public class PDGGenerationVisitor {
         if (blockItem instanceof VariableDeclaration) {
             return visit(((VariableDeclaration) blockItem));
         } else if (blockItem instanceof TypedefDeclaration) {
-            throw new IllegalArgumentException("Typedefs should not be in a function");
+            TypedefDeclaration typedefDeclaration = (TypedefDeclaration) blockItem;
+            return new Returns<>(new Dependencies(), new PDGNodeTypedef(typedefDeclaration));
+            //throw new IllegalArgumentException("Typedefs should not be in a function");
         } else {
             if (blockItem instanceof Statement) {
                 return visit((Statement) blockItem);
@@ -374,6 +378,16 @@ public class PDGGenerationVisitor {
                 */
                 // For stdlib functions that take no parameters, like printf. If it reads memory, then it requires all
                 // previous code to be there
+
+                for (String s : blockItem.getDependantVariables()) {
+                    for (Collection<PDGNode<? extends BlockItem>> pdgNodes : lastAssigned.getAllAssociated(s)) {
+                        for (PDGNode<? extends BlockItem> node : pdgNodes) {
+                            node.linkVariableDependency(pdgNode);
+                        }
+                    }
+                    dependentVariables.add(s);
+                }
+
                 for (PDGNode<? extends BlockItem> node : allNodes.values()) {
                     if (TREAT_UNKNOWN_FUNCTIONS_AS_ORDER_DEPENDENT) {
                         node.linkOrderDependency(pdgNode);
@@ -410,11 +424,20 @@ public class PDGGenerationVisitor {
                 }
                 */
                 required = true;
+                /*
                 for (Collection<PDGNode<? extends BlockItem>> pdgNodes : lastAssigned.values()) {
                     for (PDGNode<? extends BlockItem> node : pdgNodes) {
                         node.linkVariableDependency(pdgNode);
                     }
                     pdgNodes.add(pdgNode);
+                }
+                */
+                for (String s : returns.getDependencies().getDependentVariables()) {
+                    for (Collection<PDGNode<? extends BlockItem>> pdgNodes : lastAssigned.getAllAssociated(s)) {
+                        for (PDGNode<? extends BlockItem> node : pdgNodes) {
+                            node.linkVariableDependency(pdgNode);
+                        }
+                    }
                 }
                 for (String s : returns.getDependencies().getPotentiallyChangedVariables()) {
                     lastAssigned.augment(s, pdgNode);

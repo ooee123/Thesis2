@@ -1,6 +1,7 @@
 package pdg;
 
 import ast.*;
+import ast.declaration.TypedefDeclaration;
 import ast.declaration.VariableDeclaration;
 import ast.statement.impl.CompoundStatement;
 import ast.statement.JumpStatementStrict;
@@ -18,6 +19,7 @@ public class PDGSorterDefault implements PDGSorter {
     @Override
     public CompoundStatement sort(Collection<PDGNode<? extends BlockItem>> nodes) {
         List<BlockItem> blockItems = new ArrayList<>();
+        Collection<TypedefDeclaration> typedefs = new ArrayList<>();
         Collection<VariableDeclaration> emptyVariableDeclarations = Sets.newIdentityHashSet();
         Collection<PDGNode<? extends BlockItem>> emptyDeclarationNodes = Sets.newIdentityHashSet();
         for (PDGNode node : nodes) {
@@ -27,7 +29,13 @@ public class PDGSorterDefault implements PDGSorter {
                     emptyDeclarationNodes.add(node);
                 }
             }
+            if (node.blockItem instanceof TypedefDeclaration) {
+                typedefs.add(((TypedefDeclaration) node.blockItem));
+            }
         }
+        blockItems.addAll(typedefs);
+        nodes.removeAll(typedefs);
+
         while(!emptyDeclarationNodes.isEmpty()) {
             PDGNode<? extends BlockItem> nextNode = pickNextNode(emptyDeclarationNodes);
             PDGNode.removeNode(nextNode, nodes);

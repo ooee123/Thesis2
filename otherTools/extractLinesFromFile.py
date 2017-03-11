@@ -5,7 +5,7 @@ import sys
 def getLineSection(filename, startLine, endLine):
    filename = open(filename, "r")
    lines = filename.readlines()
-   joined = "".join(lines[startLine - 1:endLine - 1])
+   joined = "".join(lines[startLine - 1:endLine])
    return joined
 
 def main():

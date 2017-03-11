@@ -188,8 +188,18 @@ public class TreeToASTVisitor {
                             throw new IllegalArgumentException("Not in");
                         }
                         return tagMapper.get(typeSpecifierContext.structOrUnionSpecifier().Identifier().getText());
-                    } else {
+                    } else if (typeSpecifierContext.enumSpecifier() != null) {
+
+                        CParser.EnumSpecifierContext enumSpecifierContext = typeSpecifierContext.enumSpecifier();
                         throw new IllegalArgumentException("Enum encountered");
+                        /*
+                        if (enumSpecifierContext.enumeratorList() != null) {
+                            String enumName = enumSpecifierContext.Identifier().getSymbol().getText();
+                            //tagMapper.put(enumName, )
+                        }
+                        */
+                    } else {
+                        throw new IllegalArgumentException("Huh");
                     }
                 }
             } else {

@@ -1,4 +1,8 @@
 #!/bin/bash
+
+INDENT="indent -linux -l9999 --braces-on-func-def-line"
+pwd=$(pwd)
+
 if [ -d "mine" ]; then
    rm -rf mine
 fi
@@ -32,35 +36,48 @@ mkdir mine_nothing_moss
 mkdir mine_noID_moss
 mkdir original
 for C in *.c; do
-   /home/ooee/Thesis2/run.sh -cisrm mine_moss $C > mine/$C
-   indent -linux --braces-on-func-def-line mine/$C
+   /home/ooee/Thesis2/run.sh -isrm mine_moss $C > mine/$C
+   if [ ! -s mine/$C ]; then
+      echo "$PWD mine $C" >> /home/ooee/Thesis2/studentFiles/errors
+   fi
+   $INDENT mine/$C
    rm mine/$C~
    cd mine_moss
    for D in *.c; do
-      indent -linux --braces-on-func-def-line $D
+      $INDENT $D
       rm $D~
    done
    cd ..
-   /home/ooee/Thesis2/run.sh -ci $C > mine_noSort/$C
-   indent -linux --braces-on-func-def-line mine_noSort/$C
+   /home/ooee/Thesis2/run.sh -i $C > mine_noSort/$C
+   if [ ! -s mine_noSort/$C ]; then
+      echo "$PWD mine_noSort $C" >> /home/ooee/Thesis2/studentFiles/errors
+   fi
+   $INDENT mine_noSort/$C
    rm mine_noSort/$C~
-   /home/ooee/Thesis2/run.sh -csrm mine_noID_moss $C > mine_noID/$C
-   indent -linux --braces-on-func-def-line mine_noID/$C
+   /home/ooee/Thesis2/run.sh -srm mine_noID_moss $C > mine_noID/$C
+   if [ ! -s mine_noID/$C ]; then
+      echo "$PWD mine_noID $C" >> /home/ooee/Thesis2/studentFiles/errors
+   fi
+   $INDENT mine_noID/$C
    rm mine_noID/$C~
    cd mine_noID_moss
    for D in *.c; do
-      indent -linux --braces-on-func-def-line $D
+      $INDENT $D
       rm $D~
    done
    cd ..
-   /home/ooee/Thesis2/run.sh -cm mine_nothing_moss $C > mine_nothing/$C
-   indent -linux --braces-on-func-def-line mine_nothing/$C
+   /home/ooee/Thesis2/run.sh -m mine_nothing_moss $C > mine_nothing/$C
+   if [ ! -s mine_nothing/$C ]; then
+      echo "$PWD mine_nothing $C" >> /home/ooee/Thesis2/studentFiles/errors
+   fi
+   $INDENT mine_nothing/$C
    rm mine_nothing/$C~
    cd mine_nothing_moss
    for D in *.c; do
-      indent -linux --braces-on-func-def-line $D
+      $INDENT $D
       rm $D~
    done
    cd ..
-   cp $C original/$C
+   gcc -fpreprocessed -dD -E $C | $INDENT | sed '/^$/d' | sed '/^#/d' > original/$C
+   #cp $C original/$C
 done

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import visitor.Visitor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -41,7 +42,11 @@ public class JumpReturnStatement implements JumpStatementStrict {
 
     @Override
     public Set<String> getDependantVariables() {
-        return returnExpression.getDependentVariables();
+        if (returnExpression != null) {
+            return returnExpression.getDependentVariables();
+        } else {
+            return new HashSet<>();
+        }
     }
 /*
     @Override
@@ -61,12 +66,20 @@ public class JumpReturnStatement implements JumpStatementStrict {
 
     @Override
     public Set<String> getPotentiallyChangedVariables() {
-        return returnExpression.getPotentiallyChangedVariables();
+        if (returnExpression != null) {
+            return returnExpression.getPotentiallyChangedVariables();
+        } else {
+            return new HashSet<>();
+        }
     }
 
     @Override
     public Set<String> getGuaranteedChangedVariables() {
-        return returnExpression.getGuaranteedChangedVariables();
+        if (returnExpression != null) {
+            return returnExpression.getGuaranteedChangedVariables();
+        } else {
+            return new HashSet<>();
+        }
     }
 
     @Override

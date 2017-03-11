@@ -58,6 +58,7 @@ public class Main {
                 sourceFile = args[1];
             }
         }
+        System.err.println("Starting on " + sourceFile);
         try {
             String preprocess = Preprocess.preprocess(new File(sourceFile));
             int splittingIndex = Preprocess.getSplittingIndex(preprocess);
@@ -122,10 +123,13 @@ public class Main {
                 }
             }
             if (NORMALIZE_IDENTIFIERS) {
+                System.err.print("Normalizing identfiers...");
                 ProgramIdentifierNormalizerVisitor programIdentifierNormalizerVisitor = new ProgramIdentifierNormalizerVisitor();
                 programIdentifierNormalizerVisitor.visit(program);
+                System.err.println("Done");
             }
             if (SPLIT_FUNCTIONS_MOSS) {
+                System.err.print("Splitting functions...");
                 for (Function function : program.getFunction()) {
                     String functionCode = function.toCode(SHOW_ORIGINAL_LINE);
                     File functionFile = new File(mossDirectory, sourceFile + "_" + function.getIdentifier() + ".c");
@@ -133,8 +137,10 @@ public class Main {
                     fileWriter.write(functionCode);
                     fileWriter.close();
                 }
+                System.err.println("Done");
             }
             System.out.println(program.toCode(SHOW_ORIGINAL_LINE));
+            System.err.println("Finish on " + sourceFile);
         } catch (IOException e) {
             System.err.println(e);
         }

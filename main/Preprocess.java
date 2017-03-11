@@ -62,10 +62,10 @@ public class Preprocess {
     }
 
     public static String prependUndef(String string) {
-        string = string.replaceAll("FD_SET\\(", "\n#undef FD_SET\nFD_SET(");
-        string = string.replaceAll("FD_ZERO\\(", "\n#undef FD_ZERO\nFD_ZERO(");
-        string = string.replaceAll("FD_ISSET\\(", "\n#undef FD_ISSET\nFD_ISSET(");
-        string = string.replaceAll("FD_CLR\\(", "\n#undef FD_CLR\nFD_CLR(");
+        string = string.replaceAll("FD_SET\\s*\\(", "\n#undef FD_SET\nFD_SET(");
+        string = string.replaceAll("FD_ZERO\\s*\\(", "\n#undef FD_ZERO\nFD_ZERO(");
+        string = string.replaceAll("FD_ISSET\\s*\\(", "\n#undef FD_ISSET\nFD_ISSET(");
+        string = string.replaceAll("FD_CLR\\s*\\(", "\n#undef FD_CLR\nFD_CLR(");
         return string;
     }
 
@@ -110,6 +110,9 @@ public class Preprocess {
 
     public static int getSplittingIndex(String string) {
         int i = string.lastIndexOf("\"<stdin>\" 2");
+        if (i < 0) {
+            return 0;
+        }
         while (string.charAt(i) != '#') {
             i -= 1;
         }
@@ -135,7 +138,7 @@ public class Preprocess {
         while (scanner.hasNextLine()) {
             lineNumber += 1;
             String line = scanner.nextLine();
-            if (line.startsWith("#")) {
+            if (line.startsWith("#") && !line.startsWith("#pragma")) {
                 Scanner lineScanner = new Scanner(line);
                 lineScanner.next("#");
                 if (lineScanner.hasNextInt()) {
