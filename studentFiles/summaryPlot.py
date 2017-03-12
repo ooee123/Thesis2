@@ -71,7 +71,22 @@ def main(chosenDir=None):
                      aggregate[key][tool][data] += results[key][tool][data]
       else:
          print("Summary file not found for " + f)
-   aggregateDifferences = processDifferences(aggregate)
+   #aggregateDifferences = processDifferences(aggregate)
+   histogramDifferences(processDifferencesTool(students, "original", "mine_nothing", "Simian"), "Simian Differences original vs noID_PDG", "diff_Simian_original_nothing", graphsDirectory)
+   histogramDifferences(processDifferencesTool(students, "original", "mine", "Simian"), "Simian Differences original vs normalized", "diff_Simian_original_mine", graphsDirectory)
+   histogramDifferences(processDifferencesTool(students, "original", "mine_noID", "Simian"), "Simian Differences original vs noID_PDG", "diff_Simian_original_noID", graphsDirectory)
+   histogramDifferences(processDifferencesTool(students, "mine_noID", "mine", "Simian"), "Simian Differences noID vs normalized", "diff_Simian_noID_mine", graphsDirectory)
+
+   histogramDifferences(processDifferencesTool(students, "original", "mine_nothing", "JPlag"), "JPlag Differences original vs noID_PDG", "diff_Jplag_original_nothing", graphsDirectory)
+   histogramDifferences(processDifferencesTool(students, "original", "mine", "JPlag"), "JPlag Differences original vs normalized", "diff_Jplag_original_mine", graphsDirectory)
+   histogramDifferences(processDifferencesTool(students, "original", "mine_noID", "JPlag"), "JPlag Differences original vs noID_PDG", "diff_Jplag_original_noID", graphsDirectory)
+
+   histogramDifferences(processDifferencesTool(students, "original", "mine_nothing", "CloneDR"), "CloneDR Differences original vs noID_PDG", "diff_Clonedr_original_nothing", graphsDirectory)
+   histogramDifferences(processDifferencesTool(students, "original", "mine", "CloneDR"), "CloneDR Differences original vs normalized", "diff_Clonedr_original_mine", graphsDirectory)
+   histogramDifferences(processDifferencesTool(students, "original", "mine_noID", "CloneDR"), "CloneDR Differences original vs noID_PDG", "diff_Clonedr_original_noID", graphsDirectory)
+   histogramDifferences(processDifferencesTool(students, "mine_noID", "mine", "CloneDR"), "CloneDR Differences noID vs normalized", "diff_Clonedr_noID_mine", graphsDirectory)
+
+   histogramDifferences(processDifferencesTool(students, "mine_nothing", "mine", "Moss"), "Moss Differences noID_PDG_split vs split", "diff_Moss_nothing_split_mine_split", graphsDirectory)
    beforeAfterBars(aggregate, "JPlag", "summary", "Tokens", graphsDirectory)
    beforeAfterBars(aggregate, "Simian", "summary", "Lines", graphsDirectory)
    beforeAfterBars(aggregate, "CloneDR", "summary", "Lines", graphsDirectory)
@@ -80,12 +95,36 @@ def main(chosenDir=None):
    #summaryBars(allStudents, "Simian", "statistics", "Lines", graphsDirectory)
    #summaryBars(allStudents, "CloneDR", "statistics", "Lines", graphsDirectory)
    #summaryBars(allStudents, "Moss", "statistics", "Lines", graphsDirectory)
-   boxPlot(allStudents, "Simian", "statisticsBox", "Lines", graphsDirectory)
-   boxPlot(allStudents, "JPlag", "statisticsBox", "Tokens", graphsDirectory)
-   boxPlot(allStudents, "CloneDR", "statisticsBox", "Lines", graphsDirectory)
-   boxPlot(allStudents, "Moss", "statisticsBox", "Lines", graphsDirectory)
+   #boxPlot(allStudents, "Simian", "statisticsBox", "Lines", graphsDirectory)
+   #boxPlot(allStudents, "JPlag", "statisticsBox", "Tokens", graphsDirectory)
+   #boxPlot(allStudents, "CloneDR", "statisticsBox", "Lines", graphsDirectory)
+   #boxPlot(allStudents, "Moss", "statisticsBox", "Lines", graphsDirectory)
+
    for student in students:
-      difference[student] = processDifferences(students[student])
+      #difference[student] = processDifferences(students[student])
+      pass
+
+def processDifferencesTool(allStudents, fromVersion, toVersion, toolName):
+   differences = []
+   for student in allStudents:
+      fromV = allStudents[student][fromVersion]
+      toV = allStudents[student][toVersion]
+      fromLines = fromV[toolName]['lines']
+      toLines = toV[toolName]['lines']
+      differenceLines = toLines - fromLines;
+      differences.append(differenceLines)
+   print("_".join([fromVersion, toVersion, toolName, str(differences)]))
+   return differences
+
+def histogramDifferences(data, title, filePrefix, filePath):
+   barWidth = 5
+   bins = 30
+   if max(data) - min(data) > barWidth * bins:
+      bins = int((max(data) - min(data) + 0.5) / barWidth)
+   plt.title(title)
+   plt.hist(data, bins)
+   plt.savefig(os.path.join(filePath, filePrefix), bbox_inches='tight')
+   plt.clf()
 
 def processDifferences(result):
    original = result["original"]
