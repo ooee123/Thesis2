@@ -28,6 +28,13 @@ public class Main {
     public static boolean SORT_STATEMENTS = true;
     public static boolean REMOVE_USELESS_CODE = true;
     public static boolean SPLIT_FUNCTIONS_MOSS = false;
+
+    private static CommonTokenStream toCommonTokenStream(String preprocessedSource) throws IOException {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(preprocessedSource.getBytes());
+        CLexer firstPartlexer = new CLexer(new ANTLRInputStream(byteArrayInputStream));
+        return new CommonTokenStream(firstPartlexer);
+    }
+
     public static void main(String args[]) {
         if (args.length < 1) {
             System.err.println("Usage: [-cisrm] <C source file>");
@@ -64,13 +71,9 @@ public class Main {
             int splittingIndex = Preprocess.getSplittingIndex(preprocess);
             String firstPart = Preprocess.removePounds(preprocess.substring(0, splittingIndex));
             String secondPart = Preprocess.removePounds(preprocess.substring(splittingIndex, preprocess.length()));
-            //ByteArrayInputStream firstPartByteArrayInputStream = new ByteArrayInputStream(Preprocess.preprocess(new File(args[0])).getBytes());
-            ByteArrayInputStream firstPartByteArrayInputStream = new ByteArrayInputStream(firstPart.getBytes());
-            ByteArrayInputStream secondPartByteArrayInputStream = new ByteArrayInputStream(secondPart.getBytes());
-            CLexer firstPartlexer = new CLexer(new ANTLRInputStream(firstPartByteArrayInputStream));
-            CLexer secondPartlexer = new CLexer(new ANTLRInputStream(secondPartByteArrayInputStream));
-            CommonTokenStream firstPartTokens = new CommonTokenStream(firstPartlexer);
-            CommonTokenStream secondPartTokens = new CommonTokenStream(secondPartlexer);
+
+            CommonTokenStream firstPartTokens = toCommonTokenStream(firstPart);
+            CommonTokenStream secondPartTokens = toCommonTokenStream(secondPart);
             System.err.print("Begin parsing " + sourceFile + "...");
             CParser firstPartParser = new CParser(firstPartTokens);
             CParser secondPartParser = new CParser(secondPartTokens);
@@ -132,7 +135,7 @@ public class Main {
                 System.err.print("Splitting functions...");
                 for (Function function : program.getFunction()) {
                     String functionCode = function.toCode(SHOW_ORIGINAL_LINE);
-                    File functionFile = new File(mossDirectory, sourceFile + "_" + function.getIdentifier() + ".c");
+                    File functionFile = new File(mossDirectory, new File(sourceFile).toPath().getFileName().toString() + "_" + function.getIdentifier() + ".c");
                     FileWriter fileWriter = new FileWriter(functionFile);
                     fileWriter.write(functionCode);
                     fileWriter.close();
